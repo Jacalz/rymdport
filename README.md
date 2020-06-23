@@ -4,7 +4,7 @@ Wormhole-gui is a graphical interface for magic-wormhole. It uses the Go impleme
 
 ## Requirements
 
-Wormhole-william wouldn't be possible without the following packages:
+Wormhole-gui wouldn't be possible without the following packages:
 
 - [fyne](https://github.com/fyne-io/fyne) (version 1.3.0 or later)
 - [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.1 or later)
