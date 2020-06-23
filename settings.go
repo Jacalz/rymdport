@@ -10,11 +10,24 @@ import (
 	"fyne.io/fyne/widget"
 )
 
-// TODO: Stop using a global value for this. Might lead to race conditions.
+func userDownloadsFolder() string {
+	dir, err := os.UserHomeDir()
+	if err != nil {
+		fyne.LogError("Could not get home dir", err)
+	}
 
-var downloadPathStr string
+	return path.Join(dir, "Downloads")
+}
 
-func settingsTab(a fyne.App) *widget.TabItem {
+type settings struct {
+	// PassPhraseComponentLength is the number of words to use when generating a passprase.
+	PassPhraseComponentLength int
+
+	// DownloadPath holds the download path used for saving recvieved files.
+	DownloadPath string
+}
+
+func (s *settings) settingsTab(a fyne.App) *widget.TabItem {
 	themeSwitcher := widget.NewSelect([]string{"Light", "Dark"}, func(selected string) {
 		switch selected {
 		case "Light":
@@ -37,21 +50,16 @@ func settingsTab(a fyne.App) *widget.TabItem {
 	downloadPath.OnChanged = func(input string) {
 		switch input {
 		case "":
-			dir, err := os.UserHomeDir()
-			if err != nil {
-				fyne.LogError("Could not get home dir", err)
-			}
-
-			downloadPathStr = path.Join(dir, "Downloads")
+			s.DownloadPath = userDownloadsFolder()
 		default:
 			// TODO: Make sure to only allow saving inside the home directory.
-			downloadPathStr = path.Clean(input)
+			s.DownloadPath = path.Clean(input)
 		}
 	}
 
 	wormholeSettingsContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widget.NewLabel("Download Path"), downloadPath)
 
-	wormholeGroup := widget.NewGroup("Wormhole", wormholeSettingsContainer)
+	wormholeGroup := widget.NewGroup("Data Handling", wormholeSettingsContainer)
 
 	settingsContent := widget.NewScrollContainer(fyne.NewContainerWithLayout(layout.NewVBoxLayout(), interfaceGroup, layout.NewSpacer(), wormholeGroup))
 

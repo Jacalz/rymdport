@@ -18,7 +18,9 @@ func main() {
 		a.Settings().SetTheme(theme.DarkTheme())
 	}
 
-	w.SetContent(widget.NewTabContainer(sendTab(w), recieveTab(), settingsTab(a)))
+	s := settings{PassPhraseComponentLength: 2, DownloadPath: userDownloadsFolder()}
+
+	w.SetContent(widget.NewTabContainer(s.sendTab(w), s.recieveTab(), s.settingsTab(a)))
 	w.Resize(fyne.NewSize(600, 400))
 	w.ShowAndRun()
 }
