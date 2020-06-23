@@ -4,6 +4,10 @@
 *.dll
 *.so
 *.dylib
+wormhole-gui
+
+# Output from fyne-cross when running cross-compilation.
+fyne-cross/
 
 # Test binary, built with `go test -c`
 *.test
