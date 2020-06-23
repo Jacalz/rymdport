@@ -21,7 +21,7 @@ func userDownloadsFolder() string {
 
 type settings struct {
 	// PassPhraseComponentLength is the number of words to use when generating a passprase.
-	PassPhraseComponentLength int
+	ComponentLength int
 
 	// DownloadPath holds the download path used for saving recvieved files.
 	DownloadPath string
@@ -46,7 +46,7 @@ func (s *settings) settingsTab(a fyne.App) *widget.TabItem {
 	interfaceGroup := widget.NewGroup("User Interface", interfaceSettingsContainer)
 
 	downloadPath := widget.NewEntry()
-	downloadPath.SetPlaceHolder("Downloads directory")
+	downloadPath.SetPlaceHolder("Downloads")
 	downloadPath.OnChanged = func(input string) {
 		switch input {
 		case "":
@@ -57,11 +57,19 @@ func (s *settings) settingsTab(a fyne.App) *widget.TabItem {
 		}
 	}
 
-	wormholeSettingsContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widget.NewLabel("Download Path"), downloadPath)
+	dataSettingsContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widget.NewLabel("Download Path"), downloadPath)
+	dataGroup := widget.NewGroup("Data Handling", dataSettingsContainer)
 
-	wormholeGroup := widget.NewGroup("Data Handling", wormholeSettingsContainer)
+	slider := widget.NewSlider(2.0, 6.0)
+	slider.OnChanged = func(value float64) {
+		s.ComponentLength = int(value)
+	}
+	slider.Refresh()
 
-	settingsContent := widget.NewScrollContainer(fyne.NewContainerWithLayout(layout.NewVBoxLayout(), interfaceGroup, layout.NewSpacer(), wormholeGroup))
+	wormholeSettingsContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widget.NewLabel("Passphrase Length"), slider)
+	wormholeGroup := widget.NewGroup("Wormhole Parameters", wormholeSettingsContainer)
+
+	settingsContent := widget.NewScrollContainer(fyne.NewContainerWithLayout(layout.NewVBoxLayout(), interfaceGroup, layout.NewSpacer(), dataGroup, layout.NewSpacer(), wormholeGroup))
 
 	return widget.NewTabItemWithIcon("Settings", theme.SettingsIcon(), settingsContent)
 }

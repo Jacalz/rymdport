@@ -1,5 +1,5 @@
 # Constants for cross compilation and packaging.
-appID = com.github.jacalz.sparta
+appID = com.github.jacalz.wormhole-gui
 name = wormhole-gui
 
 # Default path to the go binary directory.

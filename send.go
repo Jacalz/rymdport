@@ -14,7 +14,7 @@ import (
 )
 
 func sendFile(file fyne.URIReadCloser, s settings, code chan string) error {
-	c := wormhole.Client{PassPhraseComponentLength: s.PassPhraseComponentLength}
+	c := wormhole.Client{PassPhraseComponentLength: s.ComponentLength}
 
 	defer file.Close()
 
@@ -45,7 +45,7 @@ func sendFile(file fyne.URIReadCloser, s settings, code chan string) error {
 }
 
 func sendText(text string, s settings, code chan string) error {
-	c := wormhole.Client{PassPhraseComponentLength: s.PassPhraseComponentLength}
+	c := wormhole.Client{PassPhraseComponentLength: s.ComponentLength}
 
 	codestr, status, err := c.SendText(context.Background(), text)
 	if err != nil {
@@ -110,8 +110,9 @@ func (s *settings) sendTab(w fyne.Window) *widget.TabItem {
 		contentPicker.Hide()
 		dialog.ShowCustomConfirm("Text to send", "Send", "Cancel", textEntry, func(send bool) {
 			if send {
-				code := make(chan string)
+				textEntry.SetText("")
 
+				code := make(chan string)
 				go func() {
 					err := sendText(textEntry.Text, *s, code)
 					if err != nil {
