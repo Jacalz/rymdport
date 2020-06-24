@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/Jacalz/wormhole-gui/assets"
+
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
 	"fyne.io/fyne/theme"
@@ -13,6 +15,7 @@ func boldLabel(text string) *widget.Label {
 
 func main() {
 	a := app.NewWithID("com.github.jacalz.wormhole-gui")
+	a.SetIcon(assets.AppIcon)
 	w := a.NewWindow("wormhole-gui")
 
 	switch a.Preferences().StringWithFallback("Theme", "Light") {
