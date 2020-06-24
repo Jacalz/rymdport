@@ -7,6 +7,10 @@ import (
 	"fyne.io/fyne/widget"
 )
 
+func boldLabel(text string) *widget.Label {
+	return widget.NewLabelWithStyle(text, fyne.TextAlignLeading, fyne.TextStyle{Bold: true})
+}
+
 func main() {
 	a := app.NewWithID("com.github.jacalz.wormhole-gui")
 	w := a.NewWindow("wormhole-gui")

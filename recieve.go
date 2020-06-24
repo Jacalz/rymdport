@@ -70,34 +70,36 @@ func (s *settings) recieveTab(w fyne.Window) *widget.TabItem {
 	codeEntry := widget.NewEntry()
 	codeEntry.SetPlaceHolder("Enter code")
 
-	recieveGrid := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widget.NewLabel("Filename"), widget.NewLabel("Status"))
+	recieveGrid := fyne.NewContainerWithLayout(layout.NewGridLayout(2), boldLabel("Filename"), boldLabel("Status"))
 
 	codeButton := widget.NewButtonWithIcon("Download", theme.MoveDownIcon(), func() {
-		code := codeEntry.Text
-		if validCode.MatchString(code) {
-			file := make(chan string)
-			codeEntry.SetText("")
+		go func() {
+			code := codeEntry.Text
+			if validCode.MatchString(code) {
+				file := make(chan string)
+				codeEntry.SetText("")
 
-			filename := widget.NewLabel("Waiting for filename")
-			recieveGrid.AddObject(filename)
+				filename := widget.NewLabel("Waiting for filename")
+				recieveGrid.AddObject(filename)
 
-			finished := widget.NewLabel("Waiting for status")
-			recieveGrid.AddObject(finished)
+				finished := widget.NewLabel("Waiting for status")
+				recieveGrid.AddObject(finished)
 
-			go func() {
-				err := recieveData(code, *s, w, file)
-				if err != nil {
-					finished.SetText("Failed")
-					dialog.ShowError(err, w)
-					return
-				}
+				go func() {
+					err := recieveData(code, *s, w, file)
+					if err != nil {
+						finished.SetText("Failed")
+						dialog.ShowError(err, w)
+						return
+					}
 
-				finished.SetText("Completed")
-				dialog.ShowInformation("Successful download", "The download completed without errors.", w)
-			}()
+					finished.SetText("Completed")
+					dialog.ShowInformation("Successful download", "The download completed without errors.", w)
+				}()
 
-			go filename.SetText(<-file)
-		}
+				go filename.SetText(<-file)
+			}
+		}()
 	})
 
 	codeContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), codeEntry, codeButton)
