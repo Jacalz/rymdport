@@ -78,57 +78,61 @@ func (s *settings) sendTab(w fyne.Window) *widget.TabItem {
 	sendGrid := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widget.NewLabel("Filename"), widget.NewLabel("Code"))
 
 	fileChoice.OnTapped = func() {
-		contentPicker.Hide()
+		go func() {
+			contentPicker.Hide()
 
-		dialog.ShowFileOpen(func(file fyne.URIReadCloser, err error) {
-			if err != nil {
-				fyne.LogError("Error on picking the file", err)
-				return
-			}
-
-			code := make(chan string)
-
-			go func() {
-				err = sendFile(file, *s, code)
+			dialog.ShowFileOpen(func(file fyne.URIReadCloser, err error) {
 				if err != nil {
-					dialog.ShowError(err, w)
+					fyne.LogError("Error on picking the file", err)
+					return
 				}
-			}()
 
-			sendGrid.AddObject(widget.NewLabel(file.Name()))
-			codeLabel := widget.NewLabel("Waiting for code")
+				code := make(chan string)
 
-			sendGrid.AddObject(codeLabel)
-			go codeLabel.SetText(<-code)
-		}, w)
+				go func() {
+					err = sendFile(file, *s, code)
+					if err != nil {
+						dialog.ShowError(err, w)
+					}
+				}()
+
+				sendGrid.AddObject(widget.NewLabel(file.Name()))
+				codeLabel := widget.NewLabel("Waiting for code")
+
+				sendGrid.AddObject(codeLabel)
+				go codeLabel.SetText(<-code)
+			}, w)
+		}()
 	}
 
 	textEntry := widget.NewMultiLineEntry()
 	textEntry.SetPlaceHolder("Enter text to send")
 
 	textChoice.OnTapped = func() {
-		contentPicker.Hide()
-		dialog.ShowCustomConfirm("Text to send", "Send", "Cancel", textEntry, func(send bool) {
-			if send {
-				textEntry.SetText("")
+		go func() {
+			contentPicker.Hide()
+			dialog.ShowCustomConfirm("Text to send", "Send", "Cancel", textEntry, func(send bool) {
+				if send {
+					textEntry.SetText("")
 
-				code := make(chan string)
-				go func() {
-					err := sendText(textEntry.Text, *s, code)
-					if err != nil {
-						dialog.ShowError(err, w)
-					}
-				}()
+					code := make(chan string)
+					go func() {
+						err := sendText(textEntry.Text, *s, code)
+						if err != nil {
+							dialog.ShowError(err, w)
+						}
+					}()
 
-				sendGrid.AddObject(widget.NewLabel("Text Snippet"))
-				codeLabel := widget.NewLabel("Waiting for code")
-				sendGrid.AddObject(codeLabel)
-				go codeLabel.SetText(<-code)
-			} else {
-				textEntry.SetText("")
-			}
+					sendGrid.AddObject(widget.NewLabel("Text Snippet"))
+					codeLabel := widget.NewLabel("Waiting for code")
+					sendGrid.AddObject(codeLabel)
+					go codeLabel.SetText(<-code)
+				} else {
+					textEntry.SetText("")
+				}
 
-		}, w)
+			}, w)
+		}()
 	}
 
 	send := widget.NewButtonWithIcon("Add content to send", theme.ContentAddIcon(), func() {
