@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"os"
+	"sync"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/dialog"
@@ -10,6 +11,7 @@ import (
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 
+	"github.com/Jacalz/wormhole-gui/widgets"
 	"github.com/psanford/wormhole-william/wormhole"
 )
 
@@ -24,7 +26,7 @@ func sendFile(file fyne.URIReadCloser, s settings, code chan string, progress wo
 		return err
 	}
 
-	defer f.Close()
+	defer f.Close() // #nosec - We are not writing to the file.
 
 	codestr, status, err := c.SendFile(context.Background(), file.Name(), f, progress)
 	if err != nil {
@@ -75,7 +77,7 @@ func (s *settings) sendTab(w fyne.Window) *widget.TabItem {
 	contentPicker := dialog.NewCustom("Pick a content type", "Cancel", choiceContent, w)
 	contentPicker.Hide()
 
-	sendGrid := fyne.NewContainerWithLayout(layout.NewGridLayout(3), boldLabel("Filename"), boldLabel("Code"), boldLabel("Progress"))
+	sendGrid := fyne.NewContainerWithLayout(layout.NewGridLayout(3), widgets.NewBoldLabel("Filename"), widgets.NewBoldLabel("Code"), widgets.NewBoldLabel("Progress"))
 
 	fileChoice.OnTapped = func() {
 		go func() {
@@ -89,26 +91,24 @@ func (s *settings) sendTab(w fyne.Window) *widget.TabItem {
 
 				code := make(chan string)
 
-				progressBar := widget.NewProgressBar()
-				progression := wormhole.WithProgress(func(sent int64, total int64) {
-					progressBar.Max = float64(total)
-					progressBar.SetValue(float64(sent))
+				var once sync.Once
+				progress := widget.NewProgressBar()
+				update := wormhole.WithProgress(func(sent int64, total int64) {
+					once.Do(func() { progress.Max = float64(total) })
+					progress.SetValue(float64(sent))
 				})
 
 				go func() {
-					err = sendFile(file, *s, code, progression)
+					err = sendFile(file, *s, code, update)
 					if err != nil {
 						dialog.ShowError(err, w)
 					}
 				}()
 
+				codeLabel := widgets.NewCodeLabel(code)
 				sendGrid.AddObject(widget.NewLabel(file.Name()))
-				codeLabel := widget.NewLabel("Waiting for code")
-
 				sendGrid.AddObject(codeLabel)
-				go codeLabel.SetText(<-code)
-
-				sendGrid.AddObject(progressBar)
+				sendGrid.AddObject(progress)
 			}, w)
 		}()
 	}
@@ -119,35 +119,33 @@ func (s *settings) sendTab(w fyne.Window) *widget.TabItem {
 	textChoice.OnTapped = func() {
 		go func() {
 			contentPicker.Hide()
+			textEntry.SetText("")
+
 			dialog.ShowCustomConfirm("Text to send", "Send", "Cancel", textEntry, func(send bool) {
 				if send {
-					textEntry.SetText("")
+					text := textEntry.Text
 
-					progressBar := widget.NewProgressBar()
-					progression := wormhole.WithProgress(func(sent int64, total int64) {
-						progressBar.Max = float64(total)
-						progressBar.SetValue(float64(sent))
+					var once sync.Once
+					progress := widget.NewProgressBar()
+					update := wormhole.WithProgress(func(sent int64, total int64) {
+						once.Do(func() { progress.Max = float64(total) })
+						progress.SetValue(float64(sent))
 					})
 
 					code := make(chan string)
 					go func() {
-						err := sendText(textEntry.Text, *s, code, progression)
+						err := sendText(text, *s, code, update)
 						if err != nil {
 							dialog.ShowError(err, w)
 						}
 					}()
 
+					codeLabel := widgets.NewCodeLabel(code)
 					sendGrid.AddObject(widget.NewLabel("Text Snippet"))
-
-					codeLabel := widget.NewLabel("Waiting for code")
 					sendGrid.AddObject(codeLabel)
-					go codeLabel.SetText(<-code)
-
-					sendGrid.AddObject(progressBar)
-				} else {
-					textEntry.SetText("")
+					sendGrid.AddObject(progress)
 				}
-
+				textEntry.SetText("")
 			}, w)
 		}()
 	}

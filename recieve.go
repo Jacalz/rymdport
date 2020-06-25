@@ -13,6 +13,7 @@ import (
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 
+	"github.com/Jacalz/wormhole-gui/widgets"
 	"github.com/psanford/wormhole-william/wormhole"
 )
 
@@ -67,12 +68,12 @@ func recieveData(code string, s settings, w fyne.Window, name chan string) error
 }
 
 func (s *settings) recieveTab(w fyne.Window) *widget.TabItem {
-	codeEntry := widget.NewEntry()
-	codeEntry.SetPlaceHolder("Enter code")
+	codeEntry := widgets.NewPressEntry("Enter code")
+	codeButton := widget.NewButtonWithIcon("Download", theme.MoveDownIcon(), nil)
 
-	recieveGrid := fyne.NewContainerWithLayout(layout.NewGridLayout(2), boldLabel("Filename"), boldLabel("Status"))
+	recieveGrid := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widgets.NewBoldLabel("Filename"), widgets.NewBoldLabel("Status"))
 
-	codeButton := widget.NewButtonWithIcon("Download", theme.MoveDownIcon(), func() {
+	codeButton.OnTapped = func() {
 		go func() {
 			code := codeEntry.Text
 			if validCode.MatchString(code) {
@@ -100,7 +101,9 @@ func (s *settings) recieveTab(w fyne.Window) *widget.TabItem {
 				go filename.SetText(<-file)
 			}
 		}()
-	})
+	}
+
+	codeEntry.OnReturn = codeButton.OnTapped
 
 	codeContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), codeEntry, codeButton)
 

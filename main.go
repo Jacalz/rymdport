@@ -1,17 +1,13 @@
 package main
 
 import (
-	"github.com/Jacalz/wormhole-gui/assets"
-
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
-)
 
-func boldLabel(text string) *widget.Label {
-	return widget.NewLabelWithStyle(text, fyne.TextAlignLeading, fyne.TextStyle{Bold: true})
-}
+	"github.com/Jacalz/wormhole-gui/assets"
+)
 
 func main() {
 	a := app.NewWithID("com.github.jacalz.wormhole-gui")
