@@ -25,6 +25,9 @@ type settings struct {
 
 	// DownloadPath holds the download path used for saving recvieved files.
 	DownloadPath string
+
+	// Notification holds the settings value for if we have notifications enabled or not.
+	Notifications bool
 }
 
 func (s *settings) settingsTab(a fyne.App) *widget.TabItem {
@@ -57,7 +60,20 @@ func (s *settings) settingsTab(a fyne.App) *widget.TabItem {
 		}
 	}
 
-	dataSettingsContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widget.NewLabel("Download Path"), downloadPath)
+	notification := widget.NewRadio([]string{"On", "Off"}, func(selected string) {
+		if selected == "On" {
+			s.Notifications = true
+		} else {
+			s.Notifications = false
+		}
+
+		a.Preferences().SetString("Notifications", selected)
+	})
+
+	notification.SetSelected(a.Preferences().StringWithFallback("Notifications", "Off"))
+	notification.Horizontal = true
+
+	dataSettingsContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widget.NewLabel("Download Path"), downloadPath, widget.NewLabel("Notifications"), notification)
 	dataGroup := widget.NewGroup("Data Handling", dataSettingsContainer)
 
 	slider := widget.NewSlider(2.0, 6.0)

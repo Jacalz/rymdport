@@ -23,7 +23,7 @@ func main() {
 
 	s := settings{ComponentLength: 2, DownloadPath: userDownloadsFolder()}
 
-	w.SetContent(widget.NewTabContainer(s.sendTab(w), s.recieveTab(w), s.settingsTab(a)))
+	w.SetContent(widget.NewTabContainer(s.sendTab(a, w), s.recieveTab(w), s.settingsTab(a)))
 	w.Resize(fyne.NewSize(600, 400))
 	w.ShowAndRun()
 }

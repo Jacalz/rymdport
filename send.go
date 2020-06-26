@@ -67,7 +67,7 @@ func sendText(text string, s settings, code chan string, progress wormhole.SendO
 	return nil
 }
 
-func (s *settings) sendTab(w fyne.Window) *widget.TabItem {
+func (s *settings) sendTab(a fyne.App, w fyne.Window) *widget.TabItem {
 	fileChoice := widget.NewButtonWithIcon("File", theme.FileIcon(), nil)
 	textChoice := widget.NewButtonWithIcon("Text", theme.DocumentCreateIcon(), nil)
 	// TODO: Add support for sending directories when fyne supports it in the file picker.
@@ -102,6 +102,8 @@ func (s *settings) sendTab(w fyne.Window) *widget.TabItem {
 					err = sendFile(file, *s, code, update)
 					if err != nil {
 						dialog.ShowError(err, w)
+					} else if s.Notifications {
+						a.SendNotification(fyne.NewNotification("Send completed", "The sending of a file completed successfully"))
 					}
 				}()
 
@@ -137,7 +139,10 @@ func (s *settings) sendTab(w fyne.Window) *widget.TabItem {
 						err := sendText(text, *s, code, update)
 						if err != nil {
 							dialog.ShowError(err, w)
+						} else if s.Notifications {
+							a.SendNotification(fyne.NewNotification("Send completed", "The sending of text completed successfully"))
 						}
+
 					}()
 
 					codeLabel := widgets.NewCodeLabel(code)
