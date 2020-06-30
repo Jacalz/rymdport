@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=wormhole-gui
+Exec=wormhole-gui
+Icon=wormhole-gui
