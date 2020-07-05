@@ -1,10 +1,6 @@
 package main
 
 import (
-	"context"
-	"io/ioutil"
-	"os"
-	"path"
 	"regexp"
 
 	"fyne.io/fyne"
@@ -14,60 +10,12 @@ import (
 	"fyne.io/fyne/widget"
 
 	"github.com/Jacalz/wormhole-gui/widgets"
-	"github.com/psanford/wormhole-william/wormhole"
 )
 
 // Regular expression for verifying sync code.
 var validCode = regexp.MustCompile(`^\d\d?(-\w{2,12}){2,6}$`)
 
-func recieveData(code string, s settings, w fyne.Window, name chan string) error {
-	c := wormhole.Client{PassPhraseComponentLength: s.ComponentLength}
-
-	msg, err := c.Receive(context.Background(), code)
-	if err != nil {
-		fyne.LogError("Error on receiving data", err)
-		return err
-	}
-
-	text, err := ioutil.ReadAll(msg)
-	if err != nil {
-		fyne.LogError("Error on reading received data", err)
-		return err
-	}
-
-	if msg.Type == wormhole.TransferText {
-		textEntry := widget.NewMultiLineEntry()
-		textEntry.SetText(string(text))
-		name <- "Text Snippet"
-
-		dialog.ShowCustom("Received text", "Close", textEntry, w)
-		return nil
-	}
-
-	name <- msg.Name
-
-	f, err := os.Create(path.Join(s.DownloadPath, msg.Name))
-	if err != nil {
-		fyne.LogError("Error on creating file", err)
-		return err
-	}
-
-	_, err = f.Write(text)
-	if err != nil {
-		if err2 := f.Close(); err2 != nil {
-			fyne.LogError("Error on writing and closing the file", err)
-			return err
-		}
-
-		fyne.LogError("Error on writing data to the file", err)
-		return err
-
-	}
-
-	return f.Close()
-}
-
-func (s *settings) recieveTab(w fyne.Window) *widget.TabItem {
+func (ad *appData) recieveTab() *widget.TabItem {
 	codeEntry := widgets.NewPressEntry("Enter code")
 	codeButton := widget.NewButtonWithIcon("Download", theme.MoveDownIcon(), nil)
 
@@ -87,15 +35,15 @@ func (s *settings) recieveTab(w fyne.Window) *widget.TabItem {
 				recieveGrid.AddObject(finished)
 
 				go func() {
-					err := recieveData(code, *s, w, file)
+					err := ad.Bridge.RecieveData(code, file, &ad.Window)
 					if err != nil {
 						finished.SetText("Failed")
-						dialog.ShowError(err, w)
+						dialog.ShowError(err, ad.Window)
 						return
 					}
 
 					finished.SetText("Completed")
-					dialog.ShowInformation("Successful download", "The download completed without errors.", w)
+					dialog.ShowInformation("Successful download", "The download completed without errors.", ad.Window)
 				}()
 
 				go filename.SetText(<-file)

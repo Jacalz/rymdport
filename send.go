@@ -1,8 +1,6 @@
 package main
 
 import (
-	"context"
-	"os"
 	"sync"
 
 	"fyne.io/fyne"
@@ -15,66 +13,14 @@ import (
 	"github.com/psanford/wormhole-william/wormhole"
 )
 
-func sendFile(file fyne.URIReadCloser, s settings, code chan string, progress wormhole.SendOption) error {
-	c := wormhole.Client{PassPhraseComponentLength: s.ComponentLength}
-
-	defer file.Close()
-
-	f, err := os.Open(file.URI().String()[7:]) // Ignore the file:/ prefix by doing [7:]
-	if err != nil {
-		fyne.LogError("Error on opening file to send", err)
-		return err
-	}
-
-	defer f.Close() // #nosec - We are not writing to the file.
-
-	codestr, status, err := c.SendFile(context.Background(), file.Name(), f, progress)
-	if err != nil {
-		fyne.LogError("Error on sending file", err)
-		return err
-	}
-
-	code <- codestr
-
-	if stat := <-status; stat.Error != nil {
-		fyne.LogError("Error on status of share", err)
-		return err
-	} else if stat.OK {
-		return nil
-	}
-
-	return nil
-}
-
-func sendText(text string, s settings, code chan string, progress wormhole.SendOption) error {
-	c := wormhole.Client{PassPhraseComponentLength: s.ComponentLength}
-
-	codestr, status, err := c.SendText(context.Background(), text, progress)
-	if err != nil {
-		fyne.LogError("Error on sending text", err)
-		return err
-	}
-
-	code <- codestr
-
-	if stat := <-status; stat.Error != nil {
-		fyne.LogError("Error on status of share", err)
-		return err
-	} else if stat.OK {
-		return nil
-	}
-
-	return nil
-}
-
-func (s *settings) sendTab(a fyne.App, w fyne.Window) *widget.TabItem {
+func (ad *appData) sendTab() *widget.TabItem {
 	fileChoice := widget.NewButtonWithIcon("File", theme.FileIcon(), nil)
 	textChoice := widget.NewButtonWithIcon("Text", theme.DocumentCreateIcon(), nil)
 	// TODO: Add support for sending directories when fyne supports it in the file picker.
 
 	choiceContent := widget.NewVBox(fileChoice, textChoice)
 
-	contentPicker := dialog.NewCustom("Pick a content type", "Cancel", choiceContent, w)
+	contentPicker := dialog.NewCustom("Pick a content type", "Cancel", choiceContent, ad.Window)
 	contentPicker.Hide()
 
 	sendGrid := fyne.NewContainerWithLayout(layout.NewGridLayout(3), widgets.NewBoldLabel("Filename"), widgets.NewBoldLabel("Code"), widgets.NewBoldLabel("Progress"))
@@ -99,11 +45,11 @@ func (s *settings) sendTab(a fyne.App, w fyne.Window) *widget.TabItem {
 				})
 
 				go func() {
-					err = sendFile(file, *s, code, update)
+					err = ad.Bridge.SendFile(file, code, update)
 					if err != nil {
-						dialog.ShowError(err, w)
-					} else if s.Notifications {
-						a.SendNotification(fyne.NewNotification("Send completed", "The sending of a file completed successfully"))
+						dialog.ShowError(err, ad.Window)
+					} else if ad.Notifications {
+						ad.App.SendNotification(fyne.NewNotification("Send completed", "The sending of a file completed successfully"))
 					}
 				}()
 
@@ -111,7 +57,7 @@ func (s *settings) sendTab(a fyne.App, w fyne.Window) *widget.TabItem {
 				sendGrid.AddObject(widget.NewLabel(file.Name()))
 				sendGrid.AddObject(codeLabel)
 				sendGrid.AddObject(progress)
-			}, w)
+			}, ad.Window)
 		}()
 	}
 
@@ -136,11 +82,11 @@ func (s *settings) sendTab(a fyne.App, w fyne.Window) *widget.TabItem {
 
 					code := make(chan string)
 					go func() {
-						err := sendText(text, *s, code, update)
+						err := ad.Bridge.SendText(text, code, update)
 						if err != nil {
-							dialog.ShowError(err, w)
-						} else if s.Notifications {
-							a.SendNotification(fyne.NewNotification("Send completed", "The sending of text completed successfully"))
+							dialog.ShowError(err, ad.Window)
+						} else if ad.Notifications {
+							ad.App.SendNotification(fyne.NewNotification("Send completed", "The sending of text completed successfully"))
 						}
 
 					}()
@@ -151,7 +97,7 @@ func (s *settings) sendTab(a fyne.App, w fyne.Window) *widget.TabItem {
 					sendGrid.AddObject(progress)
 				}
 				textEntry.SetText("")
-			}, w)
+			}, ad.Window)
 		}()
 	}
 

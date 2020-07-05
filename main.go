@@ -7,23 +7,36 @@ import (
 	"fyne.io/fyne/widget"
 
 	"github.com/Jacalz/wormhole-gui/assets"
+	"github.com/Jacalz/wormhole-gui/bridge"
 )
 
-func main() {
-	a := app.NewWithID("com.github.jacalz.wormhole-gui")
-	a.SetIcon(assets.AppIcon)
-	w := a.NewWindow("wormhole-gui")
+type appData struct {
+	// BridgeSettings holds the settings specific to the bridge implementation.
+	Bridge *bridge.Bridge
 
-	switch a.Preferences().StringWithFallback("Theme", "Light") {
+	// Notification holds the settings value for if we have notifications enabled or not.
+	Notifications bool
+
+	// App and window are variables from fyne.
+	App    fyne.App
+	Window fyne.Window
+}
+
+func main() {
+	ad := appData{Bridge: bridge.NewBridge()}
+
+	ad.App = app.NewWithID("com.github.jacalz.wormhole-gui")
+	ad.App.SetIcon(assets.AppIcon)
+	ad.Window = ad.App.NewWindow("wormhole-gui")
+
+	switch ad.App.Preferences().StringWithFallback("Theme", "Light") {
 	case "Light":
-		a.Settings().SetTheme(theme.LightTheme())
+		ad.App.Settings().SetTheme(theme.LightTheme())
 	case "Dark":
-		a.Settings().SetTheme(theme.DarkTheme())
+		ad.App.Settings().SetTheme(theme.DarkTheme())
 	}
 
-	s := settings{ComponentLength: 2, DownloadPath: userDownloadsFolder()}
-
-	w.SetContent(widget.NewTabContainer(s.sendTab(a, w), s.recieveTab(w), s.settingsTab(a), aboutTab()))
-	w.Resize(fyne.NewSize(600, 400))
-	w.ShowAndRun()
+	ad.Window.SetContent(widget.NewTabContainer(ad.sendTab(), ad.recieveTab(), ad.settingsTab(), aboutTab()))
+	ad.Window.Resize(fyne.NewSize(600, 400))
+	ad.Window.ShowAndRun()
 }
