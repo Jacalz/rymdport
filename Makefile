@@ -14,12 +14,12 @@ PREFIX ?= /usr
 endif
 
 build:
-	go build -o $(name)
+	go build -o $(NAME)
 
 install:
-	install -Dm00755 $(name) $(DESTDIR)$(PREFIX)/bin/$(name)
-	install -Dm00644 assets/icon-512.png $(DESTDIR)$(PREFIX)/share/pixmaps/$(name).png
-	install -Dm00644 assets/$(name).desktop $(DESTDIR)$(PREFIX)/share/applications/$(name).desktop
+	install -Dm00755 $(NAME) $(DESTDIR)$(PREFIX)/bin/$(NAME)
+	install -Dm00644 assets/icon-512.png $(DESTDIR)$(PREFIX)/share/pixmaps/$(NAME).png
+	install -Dm00644 assets/$(NAME).desktop $(DESTDIR)$(PREFIX)/share/applications/$(NAME).desktop
 
 bundle:
 	# Bundle the correct logo into sparta/src/bundled/bundled.go
