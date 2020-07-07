@@ -2,18 +2,33 @@ package bridge
 
 import (
 	"context"
+	"io"
 	"io/ioutil"
 	"os"
 	"path"
 
 	"fyne.io/fyne"
-	"fyne.io/fyne/dialog"
-	"fyne.io/fyne/widget"
 	"github.com/psanford/wormhole-william/wormhole"
 )
 
+// writeFile writes the given file to the file system and closes it when done.
+func writeFile(file io.WriteCloser, content []byte) error {
+	_, err := file.Write(content)
+	if err != nil {
+		if err2 := file.Close(); err2 != nil {
+			fyne.LogError("Error on writing and closing the file", err)
+			return err
+		}
+
+		fyne.LogError("Error on writing data to the file", err)
+		return err
+	}
+
+	return file.Close() // Not defering close du to security issues when writing to a file.
+}
+
 // RecieveData runs a receive using wormhole-william and handles types accordingly.
-func (b *Bridge) RecieveData(code string, fileName chan string, w *fyne.Window) error {
+func (b *Bridge) RecieveData(code string, fileName chan string, a fyne.App) error {
 	c := wormhole.Client{PassPhraseComponentLength: b.ComponentLength}
 
 	msg, err := c.Receive(context.Background(), code)
@@ -22,40 +37,34 @@ func (b *Bridge) RecieveData(code string, fileName chan string, w *fyne.Window) 
 		return err
 	}
 
-	text, err := ioutil.ReadAll(msg)
-	if err != nil {
-		fyne.LogError("Error on reading received data", err)
-		return err
-	}
-
-	if msg.Type == wormhole.TransferText {
-		textEntry := widget.NewMultiLineEntry()
-		textEntry.SetText(string(text))
-		fileName <- "Text Snippet"
-
-		dialog.ShowCustom("Received text", "Close", textEntry, *w)
-		return nil
-	}
-
-	fileName <- msg.Name
-
-	f, err := os.Create(path.Join(b.DownloadPath, msg.Name))
-	if err != nil {
-		fyne.LogError("Error on creating file", err)
-		return err
-	}
-
-	_, err = f.Write(text)
-	if err != nil {
-		if err2 := f.Close(); err2 != nil {
-			fyne.LogError("Error on writing and closing the file", err)
+	switch msg.Type {
+	case wormhole.TransferText:
+		content, err := ioutil.ReadAll(msg)
+		if err != nil {
+			fyne.LogError("Error on reading received data", err)
 			return err
 		}
 
-		fyne.LogError("Error on writing data to the file", err)
-		return err
+		displayRecievedText(a, string(content))
 
+		fileName <- "Text Snippet"
+	case wormhole.TransferFile:
+		file, err := os.Create(path.Join(b.DownloadPath, msg.Name))
+		if err != nil {
+			fyne.LogError("Error on creating file", err)
+			return err
+		}
+
+		_, err = io.Copy(file, ioutil.NopCloser(msg))
+		if err != nil {
+			fyne.LogError("Error on copying contents to file", err)
+			return err
+		}
+
+		fileName <- msg.Name
+	case wormhole.TransferDirectory:
+		// Directories are currently not supported.
 	}
 
-	return f.Close()
+	return nil
 }

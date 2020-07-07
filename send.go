@@ -31,7 +31,10 @@ func (ad *appData) sendTab() *widget.TabItem {
 
 			dialog.ShowFileOpen(func(file fyne.URIReadCloser, err error) {
 				if err != nil {
-					fyne.LogError("Error on picking the file", err)
+					fyne.LogError("Error on selecting file to send", err)
+					dialog.ShowError(err, ad.Window)
+					return
+				} else if file == nil {
 					return
 				}
 
@@ -61,43 +64,40 @@ func (ad *appData) sendTab() *widget.TabItem {
 		}()
 	}
 
-	textEntry := widget.NewMultiLineEntry()
-	textEntry.SetPlaceHolder("Enter text to send")
-
 	textChoice.OnTapped = func() {
 		go func() {
 			contentPicker.Hide()
-			textEntry.SetText("")
+			text := make(chan string)
 
-			dialog.ShowCustomConfirm("Text to send", "Send", "Cancel", textEntry, func(send bool) {
-				if send {
-					text := textEntry.Text
+			ad.Bridge.EnterSendText(ad.App, text)
+			t := <-text
 
-					var once sync.Once
-					progress := widget.NewProgressBar()
-					update := wormhole.WithProgress(func(sent int64, total int64) {
-						once.Do(func() { progress.Max = float64(total) })
-						progress.SetValue(float64(sent))
-					})
+			if t == "" {
+				return
+			}
 
-					code := make(chan string)
-					go func() {
-						err := ad.Bridge.SendText(text, code, update)
-						if err != nil {
-							dialog.ShowError(err, ad.Window)
-						} else if ad.Notifications {
-							ad.App.SendNotification(fyne.NewNotification("Send completed", "The sending of text completed successfully"))
-						}
+			var once sync.Once
+			progress := widget.NewProgressBar()
+			update := wormhole.WithProgress(func(sent int64, total int64) {
+				once.Do(func() { progress.Max = float64(total) })
+				progress.SetValue(float64(sent))
+			})
 
-					}()
-
-					codeLabel := widgets.NewCodeLabel(code)
-					sendGrid.AddObject(widget.NewLabel("Text Snippet"))
-					sendGrid.AddObject(codeLabel)
-					sendGrid.AddObject(progress)
+			code := make(chan string)
+			go func() {
+				err := ad.Bridge.SendText(t, code, update)
+				if err != nil {
+					dialog.ShowError(err, ad.Window)
+				} else if ad.Notifications {
+					ad.App.SendNotification(fyne.NewNotification("Send completed", "The sending of text completed successfully"))
 				}
-				textEntry.SetText("")
-			}, ad.Window)
+
+			}()
+
+			codeLabel := widgets.NewCodeLabel(code)
+			sendGrid.AddObject(widget.NewLabel("Text Snippet"))
+			sendGrid.AddObject(codeLabel)
+			sendGrid.AddObject(progress)
 		}()
 	}
 

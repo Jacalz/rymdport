@@ -35,7 +35,7 @@ func (ad *appData) recieveTab() *widget.TabItem {
 				recieveGrid.AddObject(finished)
 
 				go func() {
-					err := ad.Bridge.RecieveData(code, file, &ad.Window)
+					err := ad.Bridge.RecieveData(code, file, ad.App)
 					if err != nil {
 						finished.SetText("Failed")
 						dialog.ShowError(err, ad.Window)
