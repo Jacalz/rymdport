@@ -1,16 +1,14 @@
 package main
 
 import (
-	"sync"
-
 	"fyne.io/fyne"
 	"fyne.io/fyne/dialog"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 
+	"github.com/Jacalz/wormhole-gui/bridge"
 	"github.com/Jacalz/wormhole-gui/widgets"
-	"github.com/psanford/wormhole-william/wormhole"
 )
 
 func (ad *appData) sendTab() *widget.TabItem {
@@ -40,15 +38,10 @@ func (ad *appData) sendTab() *widget.TabItem {
 
 				code := make(chan string)
 
-				var once sync.Once
-				progress := widget.NewProgressBar()
-				update := wormhole.WithProgress(func(sent int64, total int64) {
-					once.Do(func() { progress.Max = float64(total) })
-					progress.SetValue(float64(sent))
-				})
+				progress := bridge.NewSendProgress()
 
 				go func() {
-					err = ad.Bridge.SendFile(file, code, update)
+					err = ad.Bridge.SendFile(file, code, progress.Update)
 					if err != nil {
 						dialog.ShowError(err, ad.Window)
 					} else if ad.Notifications {
@@ -59,7 +52,7 @@ func (ad *appData) sendTab() *widget.TabItem {
 				codeLabel := widgets.NewCodeLabel(code)
 				sendGrid.AddObject(widget.NewLabel(file.Name()))
 				sendGrid.AddObject(codeLabel)
-				sendGrid.AddObject(progress)
+				sendGrid.AddObject(progress.Widget)
 			}, ad.Window)
 		}()
 	}
@@ -76,16 +69,11 @@ func (ad *appData) sendTab() *widget.TabItem {
 				return
 			}
 
-			var once sync.Once
-			progress := widget.NewProgressBar()
-			update := wormhole.WithProgress(func(sent int64, total int64) {
-				once.Do(func() { progress.Max = float64(total) })
-				progress.SetValue(float64(sent))
-			})
+			progress := bridge.NewSendProgress()
 
 			code := make(chan string)
 			go func() {
-				err := ad.Bridge.SendText(t, code, update)
+				err := ad.Bridge.SendText(t, code, progress.Update)
 				if err != nil {
 					dialog.ShowError(err, ad.Window)
 				} else if ad.Notifications {
@@ -97,7 +85,7 @@ func (ad *appData) sendTab() *widget.TabItem {
 			codeLabel := widgets.NewCodeLabel(code)
 			sendGrid.AddObject(widget.NewLabel("Text Snippet"))
 			sendGrid.AddObject(codeLabel)
-			sendGrid.AddObject(progress)
+			sendGrid.AddObject(progress.Widget)
 		}()
 	}
 

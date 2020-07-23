@@ -10,7 +10,7 @@ import (
 
 // displayRecievedText handles the creation of a window for displaying text content.
 func displayRecievedText(a fyne.App, content string) {
-	w := a.NewWindow("Recieved text")
+	w := a.NewWindow("Received text")
 
 	textEntry := widget.NewMultiLineEntry()
 	textEntry.SetText(content)
