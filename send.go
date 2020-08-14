@@ -52,7 +52,7 @@ func (ad *appData) sendTab() *widget.TabItem {
 				codeLabel := widgets.NewCodeLabel(code)
 				sendGrid.AddObject(widget.NewLabel(file.Name()))
 				sendGrid.AddObject(codeLabel)
-				sendGrid.AddObject(progress.Widget)
+				sendGrid.AddObject(progress)
 			}, ad.Window)
 		}()
 	}
@@ -85,7 +85,7 @@ func (ad *appData) sendTab() *widget.TabItem {
 			codeLabel := widgets.NewCodeLabel(code)
 			sendGrid.AddObject(widget.NewLabel("Text Snippet"))
 			sendGrid.AddObject(codeLabel)
-			sendGrid.AddObject(progress.Widget)
+			sendGrid.AddObject(progress)
 		}()
 	}
 
