@@ -17,7 +17,7 @@ var validCode = regexp.MustCompile(`^\d\d?(-\w{2,12}){2,6}$`)
 
 func (ad *appData) recieveTab() *widget.TabItem {
 	codeEntry := widgets.NewPressEntry("Enter code")
-	codeButton := widget.NewButtonWithIcon("Download", theme.MoveDownIcon(), nil)
+	codeButton := widget.NewButtonWithIcon("Download", theme.DownloadIcon(), nil)
 
 	recieveGrid := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widgets.NewBoldLabel("Filename"), widgets.NewBoldLabel("Status"))
 
