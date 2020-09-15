@@ -41,10 +41,10 @@ func (b *Bridge) SendFile(file fyne.URIReadCloser, code chan string, progress wo
 }
 
 // SendText takes a text input and sends the text using wormhole-william.
-func (b *Bridge) SendText(text string, code chan string, progress wormhole.SendOption) error {
+func (b *Bridge) SendText(text string, code chan string) error {
 	c := wormhole.Client{PassPhraseComponentLength: b.ComponentLength}
 
-	codestr, status, err := c.SendText(context.Background(), text, progress)
+	codestr, status, err := c.SendText(context.Background(), text) // TODO: Check why progress doesn't work for sending text.
 	if err != nil {
 		fyne.LogError("Error on sending text", err)
 		return err

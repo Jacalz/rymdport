@@ -73,13 +73,14 @@ func (ad *appData) sendTab() *widget.TabItem {
 
 			code := make(chan string)
 			go func() {
-				err := ad.Bridge.SendText(t, code, progress.Update)
+				err := ad.Bridge.SendText(t, code)
 				if err != nil {
 					dialog.ShowError(err, ad.Window)
 				} else if ad.Notifications {
 					ad.App.SendNotification(fyne.NewNotification("Send completed", "The sending of text completed successfully"))
+				} else {
+					progress.SetValue(1)
 				}
-
 			}()
 
 			codeLabel := widgets.NewCodeLabel(code)
