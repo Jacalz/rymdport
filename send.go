@@ -45,7 +45,7 @@ func (ad *appData) sendTab() *widget.TabItem {
 					if err != nil {
 						dialog.ShowError(err, ad.Window)
 					} else if ad.Notifications {
-						ad.App.SendNotification(fyne.NewNotification("Send completed", "The sending of a file completed successfully"))
+						ad.App.SendNotification(fyne.NewNotification("Send completed", "The file was sent successfully"))
 					}
 				}()
 
