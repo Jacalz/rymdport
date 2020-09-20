@@ -45,7 +45,7 @@ func (ad *appData) recieveTab() *widget.TabItem {
 					finished.SetText("Completed")
 					dialog.ShowInformation("Successful download", "The download completed without errors.", ad.Window)
 					if ad.Notifications {
-						ad.App.SendNotification(fyne.NewNotification("Recieve completed", "The recieve completed successfully"))
+						ad.App.SendNotification(fyne.NewNotification("Receive completed", "The receive completed successfully"))
 					}
 				}()
 
