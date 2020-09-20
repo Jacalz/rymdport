@@ -11,7 +11,7 @@ import (
 	"github.com/Jacalz/wormhole-gui/assets"
 )
 
-const version string = "v1.3.0"
+const version string = "v2.0.0"
 
 func parseURL(input string) *url.URL {
 	link, err := url.Parse(input)

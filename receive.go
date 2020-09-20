@@ -4,6 +4,7 @@ import (
 	"regexp"
 
 	"fyne.io/fyne"
+	"fyne.io/fyne/data/validation"
 	"fyne.io/fyne/dialog"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
@@ -11,11 +12,10 @@ import (
 	"github.com/Jacalz/wormhole-gui/bridge/widgets"
 )
 
-// Regular expression for verifying sync code.
-var validCode = regexp.MustCompile(`^\d\d?(-\w{2,12}){2,6}$`)
-
 func (ad *appData) recieveTab() *widget.TabItem {
 	codeEntry := widgets.NewPressEntry("Enter code")
+	codeEntry.Validator = validation.Regexp{Regexp: regexp.MustCompile(`^\d\d?(-\w{2,12}){2,6}$`)}
+
 	codeButton := widget.NewButtonWithIcon("Download", theme.DownloadIcon(), nil)
 
 	recieveGrid := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widgets.NewBoldLabel("Filename"), widgets.NewBoldLabel("Status"))
@@ -23,7 +23,7 @@ func (ad *appData) recieveTab() *widget.TabItem {
 	codeButton.OnTapped = func() {
 		go func() {
 			code := codeEntry.Text
-			if validCode.MatchString(code) {
+			if err := codeEntry.Validator.Validate(code); err == nil {
 				file := make(chan string)
 				codeEntry.SetText("")
 
