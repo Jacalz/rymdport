@@ -8,8 +8,7 @@ import (
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
-
-	"github.com/Jacalz/wormhole-gui/widgets"
+	"github.com/Jacalz/wormhole-gui/bridge/widgets"
 )
 
 // Regular expression for verifying sync code.

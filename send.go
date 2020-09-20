@@ -4,11 +4,11 @@ import (
 	"fyne.io/fyne"
 	"fyne.io/fyne/dialog"
 	"fyne.io/fyne/layout"
+	"fyne.io/fyne/storage"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 
-	"github.com/Jacalz/wormhole-gui/bridge"
-	"github.com/Jacalz/wormhole-gui/widgets"
+	"github.com/Jacalz/wormhole-gui/bridge/widgets"
 )
 
 func (ad *appData) sendTab() *widget.TabItem {
@@ -21,7 +21,7 @@ func (ad *appData) sendTab() *widget.TabItem {
 	contentPicker := dialog.NewCustom("Pick a content type", "Cancel", choiceContent, ad.Window)
 	contentPicker.Hide()
 
-	sendGrid := fyne.NewContainerWithLayout(layout.NewGridLayout(3), widgets.NewBoldLabel("Filename"), widgets.NewBoldLabel("Code"), widgets.NewBoldLabel("Progress"))
+	sendList := widgets.NewProgressList()
 
 	fileChoice.OnTapped = func() {
 		go func() {
@@ -36,23 +36,16 @@ func (ad *appData) sendTab() *widget.TabItem {
 					return
 				}
 
-				code := make(chan string)
-
-				progress := bridge.NewSendProgress()
+				code := sendList.NewSendItem(file.URI())
 
 				go func() {
-					err = ad.Bridge.SendFile(file, code, progress.Update)
+					err = ad.Bridge.SendFile(file, code, sendList.Items[sendList.Length()-1].Progress.Update)
 					if err != nil {
 						dialog.ShowError(err, ad.Window)
 					} else if ad.Notifications {
 						ad.App.SendNotification(fyne.NewNotification("Send completed", "The file was sent successfully"))
 					}
 				}()
-
-				codeLabel := widgets.NewCodeLabel(code)
-				sendGrid.AddObject(widget.NewLabel(file.Name()))
-				sendGrid.AddObject(codeLabel)
-				sendGrid.AddObject(progress)
 			}, ad.Window)
 		}()
 	}
@@ -69,9 +62,8 @@ func (ad *appData) sendTab() *widget.TabItem {
 				return
 			}
 
-			progress := bridge.NewSendProgress()
+			code := sendList.NewSendItem(storage.NewURI("Text Snippet"))
 
-			code := make(chan string)
 			go func() {
 				err := ad.Bridge.SendText(t, code)
 				if err != nil {
@@ -79,14 +71,9 @@ func (ad *appData) sendTab() *widget.TabItem {
 				} else if ad.Notifications {
 					ad.App.SendNotification(fyne.NewNotification("Send completed", "The sending of text completed successfully"))
 				} else {
-					progress.SetValue(1)
+					sendList.Items[sendList.Length()-1].Progress.SetValue(1)
 				}
 			}()
-
-			codeLabel := widgets.NewCodeLabel(code)
-			sendGrid.AddObject(widget.NewLabel("Text Snippet"))
-			sendGrid.AddObject(codeLabel)
-			sendGrid.AddObject(progress)
 		}()
 	}
 
@@ -94,7 +81,9 @@ func (ad *appData) sendTab() *widget.TabItem {
 		contentPicker.Show()
 	})
 
-	sendContent := fyne.NewContainerWithLayout(layout.NewVBoxLayout(), send, widget.NewLabel(""), sendGrid)
+	box := widget.NewVBox(send, widget.NewLabel(""))
 
-	return widget.NewTabItemWithIcon("Send", theme.MailSendIcon(), widget.NewScrollContainer(sendContent))
+	sendContent := fyne.NewContainerWithLayout(layout.NewBorderLayout(box, nil, nil, nil), box, sendList)
+
+	return widget.NewTabItemWithIcon("Send", theme.MailSendIcon(), sendContent)
 }
