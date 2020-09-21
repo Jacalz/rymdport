@@ -1,8 +1,6 @@
 package widgets
 
 import (
-	"math"
-
 	"fyne.io/fyne"
 	"fyne.io/fyne/theme"
 )
@@ -10,20 +8,19 @@ import (
 type sendLayout struct{}
 
 // Get the leading (top or left) edge of a grid cell.
-func getLeading(size float64, offset int) int {
-	ret := (size + float64(theme.Padding())) * float64(offset)
-	return int(math.Round(ret))
+func getLeading(size, offset int) int {
+	return (size + theme.Padding()) * offset
 }
 
 // Get the trailing (bottom or right) edge of a grid cell.
-func getTrailing(size float64, offset int) int {
+func getTrailing(size, offset int) int {
 	return getLeading(size, offset+1) - theme.Padding()
 }
 
 // Layout is called to pack all child objects into a specified size.
 func (g *sendLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
 	padWidth := (len(objects) - 1) * theme.Padding()
-	cellWidth := float64(size.Width-padWidth-objects[0].MinSize().Width) / float64(len(objects))
+	cellWidth := (size.Width - padWidth - objects[0].MinSize().Width) / len(objects)
 
 	offset := 0
 	for i, child := range objects {
@@ -40,9 +37,9 @@ func (g *sendLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
 			child.Move(fyne.NewPos(x1, y1))
 		} else {
 			x1 = getLeading(cellWidth, i)
-			y1 = getLeading(float64(size.Height), 0)
+			y1 = getLeading(size.Height, 0)
 			x2 = getTrailing(cellWidth, i)
-			y2 = getTrailing(float64(size.Height), 0)
+			y2 = getTrailing(size.Height, 0)
 
 			if i == len(objects)-1 {
 				offset = -offset / 6
