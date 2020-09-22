@@ -12,8 +12,7 @@ import (
 func displayRecievedText(a fyne.App, content string) {
 	w := a.NewWindow("Received text")
 
-	textEntry := widget.NewMultiLineEntry()
-	textEntry.SetText(content)
+	textEntry := &widget.Entry{MultiLine: true, Text: content}
 
 	copyText := widget.NewButtonWithIcon("Copy text", theme.ContentCopyIcon(), func() {
 		fyne.CurrentApp().Driver().AllWindows()[0].Clipboard().SetContent(content)
@@ -40,39 +39,34 @@ func displayRecievedText(a fyne.App, content string) {
 	})
 
 	textContainer := widget.NewScrollContainer(textEntry)
-	textContainer.SetMinSize(fyne.NewSize(400, 400))
-
 	actionContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), copyText, saveFile)
 
-	w.SetContent(fyne.NewContainerWithLayout(layout.NewVBoxLayout(), textContainer, actionContainer))
+	w.Resize(fyne.NewSize(400, 300))
+	w.SetContent(fyne.NewContainerWithLayout(layout.NewBorderLayout(nil, actionContainer, nil, nil), actionContainer, textContainer))
 	w.Show()
 }
 
 // EnterSendText opens a new window for setting up text to send.
 func (b *Bridge) EnterSendText(a fyne.App, text chan string) {
-	w := a.NewWindow("Enter text to send")
+	w := a.NewWindow("Send text")
 
 	textEntry := widget.NewMultiLineEntry()
-	textContainer := widget.NewScrollContainer(textEntry)
-	textContainer.SetMinSize(fyne.NewSize(400, 400))
-
 	w.Canvas().Focus(textEntry)
 
 	cancel := widget.NewButtonWithIcon("Cancel", theme.CancelIcon(), func() {
-		textEntry.Text = ""
+		text <- ""
 		w.Close()
 	})
 
 	send := widget.NewButtonWithIcon("Send", theme.MailSendIcon(), func() {
+		text <- textEntry.Text
 		w.Close()
 	})
 
-	w.SetOnClosed(func() {
-		text <- textEntry.Text
-	})
-
+	textContainer := widget.NewScrollContainer(textEntry)
 	actionContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), cancel, send)
 
-	w.SetContent(fyne.NewContainerWithLayout(layout.NewVBoxLayout(), textContainer, actionContainer))
+	w.Resize(fyne.NewSize(400, 300))
+	w.SetContent(fyne.NewContainerWithLayout(layout.NewBorderLayout(nil, actionContainer, nil, nil), actionContainer, textContainer))
 	w.Show()
 }
