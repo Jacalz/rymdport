@@ -7,50 +7,39 @@ import (
 
 type sendLayout struct{}
 
-// Get the leading (top or left) edge of a grid cell.
-func getLeading(size, offset int) int {
-	return (size + theme.Padding()) * offset
-}
-
-// Get the trailing (bottom or right) edge of a grid cell.
-func getTrailing(size, offset int) int {
-	return getLeading(size, offset+1) - theme.Padding()
-}
-
 // Layout is called to pack all child objects into a specified size.
 func (g *sendLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
 	padWidth := (len(objects) - 1) * theme.Padding()
-	cellWidth := (size.Width - padWidth - objects[0].MinSize().Width) / len(objects)
+	cellWidth := (size.Width - padWidth - objects[0].MinSize().Width) / (len(objects) - 1)
 
-	offset := 0
+	y2 := size.Height
+
+	oldx, newx := 0, y2
 	for i, child := range objects {
 		if !child.Visible() {
 			continue
 		}
 
-		x1, y1, x2, y2 := 0, 0, 0, 0
-		if i == 0 {
-			x2 = size.Height + theme.Padding()
-			y2 = x2
-			offset = x2 * 2
-
-			child.Move(fyne.NewPos(x1, y1))
-		} else {
-			x1 = getLeading(cellWidth, i)
-			y1 = getLeading(size.Height, 0)
-			x2 = getTrailing(cellWidth, i)
-			y2 = getTrailing(size.Height, 0)
-
-			if i == len(objects)-1 {
-				offset = -offset / 6
+		if i != 0 {
+			if i == 1 {
+				oldx += newx + theme.Padding()
+			} else {
+				oldx += cellWidth + theme.Padding()
 			}
 
-			child.Move(fyne.NewPos(x1-offset, y1))
+			newx = oldx + cellWidth
+
+			child.Move(fyne.NewPos(oldx, 0))
+		} else {
+			newx = size.Height + theme.Padding()
+			child.Move(fyne.NewPos(0, 0))
 		}
 
-		// TODO: Make sure to make cell larger if cellWidth < minSize
+		if child.MinSize().Width > cellWidth {
+			oldx += (child.MinSize().Width - cellWidth)
+		}
 
-		child.Resize(fyne.NewSize(x2-x1, y2-y1))
+		child.Resize(fyne.NewSize(newx-oldx, y2))
 	}
 }
 
