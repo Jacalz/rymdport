@@ -59,7 +59,9 @@ func (ad *appData) settingsTab() *widget.TabItem {
 	slider := widget.NewSlider(2.0, 6.0)
 	slider.OnChanged = func(value float64) {
 		ad.Bridge.ComponentLength = int(value)
+		ad.App.Preferences().SetInt("ComponentLength", ad.Bridge.ComponentLength)
 	}
+	slider.Value = float64(ad.App.Preferences().IntWithFallback("ComponentLength", 2))
 
 	wormholeSettingsContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widget.NewLabel("Passphrase Length"), slider)
 	wormholeGroup := widget.NewGroup("Wormhole Parameters", wormholeSettingsContainer)
