@@ -51,7 +51,6 @@ func (b *Bridge) EnterSendText(a fyne.App, text chan string) {
 	w := a.NewWindow("Send text")
 
 	textEntry := widget.NewMultiLineEntry()
-	w.Canvas().Focus(textEntry)
 
 	cancel := widget.NewButtonWithIcon("Cancel", theme.CancelIcon(), func() {
 		text <- ""
@@ -68,5 +67,6 @@ func (b *Bridge) EnterSendText(a fyne.App, text chan string) {
 
 	w.Resize(fyne.NewSize(400, 300))
 	w.SetContent(fyne.NewContainerWithLayout(layout.NewBorderLayout(nil, actionContainer, nil, nil), actionContainer, textContainer))
+	w.Canvas().Focus(textEntry)
 	w.Show()
 }
