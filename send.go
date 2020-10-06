@@ -16,7 +16,7 @@ func (ad *appData) sendTab() *widget.TabItem {
 	textChoice := widget.NewButtonWithIcon("Text", theme.DocumentCreateIcon(), nil)
 	// TODO: Add support for sending directories when fyne supports it in the file picker.
 
-	choiceContent := widget.NewVBox(fileChoice, textChoice)
+	choiceContent := fyne.NewContainerWithLayout(layout.NewGridLayout(1), fileChoice, textChoice)
 
 	contentPicker := dialog.NewCustom("Pick a content type", "Cancel", choiceContent, ad.Window)
 	contentPicker.Hide()
