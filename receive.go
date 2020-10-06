@@ -1,8 +1,6 @@
 package main
 
 import (
-	"regexp"
-
 	"fyne.io/fyne"
 	"fyne.io/fyne/data/validation"
 	"fyne.io/fyne/dialog"
@@ -14,7 +12,7 @@ import (
 
 func (ad *appData) recieveTab() *widget.TabItem {
 	codeEntry := widgets.NewPressEntry("Enter code")
-	codeEntry.Validator = validation.Regexp{Regexp: regexp.MustCompile(`^\d\d?(-\w{2,12}){2,6}$`)}
+	codeEntry.Validator = validation.NewRegexp(`^\d\d?(-\w{2,12}){2,6}$`, "Invalid code")
 
 	codeButton := widget.NewButtonWithIcon("Download", theme.DownloadIcon(), nil)
 
@@ -23,7 +21,7 @@ func (ad *appData) recieveTab() *widget.TabItem {
 	codeButton.OnTapped = func() {
 		go func() {
 			code := codeEntry.Text
-			if err := codeEntry.Validator.Validate(code); err == nil {
+			if err := codeEntry.Validator(code); err == nil {
 				file := make(chan string)
 				codeEntry.SetText("")
 

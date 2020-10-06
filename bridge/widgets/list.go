@@ -26,12 +26,12 @@ func (p *ProgressList) Length() int {
 
 // CreateItem creates a new item in the list.
 func (p *ProgressList) CreateItem() fyne.CanvasObject {
-	return fyne.NewContainerWithLayout(newSendLayout(), widget.NewIcon(nil), widget.NewLabel("Waiting for filename..."), newCodeDisplay(), NewSendProgress())
+	return fyne.NewContainerWithLayout(newSendLayout(), widget.NewFileIcon(nil), widget.NewLabel("Waiting for filename..."), newCodeDisplay(), NewSendProgress())
 }
 
 // UpdateItem updates the data in the list.
 func (p *ProgressList) UpdateItem(i int, item fyne.CanvasObject) {
-	item.(*fyne.Container).Objects[0].(*widget.Icon).SetResource(iconFromURI(p.Items[i].URI))
+	item.(*fyne.Container).Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
 	item.(*fyne.Container).Objects[1].(*widget.Label).SetText(p.Items[i].URI.Name())
 	item.(*fyne.Container).Objects[2].(*fyne.Container).Objects[0].(*CodeDisplay).waitForCode(p.Items[i].Code)
 	p.Items[i].Progress = item.(*fyne.Container).Objects[3].(*SendProgress)
