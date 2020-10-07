@@ -2,8 +2,11 @@ package widgets
 
 import (
 	"fyne.io/fyne"
+	"fyne.io/fyne/dialog"
 	"fyne.io/fyne/widget"
 )
+
+var emptyItem = &SendItem{}
 
 // SendItem is the item that is being sent.
 type SendItem struct {
@@ -37,6 +40,24 @@ func (p *ProgressList) UpdateItem(i int, item fyne.CanvasObject) {
 	p.Items[i].Progress = item.(*fyne.Container).Objects[3].(*SendProgress)
 }
 
+// OnItemSelected handles removing items and stopping send (in the future)
+func (p *ProgressList) OnItemSelected(i int) {
+	if p.Items[i].Progress.Value != p.Items[i].Progress.Max { // TODO: Stop the send instead.
+		return // We can't stop running sends due to bug in wormhole-gui.
+	}
+
+	dialog.ShowConfirm("Remove from list", "Do you wish to remove the item from the list?", func(remove bool) {
+		if remove {
+			// Make sure that GC run on removed element
+			copy(p.Items[i:], p.Items[i+1:])
+			p.Items[p.Length()-1] = *emptyItem
+			p.Items = p.Items[:p.Length()-1]
+
+			p.Refresh()
+		}
+	}, fyne.CurrentApp().Driver().AllWindows()[0])
+}
+
 // NewSendItem adds data about a new send to the list and then returns the channel to update the code.
 func (p *ProgressList) NewSendItem(URI fyne.URI) chan string {
 	p.Items = append(p.Items, SendItem{Progress: NewSendProgress(), URI: URI, Code: make(chan string)})
@@ -51,6 +72,7 @@ func NewProgressList() *ProgressList {
 	p.List.Length = p.Length
 	p.List.CreateItem = p.CreateItem
 	p.List.UpdateItem = p.UpdateItem
+	p.List.OnItemSelected = p.OnItemSelected
 	p.ExtendBaseWidget(p)
 
 	return p
