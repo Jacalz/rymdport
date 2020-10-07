@@ -5,6 +5,7 @@ import (
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/canvas"
+	"fyne.io/fyne/container"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
@@ -22,7 +23,7 @@ func parseURL(input string) *url.URL {
 	return link
 }
 
-func aboutTab() *widget.TabItem {
+func aboutTab() *container.TabItem {
 	logo := canvas.NewImageFromResource(assets.AppIcon)
 	logo.SetMinSize(fyne.NewSize(256, 256))
 

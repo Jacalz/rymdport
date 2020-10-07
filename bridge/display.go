@@ -2,6 +2,7 @@ package bridge
 
 import (
 	"fyne.io/fyne"
+	"fyne.io/fyne/container"
 	"fyne.io/fyne/dialog"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
@@ -38,7 +39,7 @@ func displayRecievedText(a fyne.App, content string) {
 		}()
 	})
 
-	textContainer := widget.NewScrollContainer(textEntry)
+	textContainer := container.NewScroll(textEntry)
 	actionContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), copyText, saveFile)
 
 	w.Resize(fyne.NewSize(400, 300))
@@ -62,7 +63,7 @@ func (b *Bridge) EnterSendText(a fyne.App, text chan string) {
 		w.Close()
 	})
 
-	textContainer := widget.NewScrollContainer(textEntry)
+	textContainer := container.NewScroll(textEntry)
 	actionContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), cancel, send)
 
 	w.Resize(fyne.NewSize(400, 300))

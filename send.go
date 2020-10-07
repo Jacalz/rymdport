@@ -2,6 +2,7 @@ package main
 
 import (
 	"fyne.io/fyne"
+	"fyne.io/fyne/container"
 	"fyne.io/fyne/dialog"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/storage"
@@ -11,7 +12,7 @@ import (
 	"github.com/Jacalz/wormhole-gui/bridge/widgets"
 )
 
-func (ad *appData) sendTab() *widget.TabItem {
+func (ad *appData) sendTab() *container.TabItem {
 	fileChoice := widget.NewButtonWithIcon("File", theme.FileIcon(), nil)
 	textChoice := widget.NewButtonWithIcon("Text", theme.DocumentCreateIcon(), nil)
 	// TODO: Add support for sending directories when fyne supports it in the file picker.

@@ -2,15 +2,17 @@ package main
 
 import (
 	"fyne.io/fyne"
+	"fyne.io/fyne/container"
 	"fyne.io/fyne/data/validation"
 	"fyne.io/fyne/dialog"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
+
 	"github.com/Jacalz/wormhole-gui/bridge/widgets"
 )
 
-func (ad *appData) recieveTab() *widget.TabItem {
+func (ad *appData) recieveTab() *container.TabItem {
 	codeEntry := widgets.NewPressEntry("Enter code")
 	codeEntry.Validator = validation.NewRegexp(`^\d\d?(-\w{2,12}){2,6}$`, "Invalid code")
 
@@ -26,10 +28,10 @@ func (ad *appData) recieveTab() *widget.TabItem {
 				codeEntry.SetText("")
 
 				filename := widget.NewLabel("Waiting for filename")
-				recieveGrid.AddObject(filename)
+				recieveGrid.Add(filename)
 
 				finished := widget.NewLabel("Waiting for status")
-				recieveGrid.AddObject(finished)
+				recieveGrid.Add(finished)
 
 				go func() {
 					err := ad.Bridge.RecieveData(code, file, ad.App)

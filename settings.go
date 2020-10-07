@@ -4,13 +4,15 @@ import (
 	"path"
 
 	"fyne.io/fyne"
+	"fyne.io/fyne/container"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
+
 	"github.com/Jacalz/wormhole-gui/bridge"
 )
 
-func (ad *appData) settingsTab() *widget.TabItem {
+func (ad *appData) settingsTab() *container.TabItem {
 	themeSwitcher := widget.NewSelect([]string{"Light", "Dark"}, func(selected string) {
 		switch selected {
 		case "Light":
@@ -66,7 +68,7 @@ func (ad *appData) settingsTab() *widget.TabItem {
 	wormholeSettingsContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widget.NewLabel("Passphrase Length"), slider)
 	wormholeGroup := widget.NewGroup("Wormhole Parameters", wormholeSettingsContainer)
 
-	settingsContent := widget.NewScrollContainer(fyne.NewContainerWithLayout(layout.NewVBoxLayout(), interfaceGroup, layout.NewSpacer(), dataGroup, layout.NewSpacer(), wormholeGroup))
+	settingsContent := container.NewScroll(fyne.NewContainerWithLayout(layout.NewVBoxLayout(), interfaceGroup, layout.NewSpacer(), dataGroup, layout.NewSpacer(), wormholeGroup))
 
 	return widget.NewTabItemWithIcon("Settings", theme.SettingsIcon(), settingsContent)
 }
