@@ -12,19 +12,22 @@ import (
 	"github.com/Jacalz/wormhole-gui/bridge"
 )
 
-func (ad *appData) settingsTab() *container.TabItem {
-	themeSwitcher := widget.NewSelect([]string{"Light", "Dark"}, func(selected string) {
-		switch selected {
-		case "Light":
-			ad.App.Settings().SetTheme(theme.LightTheme())
-		case "Dark":
-			ad.App.Settings().SetTheme(theme.DarkTheme())
-		}
+func checkTheme(themec string, a fyne.App) string {
+	switch themec {
+	case "Light":
+		a.Settings().SetTheme(theme.LightTheme())
+	case "Dark":
+		a.Settings().SetTheme(theme.DarkTheme())
+	}
 
-		// Set the theme to the selected one and save it using the preferences api in fyne.
-		ad.App.Preferences().SetString("Theme", selected)
+	return themec
+}
+
+func (ad *appData) settingsTab() *container.TabItem {
+	themeSwitcher := widget.NewSelect([]string{"Adaptive (requires restart)", "Light", "Dark"}, func(selected string) {
+		ad.App.Preferences().SetString("Theme", checkTheme(selected, ad.App))
 	})
-	themeSwitcher.SetSelected(ad.App.Preferences().StringWithFallback("Theme", "Light"))
+	themeSwitcher.SetSelected(ad.App.Preferences().StringWithFallback("Theme", "Adaptive (requires restart)"))
 
 	interfaceSettingsContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widget.NewLabel("Application Theme"), themeSwitcher)
 

@@ -40,8 +40,8 @@ func (p *ProgressList) UpdateItem(i int, item fyne.CanvasObject) {
 	p.Items[i].Progress = item.(*fyne.Container).Objects[3].(*SendProgress)
 }
 
-// OnItemSelected handles removing items and stopping send (in the future)
-func (p *ProgressList) OnItemSelected(i int) {
+// OnSelectionChanged handles removing items and stopping send (in the future)
+func (p *ProgressList) OnSelectionChanged(i int) {
 	if p.Items[i].Progress.Value != p.Items[i].Progress.Max { // TODO: Stop the send instead.
 		return // We can't stop running sends due to bug in wormhole-gui.
 	}
@@ -72,7 +72,7 @@ func NewProgressList() *ProgressList {
 	p.List.Length = p.Length
 	p.List.CreateItem = p.CreateItem
 	p.List.UpdateItem = p.UpdateItem
-	p.List.OnItemSelected = p.OnItemSelected
+	p.List.OnSelectionChanged = p.OnSelectionChanged
 	p.ExtendBaseWidget(p)
 
 	return p

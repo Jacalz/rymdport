@@ -3,7 +3,6 @@ package main
 import (
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
-	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 
 	"github.com/Jacalz/wormhole-gui/assets"
@@ -29,12 +28,7 @@ func main() {
 	ad.App.SetIcon(assets.AppIcon)
 	ad.Window = ad.App.NewWindow("wormhole-gui")
 
-	switch ad.App.Preferences().StringWithFallback("Theme", "Light") {
-	case "Light":
-		ad.App.Settings().SetTheme(theme.LightTheme())
-	case "Dark":
-		ad.App.Settings().SetTheme(theme.DarkTheme())
-	}
+	checkTheme(ad.App.Preferences().StringWithFallback("Theme", "Adaptive (requires restart)"), ad.App)
 
 	ad.Window.SetContent(widget.NewTabContainer(ad.sendTab(), ad.recieveTab(), ad.settingsTab(), aboutTab()))
 	ad.Window.Resize(fyne.NewSize(600, 400))
