@@ -21,10 +21,6 @@ install:
 	install -Dm00644 assets/icon-512.png $(DESTDIR)$(PREFIX)/share/pixmaps/$(NAME).png
 	install -Dm00644 assets/$(NAME).desktop $(DESTDIR)$(PREFIX)/share/applications/$(NAME).desktop
 
-bundle:
-	# Bundle the correct logo into sparta/src/bundled/bundled.go
-	$(GOBIN)fyne bundle -package assets -name AppIcon assets/icon-512.png > assets/bundled.go
-
 check:
 	# Check the whole codebase for misspellings.
 	$(GOBIN)misspell -w .

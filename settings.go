@@ -9,7 +9,7 @@ import (
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 
-	"github.com/Jacalz/wormhole-gui/bridge"
+	"github.com/Jacalz/wormhole-gui/internal/bridge"
 )
 
 func checkTheme(themec string, a fyne.App) string {

@@ -5,8 +5,8 @@ import (
 	"fyne.io/fyne/app"
 	"fyne.io/fyne/widget"
 
-	"github.com/Jacalz/wormhole-gui/assets"
-	"github.com/Jacalz/wormhole-gui/bridge"
+	"github.com/Jacalz/wormhole-gui/internal/assets"
+	"github.com/Jacalz/wormhole-gui/internal/bridge"
 )
 
 type appData struct {

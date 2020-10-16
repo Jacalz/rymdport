@@ -9,7 +9,7 @@ import (
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 
-	"github.com/Jacalz/wormhole-gui/bridge/widgets"
+	"github.com/Jacalz/wormhole-gui/internal/bridge/widgets"
 )
 
 func (ad *appData) sendTab() *container.TabItem {

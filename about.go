@@ -9,7 +9,7 @@ import (
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
-	"github.com/Jacalz/wormhole-gui/assets"
+	"github.com/Jacalz/wormhole-gui/internal/assets"
 )
 
 const version string = "v2.0.0"
