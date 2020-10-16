@@ -21,7 +21,7 @@ Wormhole-gui compiles into a statically linked binary with no runtime dependenci
 ## Downloads
 
 Please visit the [release page](https://github.com/Jacalz/wormhole-gui/releases) for downloading the latest releases.
-Versions for Linux, MacOS and Windows on the x86-64 architecture are currently available. Support for ARM64 and BSD systems might come in the future.
+Versions for Linux, FreeBSD, MacOS and Windows on the `x86-64` and `arm64` (MacOS on `arm64` is not yet supported) architectures are currently available.
 
 ## Building
 
@@ -30,7 +30,7 @@ Systems that have a recent [Go](https://golang.org) compiler and the [required p
 go build 
 ```
 
-The project can also be built and installed using GNU Make (installing is only supported on Linux currently):
+The project can also be built and installed using GNU Make (installing is currently only supported on Linux and BSD):
 ```bash
 make
 sudo make install
