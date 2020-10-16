@@ -3,11 +3,11 @@
 Wormhole-gui is a graphical interface for magic-wormhole. It uses the Go implementation [wormhole-william](https://github.com/psanford/wormhole-william) along with [fyne](https://github.com/fyne-io/fyne) for the graphical interface. The initial version was built in less than one day to show how quick and easy it is to use fyne for developing applications. The application has since developed into a more feature-full cross-platform application for sharing files and text between devices on the local network. 
 
 <p align="center">
-  <img src="assets/screenshot.png" />
+  <img src="internal/assets/screenshot.png" />
 </p>
 
 It is built using the following Go modules:
-- [fyne](https://github.com/fyne-io/fyne) (version 1.3.3 or later)
+- [fyne](https://github.com/fyne-io/fyne) (version 1.4.0 or later)
 - [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.4 or later)
 
 ## Future work
