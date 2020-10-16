@@ -16,14 +16,12 @@ func (ad *appData) recieveTab() *container.TabItem {
 	codeEntry := widgets.NewPressEntry("Enter code")
 	codeEntry.Validator = validation.NewRegexp(`^\d\d?(-\w{2,12}){2,6}$`, "Invalid code")
 
-	codeButton := widget.NewButtonWithIcon("Download", theme.DownloadIcon(), nil)
-
 	recieveGrid := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widgets.NewBoldLabel("Filename"), widgets.NewBoldLabel("Status"))
 
-	codeButton.OnTapped = func() {
+	codeButton := widget.NewButtonWithIcon("Download", theme.DownloadIcon(), func() {
 		go func() {
 			code := codeEntry.Text
-			if err := codeEntry.Validator(code); err == nil {
+			if err := codeEntry.Validate(); err == nil {
 				file := make(chan string)
 				codeEntry.SetText("")
 
@@ -51,12 +49,10 @@ func (ad *appData) recieveTab() *container.TabItem {
 				go filename.SetText(<-file)
 			}
 		}()
-	}
-
+	})
 	codeEntry.OnReturn = codeButton.OnTapped
 
 	codeContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), codeEntry, codeButton)
-
 	recieveContent := fyne.NewContainerWithLayout(layout.NewVBoxLayout(), codeContainer, widget.NewLabel(""), recieveGrid)
 
 	return widget.NewTabItemWithIcon("Receive", theme.MoveDownIcon(), recieveContent)
