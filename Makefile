@@ -6,20 +6,19 @@ NAME = wormhole-gui
 # Default path to the go binary directory.
 GOBIN ?= ~/go/bin/
 
-# If PREFIX isn't provided, we check for /usr/local and use that if it exists. Otherwice we fall back to using /usr.
-ifneq ("$(wildcard /usr/local)","")
-PREFIX ?= /usr/local
-else
-PREFIX ?= /usr
-endif
+# If PREFIX isn't provided, we check for $(DESTDIR)/usr/local and use that if it exists.
+# Otherwice we fall back to using /usr.
+LOCAL != test -d $(DESTDIR)/usr/local && echo -n "/local" || echo -n ""
+LOCAL ?= $(shell test -d $(DESTDIR)/usr/local && echo "/local" || echo "")
+PREFIX ?= /usr$(LOCAL)
 
 build:
 	go build -o $(NAME)
 
 install:
 	install -Dm00755 $(NAME) $(DESTDIR)$(PREFIX)/bin/$(NAME)
-	install -Dm00644 assets/icon-512.png $(DESTDIR)$(PREFIX)/share/pixmaps/$(NAME).png
-	install -Dm00644 assets/$(NAME).desktop $(DESTDIR)$(PREFIX)/share/applications/$(NAME).desktop
+	install -Dm00644 internal/assets/icon/icon-512.png $(DESTDIR)$(PREFIX)/share/pixmaps/$(NAME).png
+	install -Dm00644 internal/assets/$(NAME).desktop $(DESTDIR)$(PREFIX)/share/applications/$(NAME).desktop
 
 check:
 	# Check the whole codebase for misspellings.
