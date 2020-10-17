@@ -5,10 +5,10 @@ import (
 	"fyne.io/fyne/theme"
 )
 
-type sendLayout struct{}
+type listLayout struct{}
 
 // Layout is called to pack all child objects into a specified size.
-func (g *sendLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
+func (g *listLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
 	padWidth := (len(objects) - 1) * theme.Padding()
 	cellWidth := (size.Width - padWidth - objects[0].MinSize().Width) / (len(objects) - 1)
 
@@ -44,7 +44,7 @@ func (g *sendLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
 }
 
 // MinSize finds the smallest size that satisfies all the child objects.
-func (g *sendLayout) MinSize(objects []fyne.CanvasObject) fyne.Size {
+func (g *listLayout) MinSize(objects []fyne.CanvasObject) fyne.Size {
 	len := len(objects)
 	minSize := fyne.NewSize(0, 0)
 	for _, child := range objects {
@@ -61,6 +61,6 @@ func (g *sendLayout) MinSize(objects []fyne.CanvasObject) fyne.Size {
 
 // newSendLayout creates a grid that keep all element in one long grid.
 // The first object will be an icon and the rest will be equally sized according to the given size.
-func newSendLayout() fyne.Layout {
-	return &sendLayout{}
+func newListLayout() fyne.Layout {
+	return &listLayout{}
 }

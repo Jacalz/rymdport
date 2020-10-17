@@ -16,44 +16,36 @@ func (ad *appData) recieveTab() *container.TabItem {
 	codeEntry := widgets.NewPressEntry("Enter code")
 	codeEntry.Validator = validation.NewRegexp(`^\d\d?(-\w{2,12}){2,6}$`, "Invalid code")
 
-	recieveGrid := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widgets.NewBoldLabel("Filename"), widgets.NewBoldLabel("Status"))
+	recvList := widgets.NewRecvList()
 
 	codeButton := widget.NewButtonWithIcon("Download", theme.DownloadIcon(), func() {
-		go func() {
-			code := codeEntry.Text
+		go func(code string) {
 			if err := codeEntry.Validate(); err == nil {
-				file := make(chan string)
+				filename, status := recvList.NewRecvItem()
 				codeEntry.SetText("")
 
-				filename := widget.NewLabel("Waiting for filename")
-				recieveGrid.Add(filename)
-
-				finished := widget.NewLabel("Waiting for status")
-				recieveGrid.Add(finished)
-
 				go func() {
-					err := ad.Bridge.RecieveData(code, file, ad.App)
+					err := ad.Bridge.RecieveData(code, filename, ad.App)
 					if err != nil {
-						finished.SetText("Failed")
+						status <- "Failed"
 						dialog.ShowError(err, ad.Window)
 						return
 					}
 
-					finished.SetText("Completed")
+					status <- "Completed"
 					dialog.ShowInformation("Successful download", "The download completed without errors.", ad.Window)
+
 					if ad.Notifications {
 						ad.App.SendNotification(fyne.NewNotification("Receive completed", "The receive completed successfully"))
 					}
 				}()
-
-				go filename.SetText(<-file)
 			}
-		}()
+		}(codeEntry.Text)
 	})
 	codeEntry.OnReturn = codeButton.OnTapped
 
-	codeContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), codeEntry, codeButton)
-	recieveContent := fyne.NewContainerWithLayout(layout.NewVBoxLayout(), codeContainer, widget.NewLabel(""), recieveGrid)
+	box := widget.NewVBox(container.NewGridWithColumns(2, codeEntry, codeButton), widget.NewLabel(""))
+	recvContent := fyne.NewContainerWithLayout(layout.NewBorderLayout(box, nil, nil, nil), box, recvList)
 
-	return widget.NewTabItemWithIcon("Receive", theme.MoveDownIcon(), recieveContent)
+	return widget.NewTabItemWithIcon("Receive", theme.MoveDownIcon(), recvContent)
 }

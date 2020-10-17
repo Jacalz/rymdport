@@ -22,7 +22,7 @@ func (ad *appData) sendTab() *container.TabItem {
 	contentPicker := dialog.NewCustom("Pick a content type", "Cancel", choiceContent, ad.Window)
 	contentPicker.Hide()
 
-	sendList := widgets.NewProgressList()
+	sendList := widgets.NewSendList()
 
 	fileChoice.OnTapped = func() {
 		go func() {
