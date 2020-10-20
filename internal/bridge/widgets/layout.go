@@ -5,6 +5,8 @@ import (
 	"fyne.io/fyne/theme"
 )
 
+var maxMinSizeHeight int // Keeping all instances of the list layout consistent in height
+
 type listLayout struct{}
 
 // Layout is called to pack all child objects into a specified size.
@@ -29,7 +31,8 @@ func (g *listLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
 
 			newx = oldx + cellWidth
 
-			child.Move(fyne.NewPos(oldx, 0))
+			child.Move(fyne.NewPos(oldx, 0)) // TODO: Make sure that labels are centered
+
 		} else {
 			newx = size.Height + theme.Padding()
 			child.Move(fyne.NewPos(0, 0))
@@ -44,23 +47,16 @@ func (g *listLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
 }
 
 // MinSize finds the smallest size that satisfies all the child objects.
+// Height will stay consistent between each each instance.
 func (g *listLayout) MinSize(objects []fyne.CanvasObject) fyne.Size {
-	len := len(objects)
-	minSize := fyne.NewSize(0, 0)
+	len := len(objects) - 1
+	maxMinSizeWidth := 0
 	for _, child := range objects {
-		if !child.Visible() {
-			continue
+		if child.Visible() {
+			maxMinSizeWidth = fyne.Max(child.MinSize().Width, maxMinSizeWidth)
+			maxMinSizeHeight = fyne.Max(child.MinSize().Height, maxMinSizeHeight)
 		}
-
-		minSize = minSize.Max(child.MinSize())
 	}
 
-	minContentSize := fyne.NewSize(minSize.Width*len, minSize.Height)
-	return minContentSize.Add(fyne.NewSize(theme.Padding()*fyne.Max(len-1, 0), 0))
-}
-
-// newSendLayout creates a grid that keep all element in one long grid.
-// The first object will be an icon and the rest will be equally sized according to the given size.
-func newListLayout() fyne.Layout {
-	return &listLayout{}
+	return fyne.NewSize((maxMinSizeWidth+theme.Padding())*len, maxMinSizeHeight+2*theme.Padding())
 }

@@ -29,7 +29,7 @@ func (p *SendList) Length() int {
 
 // CreateItem creates a new item in the list.
 func (p *SendList) CreateItem() fyne.CanvasObject {
-	return fyne.NewContainerWithLayout(newListLayout(), widget.NewFileIcon(nil), widget.NewLabel("Waiting for filename..."), newCodeDisplay(), NewSendProgress())
+	return fyne.NewContainerWithLayout(&listLayout{}, widget.NewFileIcon(nil), widget.NewLabel("Waiting for filename..."), newCodeDisplay(), NewSendProgress())
 }
 
 // UpdateItem updates the data in the list.

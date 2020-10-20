@@ -31,6 +31,6 @@ func main() {
 	checkTheme(ad.App.Preferences().StringWithFallback("Theme", "Adaptive (requires restart)"), ad.App)
 
 	ad.Window.SetContent(widget.NewTabContainer(ad.sendTab(), ad.recieveTab(), ad.settingsTab(), aboutTab()))
-	ad.Window.Resize(fyne.NewSize(600, 400))
+	ad.Window.Resize(fyne.NewSize(700, 400))
 	ad.Window.ShowAndRun()
 }

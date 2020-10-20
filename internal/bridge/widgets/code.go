@@ -36,7 +36,7 @@ func (c *CodeDisplay) waitForCode(code chan string) {
 }
 
 func newCodeDisplay() *fyne.Container {
-	c := &CodeDisplay{button: widget.NewButtonWithIcon("", theme.ContentCopyIcon(), nil)}
+	c := &CodeDisplay{button: &widget.Button{Icon: theme.ContentCopyIcon(), Importance: widget.LowImportance}}
 	c.ExtendBaseWidget(c)
 
 	c.SetText("Waiting for code...")
