@@ -58,10 +58,10 @@ func (b *Bridge) EnterSendText(a fyne.App, text chan string) {
 		w.Close()
 	})
 
-	send := widget.NewButtonWithIcon("Send", theme.MailSendIcon(), func() {
+	send := &widget.Button{Text: "Send", Icon: theme.MailSendIcon(), OnTapped: func() {
 		text <- textEntry.Text
 		w.Close()
-	})
+	}, Importance: widget.HighImportance}
 
 	textContainer := container.NewScroll(textEntry)
 	actionContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), cancel, send)
