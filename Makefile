@@ -1,6 +1,6 @@
 # Constants for cross compilation and packaging.
 APPID = com.github.jacalz.wormhole-gui
-ICON = assets/icon-512.png
+ICON = internal/assets/icon/icon-512.png
 NAME = wormhole-gui
 
 # Default path to the go binary directory.
@@ -17,8 +17,13 @@ build:
 
 install:
 	install -Dm00755 $(NAME) $(DESTDIR)$(PREFIX)/bin/$(NAME)
-	install -Dm00644 internal/assets/icon/icon-512.png $(DESTDIR)$(PREFIX)/share/pixmaps/$(NAME).png
+	install -Dm00644 $(ICON) $(DESTDIR)$(PREFIX)/share/pixmaps/$(NAME).png
 	install -Dm00644 internal/assets/$(NAME).desktop $(DESTDIR)$(PREFIX)/share/applications/$(NAME).desktop
+
+uninstall:
+	-rm $(DESTDIR)$(PREFIX)/share/applications/$(NAME).desktop
+	-rm $(DESTDIR)$(PREFIX)/bin/$(NAME)
+	-rm $(DESTDIR)$(PREFIX)/share/pixmaps/$(NAME).png
 
 check:
 	# Check the whole codebase for misspellings.
