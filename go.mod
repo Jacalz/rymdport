@@ -2,7 +2,9 @@ module github.com/Jacalz/wormhole-gui
 
 go 1.14
 
+replace fyne.io/fyne => /home/jacob/Downloads/fyne-feature-folderopen
+
 require (
-	fyne.io/fyne v1.3.4-0.20201014180309-ac86da0d068f
+	fyne.io/fyne v1.3.4-0.20201024141840-6b8c181a3b54
 	github.com/psanford/wormhole-william v1.0.4
 )

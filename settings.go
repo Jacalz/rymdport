@@ -1,14 +1,14 @@
 package main
 
 import (
-	"path"
+	"path/filepath"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/container"
+	"fyne.io/fyne/dialog"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
-
 	"github.com/Jacalz/wormhole-gui/internal/bridge"
 )
 
@@ -33,19 +33,26 @@ func (ad *appData) settingsTab() *container.TabItem {
 
 	interfaceGroup := widget.NewGroup("User Interface", interfaceSettingsContainer)
 
-	downloadPath := widget.NewEntry()
-	downloadPath.SetPlaceHolder("Downloads")
-	downloadPath.OnChanged = func(input string) {
-		switch input {
-		case "":
-			ad.Bridge.DownloadPath = bridge.UserDownloadsFolder()
-		default:
-			// TODO: Make sure to only allow saving inside the home directory.
-			ad.Bridge.DownloadPath = path.Clean(input)
-		}
+	downloadPathButton := &widget.Button{Text: "Downloads", Icon: theme.FolderOpenIcon()}
+	ad.Bridge.DownloadPath = ad.App.Preferences().StringWithFallback("DownloadPath", bridge.UserDownloadsFolder())
+	downloadPathButton.SetText(filepath.Base(ad.Bridge.DownloadPath))
+	downloadPathButton.OnTapped = func() {
+		dialog.ShowFolderOpen(func(folder fyne.ListableURI, err error) {
+			if err != nil {
+				fyne.LogError("Error on selecting folder", err)
+				dialog.ShowError(err, ad.Window)
+				return
+			} else if folder == nil {
+				return
+			}
+
+			ad.App.Preferences().SetString("DownloadPath", folder.String())
+			ad.Bridge.DownloadPath = folder.String()[7:]
+			downloadPathButton.SetText(folder.Name())
+		}, ad.Window)
 	}
 
-	notification := widget.NewRadio([]string{"On", "Off"}, func(selected string) {
+	notification := &widget.Radio{Options: []string{"On", "Off"}, Horizontal: true, Required: true, OnChanged: func(selected string) {
 		if selected == "On" {
 			ad.Notifications = true
 		} else {
@@ -53,12 +60,10 @@ func (ad *appData) settingsTab() *container.TabItem {
 		}
 
 		ad.App.Preferences().SetString("Notifications", selected)
-	})
-
+	}}
 	notification.SetSelected(ad.App.Preferences().StringWithFallback("Notifications", "Off"))
-	notification.Horizontal = true
 
-	dataSettingsContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widget.NewLabel("Download Path"), downloadPath, widget.NewLabel("Notifications"), notification)
+	dataSettingsContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), widget.NewLabel("Download Path"), downloadPathButton, widget.NewLabel("Notifications"), notification)
 	dataGroup := widget.NewGroup("Data Handling", dataSettingsContainer)
 
 	slider := widget.NewSlider(2.0, 6.0)
