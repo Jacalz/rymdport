@@ -39,14 +39,15 @@ func (ad *appData) sendTab() *container.TabItem {
 
 				code := sendList.NewSendItem(file.URI())
 
-				go func() {
-					err = ad.Bridge.SendFile(file, code, sendList.Items[sendList.Length()-1].Progress.Update)
+				go func(i int) {
+					err = ad.Bridge.SendFile(file, code, sendList.Items[i].Progress.Update)
 					if err != nil {
+						sendList.RemoveItem(i)
 						dialog.ShowError(err, ad.Window)
 					} else if ad.Notifications {
 						ad.App.SendNotification(fyne.NewNotification("Send completed", "The file was sent successfully"))
 					}
-				}()
+				}(sendList.Length() - 1)
 			}, ad.Window)
 		}()
 	}
@@ -65,16 +66,17 @@ func (ad *appData) sendTab() *container.TabItem {
 
 			code := sendList.NewSendItem(storage.NewURI("Text Snippet"))
 
-			go func() {
+			go func(i int) {
 				err := ad.Bridge.SendText(t, code)
 				if err != nil {
+					sendList.RemoveItem(i)
 					dialog.ShowError(err, ad.Window)
 				} else if ad.Notifications {
 					ad.App.SendNotification(fyne.NewNotification("Send completed", "The sending of text completed successfully"))
 				} else {
-					sendList.Items[sendList.Length()-1].Progress.SetValue(1)
+					sendList.Items[i].Progress.SetValue(1)
 				}
-			}()
+			}(sendList.Length() - 1)
 		}()
 	}
 
