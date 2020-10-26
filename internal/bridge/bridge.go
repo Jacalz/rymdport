@@ -25,8 +25,3 @@ func UserDownloadsFolder() string {
 
 	return filepath.Join(dir, "Downloads")
 }
-
-// NewBridge creates a new bridge with the default values.
-func NewBridge() *Bridge {
-	return &Bridge{ComponentLength: 2, DownloadPath: UserDownloadsFolder()}
-}
