@@ -62,7 +62,7 @@ func (b *Bridge) SendDir(dir fyne.ListableURI, code chan string, progress wormho
 			Path: strings.TrimPrefix(path, prefix),
 			Mode: info.Mode(),
 			Reader: func() (io.ReadCloser, error) {
-				return os.Open(path)
+				return os.Open(filepath.Clean(path))
 			},
 		})
 

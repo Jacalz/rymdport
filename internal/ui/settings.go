@@ -27,12 +27,10 @@ type AppSettings struct {
 
 type settings struct {
 	themeSelect *widget.Select
-	themes      []string
 
 	downloadPathButton *widget.Button
 
-	notificationRadio   *widget.Radio
-	notificationOptions []string
+	notificationRadio *widget.RadioGroup
 
 	componentSlider *widget.Slider
 
@@ -87,7 +85,7 @@ func (s *settings) buildUI() *container.Scroll {
 	s.bridge.DownloadPath = s.app.Preferences().StringWithFallback("DownloadPath", bridge.UserDownloadsFolder())
 	s.downloadPathButton = &widget.Button{Icon: theme.FolderOpenIcon(), OnTapped: s.onDownloadsPathChanged, Text: filepath.Base(s.bridge.DownloadPath)}
 
-	s.notificationRadio = &widget.Radio{Options: notificationOptions, Horizontal: true, Required: true, OnChanged: s.onNotificationsChanged}
+	s.notificationRadio = &widget.RadioGroup{Options: notificationOptions, Horizontal: true, Required: true, OnChanged: s.onNotificationsChanged}
 	s.notificationRadio.SetSelected(s.app.Preferences().StringWithFallback("Notifications", notificationOptions[1]))
 
 	s.componentSlider = &widget.Slider{Min: 2.0, Max: 6.0, OnChanged: s.onComponentsChange}
