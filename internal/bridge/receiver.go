@@ -73,7 +73,7 @@ func (b *Bridge) RecieveData(code string, fileName chan string, a fyne.App) erro
 			return err
 		}
 
-		defer tmp.Close()
+		defer tmp.Close() // #nosec - We are not writing to the file
 		defer os.Remove(tmp.Name())
 
 		_, err = io.Copy(tmp, ioutil.NopCloser(msg))
