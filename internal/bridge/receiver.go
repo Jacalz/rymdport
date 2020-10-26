@@ -6,8 +6,10 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 
 	"fyne.io/fyne"
+	"github.com/mholt/archiver/v3"
 	"github.com/psanford/wormhole-william/wormhole"
 )
 
@@ -63,7 +65,30 @@ func (b *Bridge) RecieveData(code string, fileName chan string, a fyne.App) erro
 
 		fileName <- msg.Name
 	case wormhole.TransferDirectory:
-		// Directories are currently not supported.
+		dir := filepath.Join(b.DownloadPath, msg.Name)
+
+		tmp, err := ioutil.TempFile("", msg.Name+".zip.tmp")
+		if err != nil {
+			fyne.LogError("Error on creating tempfile", err)
+			return err
+		}
+
+		defer tmp.Close()
+		defer os.Remove(tmp.Name())
+
+		_, err = io.Copy(tmp, ioutil.NopCloser(msg))
+		if err != nil {
+			fyne.LogError("Error on copying contents to file", err)
+			return err
+		}
+
+		err = archiver.NewZip().Unarchive(tmp.Name(), dir)
+		if err != nil {
+			fyne.LogError("Error on unzipping contents", err)
+			return err
+		}
+
+		fileName <- msg.Name
 	}
 
 	return nil

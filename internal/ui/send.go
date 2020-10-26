@@ -12,10 +12,10 @@ import (
 )
 
 type send struct {
-	contentPicker dialog.Dialog
-	fileChoice    *widget.Button
-	//directoryChoice    *widget.Button
-	textChoice *widget.Button
+	contentPicker   dialog.Dialog
+	fileChoice      *widget.Button
+	directoryChoice *widget.Button
+	textChoice      *widget.Button
 
 	contentToSend *widget.Button
 	sendList      *widgets.SendList
@@ -58,6 +58,33 @@ func (s *send) onFileSend() {
 	}()
 }
 
+func (s *send) onDirSend() {
+	go func() {
+		s.contentPicker.Hide()
+
+		dialog.ShowFolderOpen(func(dir fyne.ListableURI, err error) {
+			if err != nil {
+				fyne.LogError("Error on selecting directory to send", err)
+				dialog.ShowError(err, s.window)
+				return
+			} else if dir == nil {
+				return
+			}
+
+			code := s.sendList.NewSendItem(dir)
+
+			go func(i int) {
+				if err := s.bridge.SendDir(dir, code, s.sendList.Items[i].Progress.Update); err != nil {
+					s.sendList.RemoveItem(i)
+					dialog.ShowError(err, s.window)
+				} else if s.appSettings.Notifications {
+					s.app.SendNotification(fyne.NewNotification("Send completed", "The directory was sent successfully"))
+				}
+			}(s.sendList.Length() - 1)
+		}, s.window)
+	}()
+}
+
 func (s *send) onTextSend() {
 	go func() {
 		s.contentPicker.Hide()
@@ -92,9 +119,10 @@ func (s *send) onContentToSend() {
 
 func (s *send) buildUI() *fyne.Container {
 	s.fileChoice = &widget.Button{Text: "File", Icon: theme.FileIcon(), OnTapped: s.onFileSend}
+	s.directoryChoice = &widget.Button{Text: "Directory", Icon: theme.FolderIcon(), OnTapped: s.onDirSend}
 	s.textChoice = &widget.Button{Text: "Text", Icon: theme.DocumentCreateIcon(), OnTapped: s.onTextSend}
 
-	choiceContent := container.NewGridWithColumns(1, s.fileChoice, s.textChoice)
+	choiceContent := container.NewGridWithColumns(1, s.fileChoice, s.directoryChoice, s.textChoice)
 	s.contentPicker = dialog.NewCustom("Pick a content type", "Cancel", choiceContent, s.window)
 	s.contentPicker.Hide() // Bug in Fyne API. Can be remove after Fyne 2.0 and later.
 

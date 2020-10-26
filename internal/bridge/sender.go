@@ -2,7 +2,10 @@ package bridge
 
 import (
 	"context"
+	"io"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"fyne.io/fyne"
 	"github.com/psanford/wormhole-william/wormhole"
@@ -25,6 +28,54 @@ func (b *Bridge) SendFile(file fyne.URIReadCloser, code chan string, progress wo
 	codestr, status, err := c.SendFile(context.Background(), file.Name(), f, progress)
 	if err != nil {
 		fyne.LogError("Error on sending file", err)
+		return err
+	}
+
+	code <- codestr
+
+	if stat := <-status; stat.Error != nil {
+		fyne.LogError("Error on status of share", err)
+		return err
+	} else if stat.OK {
+		return nil
+	}
+
+	return nil
+}
+
+// SendDir takes a listable URI and sends it using wormhole-william.
+func (b *Bridge) SendDir(dir fyne.ListableURI, code chan string, progress wormhole.SendOption) error {
+	c := wormhole.Client{PassPhraseComponentLength: b.ComponentLength}
+
+	dirpath := dir.String()[7:]
+	prefix, _ := filepath.Split(dirpath)
+
+	var files []wormhole.DirectoryEntry
+	err := filepath.Walk(dirpath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		} else if info.IsDir() || !info.Mode().IsRegular() {
+			return nil
+		}
+
+		files = append(files, wormhole.DirectoryEntry{
+			Path: strings.TrimPrefix(path, prefix),
+			Mode: info.Mode(),
+			Reader: func() (io.ReadCloser, error) {
+				return os.Open(path)
+			},
+		})
+
+		return nil
+	})
+	if err != nil {
+		fyne.LogError("Error on walking directory", err)
+		return err
+	}
+
+	codestr, status, err := c.SendDirectory(context.Background(), dir.Name(), files, progress)
+	if err != nil {
+		fyne.LogError("Error on sending directory", err)
 		return err
 	}
 

@@ -60,7 +60,7 @@ func (s *settings) onDownloadsPathChanged() {
 			return
 		}
 
-		s.app.Preferences().SetString("DownloadPath", folder.String())
+		s.app.Preferences().SetString("DownloadPath", folder.String()[7:])
 		s.bridge.DownloadPath = folder.String()[7:]
 		s.downloadPathButton.SetText(folder.Name())
 	}, s.window)
@@ -84,8 +84,8 @@ func (s *settings) onComponentsChange(value float64) {
 func (s *settings) buildUI() *container.Scroll {
 	s.themeSelect = &widget.Select{Options: themes, OnChanged: s.onThemeChanged, Selected: s.appSettings.Theme}
 
-	s.downloadPathButton = &widget.Button{Icon: theme.FolderOpenIcon(), OnTapped: s.onDownloadsPathChanged,
-		Text: filepath.Base(s.app.Preferences().StringWithFallback("DownloadPath", bridge.UserDownloadsFolder()))}
+	s.bridge.DownloadPath = s.app.Preferences().StringWithFallback("DownloadPath", bridge.UserDownloadsFolder())
+	s.downloadPathButton = &widget.Button{Icon: theme.FolderOpenIcon(), OnTapped: s.onDownloadsPathChanged, Text: filepath.Base(s.bridge.DownloadPath)}
 
 	s.notificationRadio = &widget.Radio{Options: notificationOptions, Horizontal: true, Required: true, OnChanged: s.onNotificationsChanged}
 	s.notificationRadio.SetSelected(s.app.Preferences().StringWithFallback("Notifications", notificationOptions[1]))
