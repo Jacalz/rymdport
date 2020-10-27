@@ -4,6 +4,8 @@ on: [push, pull_request]
 jobs:
   checks:
     runs-on: ubuntu-latest
+    env:
+      GO111MODULE: on
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-go@v2
@@ -32,3 +34,8 @@ jobs:
 
     - name: Staticcheck
       run: CGO_ENABLED=1 staticcheck -f stylish ./...
+
+    - name: Gosec
+      uses: securego/gosec@master
+      with:
+        args: ./...
