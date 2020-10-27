@@ -32,8 +32,3 @@ jobs:
 
     - name: Staticcheck
       run: CGO_ENABLED=1 staticcheck -f stylish ./...
-
-    - name: Gosec
-      uses: securego/gosec@master
-      with:
-        args: ./...
