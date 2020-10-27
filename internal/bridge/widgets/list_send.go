@@ -48,8 +48,8 @@ func (p *SendList) RemoveItem(i int) {
 	p.Items = p.Items[:p.Length()-1]
 }
 
-// OnSelectionChanged handles removing items and stopping send (in the future)
-func (p *SendList) OnSelectionChanged(i int) {
+// OnSelected handles removing items and stopping send (in the future)
+func (p *SendList) OnSelected(i int) {
 	if p.Items[i].Progress.Value != p.Items[i].Progress.Max { // TODO: Stop the send instead.
 		return // We can't stop running sends due to bug in wormhole-gui.
 	}
@@ -76,7 +76,7 @@ func NewSendList() *SendList {
 	p.List.Length = p.Length
 	p.List.CreateItem = p.CreateItem
 	p.List.UpdateItem = p.UpdateItem
-	p.List.OnSelectionChanged = p.OnSelectionChanged
+	p.List.OnSelected = p.OnSelected
 	p.ExtendBaseWidget(p)
 
 	return p

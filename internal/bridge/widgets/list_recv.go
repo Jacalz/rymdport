@@ -42,8 +42,8 @@ func (p *RecvList) UpdateItem(i int, item fyne.CanvasObject) {
 	}(p.Items[i].Filename, p.Items[i].Status)
 }
 
-// OnSelectionChanged handles removing items and stopping send (in the future)
-func (p *RecvList) OnSelectionChanged(i int) {
+// OnSelected handles removing items and stopping send (in the future)
+func (p *RecvList) OnSelected(i int) {
 	dialog.ShowConfirm("Remove from list", "Do you wish to remove the item from the list?", func(remove bool) {
 		if remove {
 			// Make sure that GC run on removed element
@@ -70,7 +70,7 @@ func NewRecvList() *RecvList {
 	p.List.Length = p.Length
 	p.List.CreateItem = p.CreateItem
 	p.List.UpdateItem = p.UpdateItem
-	p.List.OnSelectionChanged = p.OnSelectionChanged
+	p.List.OnSelected = p.OnSelected
 	p.ExtendBaseWidget(p)
 
 	return p
