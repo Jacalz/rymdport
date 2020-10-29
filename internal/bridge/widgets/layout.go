@@ -3,6 +3,7 @@ package widgets
 import (
 	"fyne.io/fyne"
 	"fyne.io/fyne/theme"
+	"fyne.io/fyne/widget"
 )
 
 var maxMinSizeHeight int // Keeping all instances of the list layout consistent in height
@@ -31,7 +32,13 @@ func (g *listLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
 
 			newx = oldx + cellWidth
 
-			child.Move(fyne.NewPos(oldx, 0)) // TODO: Make sure that labels are centered
+			_, isContainer := child.(*fyne.Container)
+			_, isLabel := child.(*widget.Label)
+			if isContainer || isLabel {
+				child.Move(fyne.NewPos(oldx, (y2-child.MinSize().Height)/2))
+			} else {
+				child.Move(fyne.NewPos(oldx, 0))
+			}
 
 		} else {
 			newx = size.Height + theme.Padding()
