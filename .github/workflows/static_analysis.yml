@@ -4,19 +4,26 @@ on: [push, pull_request]
 jobs:
   checks:
     runs-on: ubuntu-latest
+    env:
+      GO111MODULE: on
+      CGO_ENABLED: on
+
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-go@v2
       with:
-        go-version: '^1.15.x'     
+        go-version: '1.15.x'     
 
-    - name: Get dependencies
+    - name: Install build dependencies
+      run: sudo apt-get install golang gcc libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev libx11-dev xorg-dev
+        
+    - name: Get static analysis tools
       run: |
-        sudo apt-get install golang gcc libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev libx11-dev xorg-dev
-        GO111MODULE=off go get golang.org/x/tools/cmd/goimports                               
-        GO111MODULE=off go get github.com/fzipp/gocyclo/cmd/gocyclo
-        GO111MODULE=off go get golang.org/x/lint/golint
-        GO111MODULE=off go get honnef.co/go/tools/cmd/staticcheck
+        go get golang.org/x/tools/cmd/goimports                               
+        go get github.com/fzipp/gocyclo/cmd/gocyclo
+        go get golang.org/x/lint/golint
+        go get honnef.co/go/tools/cmd/staticcheck
+        go get github.com/securego/gosec/v2/cmd/gosec
 
     - name: Vet
       run: go vet -tags ci ./...
@@ -31,4 +38,7 @@ jobs:
       run: golint -set_exit_status $(go list -tags ci ./...)
 
     - name: Staticcheck
-      run: CGO_ENABLED=1 staticcheck -f stylish ./...
+      run: staticcheck -f stylish ./...
+
+    - name: Gosec
+      run: gosec ./...
