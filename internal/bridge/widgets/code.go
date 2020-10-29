@@ -1,6 +1,7 @@
 package widgets
 
 import (
+	"regexp"
 	"time"
 
 	"fyne.io/fyne"
@@ -8,6 +9,8 @@ import (
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 )
+
+var codeValidator = regexp.MustCompile(`^\d\d?(-\w{2,12}){2,6}$`)
 
 // NewBoldLabel returns a new label with bold text.
 func NewBoldLabel(text string) *widget.Label {
@@ -22,9 +25,14 @@ type CodeDisplay struct {
 
 func (c *CodeDisplay) copyOnPress() {
 	clipboard := fyne.CurrentApp().Driver().AllWindows()[0].Clipboard()
-	clipboard.SetContent(c.Text)
 
-	c.button.SetIcon(theme.ConfirmIcon())
+	if codeValidator.MatchString(c.Text) {
+		c.button.SetIcon(theme.ConfirmIcon())
+		clipboard.SetContent(c.Text)
+	} else {
+		c.button.SetIcon(theme.CancelIcon())
+	}
+
 	time.Sleep(500 * time.Millisecond)
 	c.button.SetIcon(theme.ContentCopyIcon())
 }
