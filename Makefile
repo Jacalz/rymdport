@@ -38,11 +38,14 @@ check:
 	# Run staticcheck on the codebase.
 	$(GOBIN)staticcheck -f stylish ./...
 
+freebsd:
+	$(GOBIN)fyne-cross freebsd -arch amd64 -app-id $(APPID) -icon $(ICON)
+
 darwin:
 	$(GOBIN)fyne-cross darwin -arch amd64 -app-id $(APPID) -icon $(ICON) -output $(NAME)
 
 linux:
-	$(GOBIN)fyne-cross linux -arch amd64 -app-id $(APPID) -icon $(ICON)
+	$(GOBIN)fyne-cross linux -arch amd64,arm64 -app-id $(APPID) -icon $(ICON)
 
 windows:
 	$(GOBIN)fyne-cross windows -arch amd64 -app-id $(APPID) -icon $(ICON)
