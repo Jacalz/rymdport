@@ -6,9 +6,10 @@ Wormhole-gui is a cross-platform graphical interface for magic-wormhole that let
   <img src="internal/assets/screenshot.png" />
 </p>
 
-It is built using the following Go modules:
-- [fyne](https://github.com/fyne-io/fyne) (version 1.4.0 or later)
-- [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.4 or later)
+Built using the following Go modules:
+- [fyne](https://github.com/fyne-io/fyne) (version 1.4.0)
+- [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.4)
+- [archiver](https://github.com/mholt/archiver) (version 3.5.0)
 
 ## Requirements
 
