@@ -18,7 +18,7 @@ Wormhole-gui compiles into a statically linked binary with no runtime dependenci
 ## Downloads
 
 Please visit the [release page](https://github.com/Jacalz/wormhole-gui/releases) for downloading the latest releases.
-Versions for Linux (`x86-64` and `arm64`), MacOS and Windows (`x86-64`) are avaliable. Support for FreeBSD is coming soon.
+Versions for Linux (`x86-64` and `arm64`), MacOS and Windows (`x86-64`) are available. Support for FreeBSD is coming soon.
 
 ## Building
 

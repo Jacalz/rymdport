@@ -13,7 +13,10 @@ import (
 
 // NewFileSend takes the chosen file and sends it using wormhole-william.
 func (b *Bridge) NewFileSend(file fyne.URIReadCloser, progress wormhole.SendOption) (string, chan wormhole.SendResult, *os.File, error) {
-	file.Close() // Not currently used due to not being an io.ReadSeeker
+	err := file.Close() // Not currently used due to not being an io.ReadSeeker
+	if err != nil {
+		fyne.LogError("Error on closing file", err)
+	}
 
 	f, err := os.Open(file.URI().String()[7:])
 	if err != nil {
