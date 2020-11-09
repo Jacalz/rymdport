@@ -5,12 +5,15 @@ import (
 	"path/filepath"
 
 	"fyne.io/fyne"
+	"github.com/psanford/wormhole-william/wormhole"
 )
 
 // Bridge holds settings and other meathods specific to the bridge using wormhole-willam.
 type Bridge struct {
-	// PassPhraseComponentLength is the number of words to use when generating a passprase.
-	ComponentLength int
+	wormhole.Client
+
+	// Notification holds the settings value for if we have notifications enabled or not.
+	Notifications bool
 
 	// DownloadPath holds the download path used for saving recvieved files.
 	DownloadPath string
@@ -24,9 +27,4 @@ func UserDownloadsFolder() string {
 	}
 
 	return filepath.Join(dir, "Downloads")
-}
-
-// NewBridge creates a new bridge with the default values.
-func NewBridge() *Bridge {
-	return &Bridge{ComponentLength: 2, DownloadPath: UserDownloadsFolder()}
 }

@@ -1,4 +1,4 @@
-package bridge
+package widgets
 
 import (
 	"sync"
@@ -26,7 +26,6 @@ func (p *SendProgress) UpdateProgress(sent int64, total int64) {
 func NewSendProgress() *SendProgress {
 	p := &SendProgress{}
 	p.ExtendBaseWidget(p)
-
 	p.Update = wormhole.WithProgress(p.UpdateProgress)
 
 	return p

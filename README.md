@@ -1,18 +1,15 @@
 # wormhole-gui
 
-Wormhole-gui is a graphical interface for magic-wormhole. It uses the Go implementation [wormhole-william](https://github.com/psanford/wormhole-william) along with [fyne](https://github.com/fyne-io/fyne) for the graphical interface. The initial version was built in less than one day to show how quick and easy it is to use fyne for developing applications. The application has since developed into a more feature-full cross-platform application for sharing files and text between devices on the local network. 
+Wormhole-gui is a cross-platform graphical interface for magic-wormhole that lets you share files, folders and text between computers. It uses the Go implementation [wormhole-william](https://github.com/psanford/wormhole-william) for sharing data and uses [fyne](https://github.com/fyne-io/fyne) for the graphical interface. The initial version was built in less than one day to show how quick and easy it is to use fyne for developing applications. The application has since developed into a more feature-full cross-platform application for sharing files and text between devices on the local network. 
 
 <p align="center">
-  <img src="assets/screenshot.png" />
+  <img src="internal/assets/screenshot.png" />
 </p>
 
-It is built using the following Go modules:
-- [fyne](https://github.com/fyne-io/fyne) (version 1.3.3 or later)
-- [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.4 or later)
-
-## Future work
-This list is part of a larger set of planned features. The list is in now way complete and doesn't mean that other features won't be incorporated.
-- Folder sharing (blocked until fyne has folder select support in file-picker)
+Built using the following Go modules:
+- [fyne](https://github.com/fyne-io/fyne) (version 1.4.0)
+- [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.4 + [f69f6e8](https://github.com/psanford/wormhole-william/commit/f69f6e823d8cec6b3756b8ce63024c8cd3c3ebf2))
+- [archiver](https://github.com/mholt/archiver) (version 3.5.0)
 
 ## Requirements
 
@@ -21,7 +18,7 @@ Wormhole-gui compiles into a statically linked binary with no runtime dependenci
 ## Downloads
 
 Please visit the [release page](https://github.com/Jacalz/wormhole-gui/releases) for downloading the latest releases.
-Versions for Linux, MacOS and Windows on the x86-64 architecture are currently available. Support for ARM64 and BSD systems might come in the future.
+Versions for Linux (`x86-64` and `arm64`), MacOS and Windows (`x86-64`) are available. Support for FreeBSD is coming soon.
 
 ## Building
 
@@ -30,7 +27,7 @@ Systems that have a recent [Go](https://golang.org) compiler and the [required p
 go build 
 ```
 
-The project can also be built and installed using GNU Make (installing is only supported on Linux currently):
+The project can also be built and installed using GNU Make (installing is currently only supported on Linux and BSD):
 ```bash
 make
 sudo make install
