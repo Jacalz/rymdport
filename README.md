@@ -1,6 +1,7 @@
 # wormhole-gui
 
-Wormhole-gui is a cross-platform graphical interface for magic-wormhole that lets you share files, folders and text between computers. It uses the Go implementation [wormhole-william](https://github.com/psanford/wormhole-william) for sharing data and uses [fyne](https://github.com/fyne-io/fyne) for the graphical interface. The initial version was built in less than one day to show how quick and easy it is to use fyne for developing applications. The application has since developed into a more feature-full cross-platform application for sharing files and text between devices on the local network. 
+Wormhole-gui is a cross-platform graphical interface for magic-wormhole that lets you share files, folders and text between computers. It uses the Go implementation [wormhole-william](https://github.com/psanford/wormhole-william) for sharing data and uses [fyne](https://github.com/fyne-io/fyne) for the graphical interface.
+The initial version was built in less than one day to show how quick and easy it is to use fyne for developing applications. The application has since developed into a more feature-full cross-platform application for sharing files, folders, and text between devices on the local network. 
 
 <p align="center">
   <img src="internal/assets/screenshot.png" />
@@ -18,7 +19,7 @@ Wormhole-gui compiles into a statically linked binary with no runtime dependenci
 ## Downloads
 
 Please visit the [release page](https://github.com/Jacalz/wormhole-gui/releases) for downloading the latest releases.
-Versions for Linux (`x86-64` and `arm64`), MacOS and Windows (`x86-64`) are available. Support for FreeBSD is coming soon.
+Versions for Linux (`x86-64` and `arm64`), MacOS and Windows (`x86-64`) are available. Release binaries for FreeBSD is coming soon.
 
 ## Building
 
