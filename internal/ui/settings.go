@@ -18,9 +18,6 @@ var (
 
 // AppSettings cotains settings specific to the application
 type AppSettings struct {
-	// Notification holds the settings value for if we have notifications enabled or not.
-	Notifications bool
-
 	// Theme holds the current theme
 	Theme string
 }
@@ -66,9 +63,9 @@ func (s *settings) onDownloadsPathChanged() {
 
 func (s *settings) onNotificationsChanged(selected string) {
 	if selected == "On" {
-		s.appSettings.Notifications = true
+		s.bridge.Notifications = true
 	} else {
-		s.appSettings.Notifications = false
+		s.bridge.Notifications = false
 	}
 
 	s.app.Preferences().SetString("Notifications", selected)

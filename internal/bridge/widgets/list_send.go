@@ -47,10 +47,10 @@ func (p *SendList) UpdateItem(i int, item fyne.CanvasObject) {
 
 // RemoveItem removes the item at the specified index.
 func (p *SendList) RemoveItem(i int) {
-	// Make sure that GC run on removed element
 	copy(p.Items[i:], p.Items[i+1:])
-	p.Items[p.Length()-1] = *emptySendItem
+	p.Items[p.Length()-1] = *emptySendItem // Make sure that GC run on removed element
 	p.Items = p.Items[:p.Length()-1]
+	p.Refresh()
 }
 
 // OnSelected handles removing items and stopping send (in the future)
@@ -98,7 +98,7 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending file", res.Error)
 			dialog.ShowError(res.Error, fyne.CurrentApp().Driver().AllWindows()[0])
-		} else if res.OK {
+		} else if res.OK && p.bridge.Notifications {
 			fyne.CurrentApp().SendNotification(fyne.NewNotification("Send completed", "The file was sent successfully"))
 		}
 
@@ -133,7 +133,7 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending directory", res.Error)
 			dialog.ShowError(res.Error, fyne.CurrentApp().Driver().AllWindows()[0])
-		} else if res.OK {
+		} else if res.OK && p.bridge.Notifications {
 			fyne.CurrentApp().SendNotification(fyne.NewNotification("Send completed", "The directory was sent successfully"))
 		}
 	}(result)
@@ -157,7 +157,7 @@ func (p *SendList) SendText() {
 			if res := <-result; res.Error != nil {
 				fyne.LogError("Error on sending text", err)
 				dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
-			} else if res.OK {
+			} else if res.OK && p.bridge.Notifications {
 				fyne.CurrentApp().SendNotification(fyne.NewNotification("Send completed", "The text was sent successfully"))
 			}
 		}(result)
