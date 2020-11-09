@@ -5,10 +5,13 @@ import (
 	"path/filepath"
 
 	"fyne.io/fyne"
+	"github.com/psanford/wormhole-william/wormhole"
 )
 
 // Bridge holds settings and other meathods specific to the bridge using wormhole-willam.
 type Bridge struct {
+	wormhole.Client
+
 	// PassPhraseComponentLength is the number of words to use when generating a passprase.
 	ComponentLength int
 

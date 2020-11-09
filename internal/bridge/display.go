@@ -48,9 +48,10 @@ func displayRecievedText(a fyne.App, content string) {
 }
 
 // EnterSendText opens a new window for setting up text to send.
-func (b *Bridge) EnterSendText(a fyne.App, text chan string) {
-	w := a.NewWindow("Send text")
+func EnterSendText() chan string {
+	w := fyne.CurrentApp().NewWindow("Send text")
 
+	text := make(chan string)
 	textEntry := widget.NewMultiLineEntry()
 
 	cancel := widget.NewButtonWithIcon("Cancel", theme.CancelIcon(), func() {
@@ -67,7 +68,9 @@ func (b *Bridge) EnterSendText(a fyne.App, text chan string) {
 	actionContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), cancel, send)
 
 	w.Resize(fyne.NewSize(400, 300))
-	w.SetContent(fyne.NewContainerWithLayout(layout.NewBorderLayout(nil, actionContainer, nil, nil), actionContainer, textContainer))
+	w.SetContent(container.NewBorder(nil, actionContainer, nil, nil, textContainer))
 	w.Canvas().Focus(textEntry)
 	w.Show()
+
+	return text
 }
