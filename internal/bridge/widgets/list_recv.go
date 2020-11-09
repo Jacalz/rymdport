@@ -5,19 +5,22 @@ import (
 	"fyne.io/fyne/dialog"
 	"fyne.io/fyne/storage"
 	"fyne.io/fyne/widget"
+	"github.com/Jacalz/wormhole-gui/internal/bridge"
 )
 
 var emptyRecvItem = &RecvItem{}
 
 // RecvItem is the item that is being received
 type RecvItem struct {
-	Filename chan string
-	Status   chan string
+	URI    fyne.URI
+	Status string
 }
 
 // RecvList is a list of progress bars that track send progress.
 type RecvList struct {
 	widget.List
+
+	bridge *bridge.Bridge
 
 	Items []RecvItem
 }
@@ -34,39 +37,53 @@ func (p *RecvList) CreateItem() fyne.CanvasObject {
 
 // UpdateItem updates the data in the list.
 func (p *RecvList) UpdateItem(i int, item fyne.CanvasObject) {
-	go func(filename, status chan string) { // Get the channel out of the scope to avoid stalling render thread
-		file, stat := <-filename, <-status
-		item.(*fyne.Container).Objects[0].(*widget.FileIcon).SetURI(storage.NewURI(file))
-		item.(*fyne.Container).Objects[1].(*widget.Label).SetText(file)
-		item.(*fyne.Container).Objects[2].(*widget.Label).SetText(stat)
-	}(p.Items[i].Filename, p.Items[i].Status)
+	item.(*fyne.Container).Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
+	item.(*fyne.Container).Objects[1].(*widget.Label).SetText(p.Items[i].URI.Name())
+	item.(*fyne.Container).Objects[2].(*widget.Label).SetText(p.Items[i].Status)
 }
 
 // OnSelected handles removing items and stopping send (in the future)
 func (p *RecvList) OnSelected(i int) {
 	dialog.ShowConfirm("Remove from list", "Do you wish to remove the item from the list?", func(remove bool) {
 		if remove {
-			// Make sure that GC run on removed element
 			copy(p.Items[i:], p.Items[i+1:])
-			p.Items[p.Length()-1] = *emptyRecvItem
+			p.Items[p.Length()-1] = *emptyRecvItem // Make sure that GC run on removed element
 			p.Items = p.Items[:p.Length()-1]
-
 			p.Refresh()
 		}
 	}, fyne.CurrentApp().Driver().AllWindows()[0])
 }
 
-// NewRecvItem adds data about a new send to the list and then returns the channel to update the code.
-func (p *RecvList) NewRecvItem() (file, status chan string) {
-	p.Items = append(p.Items, RecvItem{Filename: make(chan string), Status: make(chan string)})
+// NewReceive adds data about a new send to the list and then returns the channel to update the code.
+func (p *RecvList) NewReceive(code string) {
+	p.Items = append(p.Items, RecvItem{URI: storage.NewURI("Waiting for filename..."), Status: "Waiting for status..."})
 	p.Refresh()
 
-	return p.Items[p.Length()-1].Filename, p.Items[p.Length()-1].Status
+	uri := make(chan fyne.URI)
+	index := p.Length() - 1
+
+	go func() {
+		p.Items[index].URI = <-uri
+		p.Refresh()
+	}()
+
+	go func(code string) {
+		if err := p.bridge.NewReceive(code, uri); err != nil {
+			p.Items[index].Status = "Failed"
+			fyne.LogError("Error on sending file", err)
+			dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
+		} else {
+			p.Items[index].Status = "Completed"
+			dialog.ShowInformation("Successful download", "The download completed without errors.", fyne.CurrentApp().Driver().AllWindows()[0])
+		}
+
+		p.Refresh()
+	}(code)
 }
 
 // NewRecvList greates a list of progress bars.
-func NewRecvList() *RecvList {
-	p := &RecvList{}
+func NewRecvList(bridge *bridge.Bridge) *RecvList {
+	p := &RecvList{bridge: bridge}
 	p.List.Length = p.Length
 	p.List.CreateItem = p.CreateItem
 	p.List.UpdateItem = p.UpdateItem

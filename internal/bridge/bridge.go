@@ -12,6 +12,9 @@ import (
 type Bridge struct {
 	wormhole.Client
 
+	// Notification holds the settings value for if we have notifications enabled or not.
+	Notifications bool
+
 	// DownloadPath holds the download path used for saving recvieved files.
 	DownloadPath string
 }

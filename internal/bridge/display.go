@@ -10,13 +10,13 @@ import (
 )
 
 // displayRecievedText handles the creation of a window for displaying text content.
-func displayRecievedText(a fyne.App, content string) {
-	w := a.NewWindow("Received text")
+func displayRecievedText(content []byte) {
+	w := fyne.CurrentApp().NewWindow("Received text")
 
-	textEntry := &widget.Entry{MultiLine: true, Text: content}
+	textEntry := &widget.Entry{MultiLine: true, Text: string(content)}
 
 	copyText := widget.NewButtonWithIcon("Copy text", theme.ContentCopyIcon(), func() {
-		fyne.CurrentApp().Driver().AllWindows()[0].Clipboard().SetContent(content)
+		fyne.CurrentApp().Driver().AllWindows()[0].Clipboard().SetContent(string(content))
 	})
 
 	saveFile := widget.NewButtonWithIcon("Save text to file", theme.MoveDownIcon(), func() {
@@ -30,10 +30,14 @@ func displayRecievedText(a fyne.App, content string) {
 					return
 				}
 
-				err = writeFile(file, []byte(content))
-				if err != nil {
+				if _, err := file.Write(content); err != nil {
+					fyne.LogError("Error on writing data to the file", err)
 					dialog.ShowError(err, w)
-					return
+				}
+
+				if err := file.Close(); err != nil {
+					fyne.LogError("Error on writing data to the file", err)
+					dialog.ShowError(err, w)
 				}
 			}, w)
 		}()
@@ -43,7 +47,7 @@ func displayRecievedText(a fyne.App, content string) {
 	actionContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), copyText, saveFile)
 
 	w.Resize(fyne.NewSize(400, 300))
-	w.SetContent(fyne.NewContainerWithLayout(layout.NewBorderLayout(nil, actionContainer, nil, nil), actionContainer, textContainer))
+	w.SetContent(container.NewBorder(nil, actionContainer, nil, nil, textContainer))
 	w.Show()
 }
 

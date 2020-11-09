@@ -33,26 +33,8 @@ func (r *recv) onRecv() {
 		return
 	}
 
-	go func(code string) {
-		filename, status := r.recvList.NewRecvItem()
-		r.codeEntry.SetText("")
-
-		go func() {
-			err := r.bridge.RecieveData(code, filename, r.app)
-			if err != nil {
-				status <- "Failed"
-				dialog.ShowError(err, r.window)
-				return
-			}
-
-			status <- "Completed"
-			dialog.ShowInformation("Successful download", "The download completed without errors.", r.window)
-
-			if r.appSettings.Notifications {
-				r.app.SendNotification(fyne.NewNotification("Receive completed", "The receive completed successfully"))
-			}
-		}()
-	}(r.codeEntry.Text)
+	r.recvList.NewReceive(r.codeEntry.Text)
+	r.codeEntry.SetText("")
 }
 
 func (r *recv) buildUI() *fyne.Container {
@@ -62,7 +44,7 @@ func (r *recv) buildUI() *fyne.Container {
 
 	r.codeButton = &widget.Button{Text: "Download", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
 
-	r.recvList = widgets.NewRecvList()
+	r.recvList = widgets.NewRecvList(r.bridge)
 
 	box := container.NewVBox(container.NewGridWithColumns(2, r.codeEntry, r.codeButton), &widget.Label{})
 	return container.NewBorder(box, nil, nil, nil, r.recvList)
