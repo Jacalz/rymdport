@@ -17,6 +17,7 @@
   - Sends and receives are reusing the same `wormhole` client instead of creating a new one each time.
   - Dialogs are now created once and then shown when appropriate (not when showing errors).
   - Themes are no longer checked too many times on startup.
+  - Using less goroutines and channels internally.
 - The `Makefile` now supports uninstalling too (for Linux and BSD).
 - Release binaries are now built for `linux/arm64` as well.
 - Add initial build and package support for BSD.
