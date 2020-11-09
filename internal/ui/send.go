@@ -14,7 +14,9 @@ type send struct {
 	contentPicker dialog.Dialog
 
 	fileChoice      *widget.Button
+	fileDialog      *dialog.FileDialog
 	directoryChoice *widget.Button
+	directoryDialog *dialog.FileDialog
 	textChoice      *widget.Button
 
 	contentToSend *widget.Button
@@ -32,12 +34,12 @@ func newSend(a fyne.App, w fyne.Window, b *bridge.Bridge, as *AppSettings) *send
 
 func (s *send) onFileSend() {
 	s.contentPicker.Hide()
-	dialog.ShowFileOpen(s.sendList.OnFileSelect, s.window)
+	s.fileDialog.Show()
 }
 
 func (s *send) onDirSend() {
 	s.contentPicker.Hide()
-	dialog.ShowFolderOpen(s.sendList.OnDirSelect, s.window)
+	s.directoryDialog.Show()
 }
 
 func (s *send) onTextSend() {
@@ -60,6 +62,9 @@ func (s *send) buildUI() *fyne.Container {
 
 	s.sendList = widgets.NewSendList(s.bridge)
 	s.contentToSend = &widget.Button{Text: "Add content to send", Icon: theme.ContentAddIcon(), OnTapped: s.onContentToSend}
+
+	s.fileDialog = dialog.NewFileOpen(s.sendList.OnFileSelect, s.window)
+	s.directoryDialog = dialog.NewFolderOpen(s.sendList.OnDirSelect, s.window)
 
 	box := container.NewVBox(s.contentToSend, &widget.Label{})
 	return container.NewBorder(box, nil, nil, nil, s.sendList)
