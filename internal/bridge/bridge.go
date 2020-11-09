@@ -12,9 +12,6 @@ import (
 type Bridge struct {
 	wormhole.Client
 
-	// PassPhraseComponentLength is the number of words to use when generating a passprase.
-	ComponentLength int
-
 	// DownloadPath holds the download path used for saving recvieved files.
 	DownloadPath string
 }

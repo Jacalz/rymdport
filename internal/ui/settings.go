@@ -75,7 +75,7 @@ func (s *settings) onNotificationsChanged(selected string) {
 }
 
 func (s *settings) onComponentsChange(value float64) {
-	s.bridge.ComponentLength = int(value)
+	s.bridge.PassPhraseComponentLength = int(value)
 	s.app.Preferences().SetFloat("ComponentLength", value)
 }
 
