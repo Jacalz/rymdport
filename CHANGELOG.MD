@@ -1,5 +1,28 @@
 # Changelog
 
+## 2.0.0 - Code rework and many new features
+- Massive rework and rewrite of code to simplify and make it more maintainable.
+- Use new list widget with custom layout for showing sends and receives.
+- Show a button for copying the send code. See #3 for more information.
+- Show an icon for each file, folder, or text snippet that is sent.
+  - Includes MIME type and extension information.
+- Big UI refresh thanks to new theme rework in `fyne v1.4.0`.
+- Added support for sending and receiving folders.
+- Sending files now properly closes them afterwards.
+- Fixed a bug that caused component length to not be saved between application restarts.
+- Switch to adaptive theme by default.
+  - Will changes depending on dark/light mode on `windows 10` and `macOS`.
+- Added folder picker for selecting a downloads directory.
+- Multiple performance and memory improvements.
+  - Sends and receives are reusing the same `wormhole` client instead of creating a new one each time.
+  - Dialogs are now created once and then shown when appropriate (not when showing errors).
+  - Themes are no longer checked too many times on startup.
+- The `Makefile` now supports uninstalling too (for Linux and BSD).
+- Release binaries are now built for `linux/arm64` as well.
+- Add initial build and package support for BSD.
+  - The next big release will have binaries for `freeBSD/amd64`.
+- Updated `fyne` to [v1.4.0](https://github.com/fyne-io/fyne/releases/tag/v1.4.0).
+
 ## 1.3.0 - Code refractoring, new features and fixes
 - Refactored code to simplify and be more maintainable.
 - Added support for sending notifications on send and receive.
