@@ -37,12 +37,6 @@ func (c *CodeDisplay) copyOnPress() {
 	c.button.SetIcon(theme.ContentCopyIcon())
 }
 
-func (c *CodeDisplay) waitForCode(code chan string) {
-	go func(code chan string) { // Get the channel out of the scope to avoid stalling render thread
-		c.SetText(<-code)
-	}(code)
-}
-
 func newCodeDisplay() *fyne.Container {
 	c := &CodeDisplay{button: &widget.Button{Icon: theme.ContentCopyIcon(), Importance: widget.LowImportance}}
 	c.ExtendBaseWidget(c)
