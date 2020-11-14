@@ -50,4 +50,4 @@ linux:
 windows:
 	$(GOBIN)fyne-cross windows -arch amd64 -app-id $(APPID) -icon $(ICON)
 
-cross-compile: darwin linux windows
+cross-compile: darwin freebsd linux windows
