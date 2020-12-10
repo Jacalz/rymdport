@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.1 - Minor fixes and FreeBSD release binaries
+- Binaries for `freeBSD/amd64` are now avaliable on the release page.
+- Corrected the icon for the receive tab.
+- Updated `fyne` to [v1.4.2](https://github.com/fyne-io/fyne/releases/tag/v1.4.2).
+  - Dialog shadow does not resize correctly sometimes.
+  - Possible crash when minimising app on Windows.
+  - File chooser ignores drive Z on Windows.
+
 ## 2.0.0 - Code rework and many new features
 - Massive rework and rewrite of code to simplify and make it more maintainable.
 - Use new list widget with custom layout for showing sends and receives.
@@ -21,7 +29,7 @@
 - The `Makefile` now supports uninstalling too (for Linux and BSD).
 - Release binaries are now built for `linux/arm64` as well.
 - Add initial build and package support for BSD.
-  - The next big release will have binaries for `freeBSD/amd64`.
+  - The next release will have binaries for `freeBSD/amd64`.
 - Updated `fyne` to [v1.4.0](https://github.com/fyne-io/fyne/releases/tag/v1.4.0).
 
 ## 1.3.0 - Code refractoring, new features and fixes

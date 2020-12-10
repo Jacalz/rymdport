@@ -8,7 +8,7 @@ The initial version was built in less than one day to show how quick and easy it
 </p>
 
 Built using the following Go modules:
-- [fyne](https://github.com/fyne-io/fyne) (version 1.4.0)
+- [fyne](https://github.com/fyne-io/fyne) (version 1.4.2)
 - [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.4 + [f69f6e8](https://github.com/psanford/wormhole-william/commit/f69f6e823d8cec6b3756b8ce63024c8cd3c3ebf2))
 - [archiver](https://github.com/mholt/archiver) (version 3.5.0)
 
@@ -19,7 +19,7 @@ Wormhole-gui compiles into a statically linked binary with no runtime dependenci
 ## Downloads
 
 Please visit the [release page](https://github.com/Jacalz/wormhole-gui/releases) for downloading the latest releases.
-Versions for Linux (`x86-64` and `arm64`), MacOS and Windows (`x86-64`) are available. Release binaries for FreeBSD is coming soon.
+Versions for Linux (`x86-64` and `arm64`), FreeBSD, MacOS and Windows (`x86-64`) are available.
 
 ## Building
 
