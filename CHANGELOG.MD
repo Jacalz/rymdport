@@ -1,7 +1,7 @@
 # Changelog
 
 ## 2.0.1 - Minor fixes and FreeBSD release binaries
-- Binaries for `freeBSD/amd64` are now avaliable on the release page.
+- Binaries for `freeBSD/amd64` are now available on the release page.
 - Corrected the icon for the receive tab.
 - Updated `fyne` to [v1.4.2](https://github.com/fyne-io/fyne/releases/tag/v1.4.2).
   - Dialog shadow does not resize correctly sometimes.
