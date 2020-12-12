@@ -91,23 +91,23 @@ func (s *settings) buildUI() *container.Scroll {
 	interfaceContainer := container.NewGridWithColumns(2,
 		newSettingLabel("Application Theme"), s.themeSelect,
 	)
-	interfaceGroup := widget.NewGroup("User Interface", interfaceContainer)
+	interfaceCard := widget.NewCard("User Interface", "Settings to manage the application appearance.", interfaceContainer)
 
 	dataContainer := container.NewGridWithColumns(2,
 		newSettingLabel("Downloads Path"), s.downloadPathButton,
 		newSettingLabel("Notifications"), s.notificationRadio,
 	)
-	dataGroup := widget.NewGroup("Data Handling", dataContainer)
+	dataCard := widget.NewCard("Data Handling", "Settings for handling of data.", dataContainer)
 
 	wormholeContainer := container.NewGridWithColumns(2,
 		newSettingLabel("Passphrase Length"), s.componentSlider,
 	)
-	wormholeGroup := widget.NewGroup("Wormhole Options", wormholeContainer)
+	wormholeCard := widget.NewCard("Wormhole Options", "Settings for configuring wormhole.", wormholeContainer)
 
 	return container.NewScroll(container.NewVBox(
-		interfaceGroup,
-		dataGroup,
-		wormholeGroup,
+		interfaceCard,
+		dataCard,
+		wormholeCard,
 	))
 }
 
