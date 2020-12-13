@@ -119,6 +119,7 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 	}
 
 	p.NewSendItem(dir)
+
 	go func() {
 		code, result, err := p.bridge.NewDirSend(dir, p.Items[p.Length()-1].Progress.Update)
 		if err != nil {
