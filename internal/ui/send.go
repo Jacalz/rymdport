@@ -53,7 +53,7 @@ func (s *send) onContentToSend() {
 
 func (s *send) buildUI() *fyne.Container {
 	s.fileChoice = &widget.Button{Text: "File", Icon: theme.FileIcon(), OnTapped: s.onFileSend}
-	s.directoryChoice = &widget.Button{Text: "Directory", Icon: theme.FolderIcon(), OnTapped: s.onDirSend}
+	s.directoryChoice = &widget.Button{Text: "Directory", Icon: theme.FolderOpenIcon(), OnTapped: s.onDirSend}
 	s.textChoice = &widget.Button{Text: "Text", Icon: theme.DocumentCreateIcon(), OnTapped: s.onTextSend}
 
 	choiceContent := container.NewGridWithColumns(1, s.fileChoice, s.directoryChoice, s.textChoice)
