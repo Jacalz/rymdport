@@ -31,7 +31,7 @@ func (b *Bridge) NewReceive(code string, uri chan fyne.URI) error {
 			return err
 		}
 
-		displayRecievedText(content)
+		b.displayReceivedText(content)
 
 		uri <- storage.NewURI("Text Snippet")
 	case wormhole.TransferFile:

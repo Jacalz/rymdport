@@ -141,7 +141,7 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 
 // SendText sends new text.
 func (p *SendList) SendText() {
-	if text := <-bridge.EnterSendText(); text != "" {
+	if text := <-p.bridge.EnterSendText(); text != "" {
 		p.NewSendItem(storage.NewURI("Text Snippet"))
 
 		go func() {

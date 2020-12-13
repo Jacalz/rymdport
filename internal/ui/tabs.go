@@ -8,7 +8,7 @@ import (
 
 // Create will stitch together all ui components
 func Create(app fyne.App, window fyne.Window) *container.AppTabs {
-	bridge := &bridge.Bridge{}
+	bridge := bridge.NewBridge() // To make sure that it is configured correctly
 	appSettings := &AppSettings{}
 	appSettings.Theme = checkTheme(app.Preferences().StringWithFallback("Theme", "Adaptive (requires restart)"), app)
 

@@ -9,9 +9,12 @@ import (
 	"fyne.io/fyne/widget"
 )
 
-// displayRecievedText handles the creation of a window for displaying text content.
-func displayRecievedText(content []byte) {
-	w := fyne.CurrentApp().NewWindow("Received text")
+// displayReceivedText handles the creation of a window for displaying text content.
+func (b *Bridge) displayReceivedText(content []byte) {
+	b.window.SetTitle("Received Text")
+	b.window.SetCloseIntercept(func() {
+		b.window.Hide()
+	})
 
 	textEntry := &widget.Entry{MultiLine: true, Text: string(content)}
 
@@ -24,7 +27,7 @@ func displayRecievedText(content []byte) {
 			dialog.ShowFileSave(func(file fyne.URIWriteCloser, err error) {
 				if err != nil {
 					fyne.LogError("Error on slecting file to write to", err)
-					dialog.ShowError(err, w)
+					dialog.ShowError(err, b.window)
 					return
 				} else if file == nil {
 					return
@@ -32,54 +35,51 @@ func displayRecievedText(content []byte) {
 
 				if _, err := file.Write(content); err != nil {
 					fyne.LogError("Error on writing data to the file", err)
-					dialog.ShowError(err, w)
+					dialog.ShowError(err, b.window)
 				}
 
 				if err := file.Close(); err != nil {
 					fyne.LogError("Error on writing data to the file", err)
-					dialog.ShowError(err, w)
+					dialog.ShowError(err, b.window)
 				}
-			}, w)
+			}, b.window)
 		}()
 	})
 
 	textContainer := container.NewScroll(textEntry)
 	actionContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), copyText, saveFile)
 
-	w.Resize(fyne.NewSize(400, 300))
-	w.SetContent(container.NewBorder(nil, actionContainer, nil, nil, textContainer))
-	w.Show()
+	b.window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, textContainer))
+	b.window.Show()
 }
 
 // EnterSendText opens a new window for setting up text to send.
-func EnterSendText() chan string {
+func (b *Bridge) EnterSendText() chan string {
 	text := make(chan string)
+	textEntry := &widget.Entry{MultiLine: true, PlaceHolder: "Enter text to send..."}
 
-	w := fyne.CurrentApp().NewWindow("Send text")
-	w.SetCloseIntercept(func() {
+	b.window.SetTitle("Send text")
+	b.window.SetCloseIntercept(func() {
 		text <- ""
-		w.Close()
+		b.window.Hide()
 	})
-
-	textEntry := widget.NewMultiLineEntry()
 
 	cancel := widget.NewButtonWithIcon("Cancel", theme.CancelIcon(), func() {
 		text <- ""
-		w.Close()
+		b.window.Hide()
 	})
 
 	send := &widget.Button{Text: "Send", Icon: theme.MailSendIcon(), OnTapped: func() {
 		text <- textEntry.Text
-		w.Close()
+		b.window.Hide()
 	}, Importance: widget.HighImportance}
 
 	textContainer := container.NewScroll(textEntry)
 	actionContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), cancel, send)
 
-	w.Resize(fyne.NewSize(400, 300))
-	w.SetContent(container.NewBorder(nil, actionContainer, nil, nil, textContainer))
-	w.Canvas().Focus(textEntry)
-	w.Show()
+	b.window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, textContainer))
+	b.window.Canvas().Focus(textEntry)
+	b.window.Show()
 
 	return text
 }
