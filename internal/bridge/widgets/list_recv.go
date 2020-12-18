@@ -33,14 +33,14 @@ func (p *RecvList) Length() int {
 
 // CreateItem creates a new item in the list.
 func (p *RecvList) CreateItem() fyne.CanvasObject {
-	return container.New(&listLayout{}, widget.NewFileIcon(nil), widget.NewLabel("Waiting for filename..."), widget.NewLabel("Checking status..."))
+	return container.New(&listLayout{}, widget.NewFileIcon(nil), widget.NewLabel("Waiting for filename..."), newRecvProgress())
 }
 
 // UpdateItem updates the data in the list.
 func (p *RecvList) UpdateItem(i int, item fyne.CanvasObject) {
 	item.(*fyne.Container).Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
 	item.(*fyne.Container).Objects[1].(*widget.Label).SetText(p.Items[i].URI.Name())
-	item.(*fyne.Container).Objects[2].(*widget.Label).SetText(p.Items[i].Status)
+	item.(*fyne.Container).Objects[2].(*fyne.Container).Objects[0].(*recvProgress).SetStatus(p.Items[i].Status)
 }
 
 // OnSelected handles removing items and stopping send (in the future)
@@ -57,7 +57,7 @@ func (p *RecvList) OnSelected(i int) {
 
 // NewReceive adds data about a new send to the list and then returns the channel to update the code.
 func (p *RecvList) NewReceive(code string) {
-	p.Items = append(p.Items, RecvItem{URI: storage.NewURI("Waiting for filename..."), Status: "Waiting for status..."})
+	p.Items = append(p.Items, RecvItem{URI: storage.NewURI("Waiting for filename..."), Status: "start"})
 	p.Refresh()
 
 	uri := make(chan fyne.URI)
@@ -75,7 +75,6 @@ func (p *RecvList) NewReceive(code string) {
 			dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
 		} else {
 			p.Items[index].Status = "Completed"
-			dialog.ShowInformation("Successful download", "The download completed without errors.", fyne.CurrentApp().Driver().AllWindows()[0])
 		}
 
 		p.Refresh()

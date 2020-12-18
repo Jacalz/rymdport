@@ -32,9 +32,12 @@ func (g *listLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
 
 			newx = oldx + cellWidth
 
-			_, isContainer := child.(*fyne.Container)
 			_, isLabel := child.(*widget.Label)
-			if isContainer || isLabel {
+			if cont, ok := child.(*fyne.Container); ok {
+				_, isLabel = cont.Objects[0].(*CodeDisplay)
+			}
+
+			if isLabel {
 				child.Move(fyne.NewPos(oldx, (y2-child.MinSize().Height)/2))
 			} else {
 				child.Move(fyne.NewPos(oldx, 0))
