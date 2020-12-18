@@ -13,13 +13,20 @@ import (
 	"github.com/psanford/wormhole-william/wormhole"
 )
 
+func bail(msg *wormhole.IncomingMessage, err error) error {
+	if rerr := msg.Reject(); rerr != nil {
+		return rerr
+	}
+
+	return err
+}
+
 // NewReceive runs a receive using wormhole-william and handles types accordingly.
 func (b *Bridge) NewReceive(code string, uri chan fyne.URI) error {
 	msg, err := b.Receive(context.Background(), code)
 	if err != nil {
 		fyne.LogError("Error on receiving data", err)
-		msg.Reject()
-		return err
+		return bail(msg, err)
 	}
 
 	if msg.Type == wormhole.TransferText {
@@ -41,8 +48,7 @@ func (b *Bridge) NewReceive(code string, uri chan fyne.URI) error {
 		file, err := os.Create(path)
 		if err != nil {
 			fyne.LogError("Error on creating file", err)
-			msg.Reject()
-			return err
+			return bail(msg, err)
 		}
 
 		defer func() {
@@ -63,8 +69,7 @@ func (b *Bridge) NewReceive(code string, uri chan fyne.URI) error {
 		tmp, err := ioutil.TempFile("", msg.Name+".zip.tmp")
 		if err != nil {
 			fyne.LogError("Error on creating tempfile", err)
-			msg.Reject()
-			return err
+			return bail(msg, err)
 		}
 
 		defer func() {
