@@ -18,13 +18,11 @@ func (b *Bridge) NewReceive(code string, uri chan fyne.URI) error {
 	msg, err := b.Receive(context.Background(), code)
 	if err != nil {
 		fyne.LogError("Error on receiving data", err)
+		msg.Reject()
 		return err
 	}
 
-	path := filepath.Join(b.DownloadPath, msg.Name)
-
-	switch msg.Type {
-	case wormhole.TransferText:
+	if msg.Type == wormhole.TransferText {
 		content, err := ioutil.ReadAll(msg)
 		if err != nil {
 			fyne.LogError("Error on reading received data", err)
@@ -34,10 +32,16 @@ func (b *Bridge) NewReceive(code string, uri chan fyne.URI) error {
 		b.displayReceivedText(content)
 
 		uri <- storage.NewURI("Text Snippet")
+	}
+
+	path := filepath.Join(b.DownloadPath, msg.Name)
+
+	switch msg.Type {
 	case wormhole.TransferFile:
 		file, err := os.Create(path)
 		if err != nil {
 			fyne.LogError("Error on creating file", err)
+			msg.Reject()
 			return err
 		}
 
@@ -59,6 +63,7 @@ func (b *Bridge) NewReceive(code string, uri chan fyne.URI) error {
 		tmp, err := ioutil.TempFile("", msg.Name+".zip.tmp")
 		if err != nil {
 			fyne.LogError("Error on creating tempfile", err)
+			msg.Reject()
 			return err
 		}
 
