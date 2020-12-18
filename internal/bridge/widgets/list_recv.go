@@ -2,6 +2,7 @@ package widgets
 
 import (
 	"fyne.io/fyne"
+	"fyne.io/fyne/container"
 	"fyne.io/fyne/dialog"
 	"fyne.io/fyne/storage"
 	"fyne.io/fyne/widget"
@@ -32,7 +33,7 @@ func (p *RecvList) Length() int {
 
 // CreateItem creates a new item in the list.
 func (p *RecvList) CreateItem() fyne.CanvasObject {
-	return fyne.NewContainerWithLayout(&listLayout{}, widget.NewFileIcon(nil), widget.NewLabel("Waiting for filename..."), widget.NewLabel("Checking status..."))
+	return container.New(&listLayout{}, widget.NewFileIcon(nil), widget.NewLabel("Waiting for filename..."), widget.NewLabel("Checking status..."))
 }
 
 // UpdateItem updates the data in the list.

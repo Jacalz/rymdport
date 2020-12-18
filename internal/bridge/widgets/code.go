@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"fyne.io/fyne"
-	"fyne.io/fyne/layout"
+	"fyne.io/fyne/container"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 )
@@ -44,5 +44,5 @@ func newCodeDisplay() *fyne.Container {
 	c.SetText("Waiting for code...")
 	c.button.OnTapped = c.copyOnPress
 
-	return fyne.NewContainerWithLayout(layout.NewHBoxLayout(), c, c.button)
+	return container.NewHBox(c, c.button)
 }

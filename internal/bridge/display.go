@@ -4,7 +4,6 @@ import (
 	"fyne.io/fyne"
 	"fyne.io/fyne/container"
 	"fyne.io/fyne/dialog"
-	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 )
@@ -47,7 +46,7 @@ func (b *Bridge) displayReceivedText(content []byte) {
 	})
 
 	textContainer := container.NewScroll(textEntry)
-	actionContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), copyText, saveFile)
+	actionContainer := container.NewGridWithColumns(2, copyText, saveFile)
 
 	b.window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, textContainer))
 	b.window.Show()
@@ -75,7 +74,7 @@ func (b *Bridge) EnterSendText() chan string {
 	}, Importance: widget.HighImportance}
 
 	textContainer := container.NewScroll(textEntry)
-	actionContainer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), cancel, send)
+	actionContainer := container.NewGridWithColumns(2, cancel, send)
 
 	b.window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, textContainer))
 	b.window.Canvas().Focus(textEntry)
