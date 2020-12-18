@@ -58,7 +58,6 @@ func (s *send) buildUI() *fyne.Container {
 
 	choiceContent := container.NewGridWithColumns(1, s.fileChoice, s.directoryChoice, s.textChoice)
 	s.contentPicker = dialog.NewCustom("Pick a content type", "Cancel", choiceContent, s.window)
-	s.contentPicker.Hide() // Bug in Fyne API. Can be removed after Fyne 2.0 and later.
 
 	s.sendList = widgets.NewSendList(s.bridge)
 	s.contentToSend = &widget.Button{Text: "Add content to send", Icon: theme.ContentAddIcon(), OnTapped: s.onContentToSend}
