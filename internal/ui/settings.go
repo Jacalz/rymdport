@@ -2,6 +2,7 @@ package ui
 
 import (
 	"path/filepath"
+	"strconv"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/container"
@@ -30,6 +31,7 @@ type settings struct {
 	notificationRadio *widget.RadioGroup
 
 	componentSlider *widget.Slider
+	componentLabel  *widget.Label
 
 	bridge      *bridge.Bridge
 	appSettings *AppSettings
@@ -74,6 +76,7 @@ func (s *settings) onNotificationsChanged(selected string) {
 func (s *settings) onComponentsChange(value float64) {
 	s.bridge.PassPhraseComponentLength = int(value)
 	s.app.Preferences().SetFloat("ComponentLength", value)
+	s.componentLabel.SetText(strconv.Itoa(int(value)))
 }
 
 func (s *settings) buildUI() *container.Scroll {
@@ -85,7 +88,8 @@ func (s *settings) buildUI() *container.Scroll {
 	s.notificationRadio = &widget.RadioGroup{Options: notificationOptions, Horizontal: true, Required: true, OnChanged: s.onNotificationsChanged}
 	s.notificationRadio.SetSelected(s.app.Preferences().StringWithFallback("Notifications", notificationOptions[1]))
 
-	s.componentSlider = &widget.Slider{Min: 2.0, Max: 6.0, OnChanged: s.onComponentsChange}
+	s.componentLabel = &widget.Label{}
+	s.componentSlider = &widget.Slider{Min: 2.0, Max: 6.0, Step: 1, OnChanged: s.onComponentsChange}
 	s.componentSlider.SetValue(s.app.Preferences().FloatWithFallback("ComponentLength", 2))
 
 	interfaceContainer := container.NewGridWithColumns(2,
@@ -100,7 +104,7 @@ func (s *settings) buildUI() *container.Scroll {
 	dataCard := widget.NewCard("Data Handling", "Settings for handling of data.", dataContainer)
 
 	wormholeContainer := container.NewGridWithColumns(2,
-		newSettingLabel("Passphrase Length"), s.componentSlider,
+		newSettingLabel("Passphrase Length"), container.NewBorder(nil, nil, nil, s.componentLabel, s.componentSlider),
 	)
 	wormholeCard := widget.NewCard("Wormhole Options", "Settings for configuring wormhole.", wormholeContainer)
 
