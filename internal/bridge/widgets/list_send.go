@@ -65,6 +65,8 @@ func (p *SendList) OnSelected(i int) {
 			p.Refresh()
 		}
 	}, fyne.CurrentApp().Driver().AllWindows()[0])
+
+	p.Unselect(i)
 }
 
 // NewSendItem adds data about a new send to the list and then returns the channel to update the code.

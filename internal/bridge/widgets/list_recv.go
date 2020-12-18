@@ -43,16 +43,24 @@ func (p *RecvList) UpdateItem(i int, item fyne.CanvasObject) {
 	item.(*fyne.Container).Objects[2].(*fyne.Container).Objects[0].(*recvProgress).SetStatus(p.Items[i].Status)
 }
 
+// RemoveItem removes the item at the specified index.
+func (p *RecvList) RemoveItem(i int) {
+	copy(p.Items[i:], p.Items[i+1:])
+	p.Items[p.Length()-1] = *emptyRecvItem // Make sure that GC run on removed element
+	p.Items = p.Items[:p.Length()-1]
+	p.Refresh()
+}
+
 // OnSelected handles removing items and stopping send (in the future)
 func (p *RecvList) OnSelected(i int) {
 	dialog.ShowConfirm("Remove from list", "Do you wish to remove the item from the list?", func(remove bool) {
 		if remove {
-			copy(p.Items[i:], p.Items[i+1:])
-			p.Items[p.Length()-1] = *emptyRecvItem // Make sure that GC run on removed element
-			p.Items = p.Items[:p.Length()-1]
+			p.RemoveItem(i)
 			p.Refresh()
 		}
 	}, fyne.CurrentApp().Driver().AllWindows()[0])
+
+	p.Unselect(i)
 }
 
 // NewReceive adds data about a new send to the list and then returns the channel to update the code.
