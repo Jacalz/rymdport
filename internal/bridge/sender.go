@@ -34,7 +34,7 @@ func (b *Bridge) NewDirSend(dir fyne.ListableURI, progress wormhole.SendOption) 
 			Path: path[prefix:], // Instead of strings.TrimPrefix. Paths don't need match (e.g. "C:/home/dir" == "C:\home\dir").
 			Mode: info.Mode(),
 			Reader: func() (io.ReadCloser, error) {
-				return os.Open(filepath.Clean(path))
+				return os.Open(path) // #nosec - path is already cleaned by filepath.Walk
 			},
 		})
 
