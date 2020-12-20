@@ -1,6 +1,7 @@
 # wormhole-gui
 
-Wormhole-gui is a cross-platform graphical interface for magic-wormhole that lets you share files, folders and text between computers.
+Wormhole-gui is a cross-platform graphical interface for magic-wormhole that lets you easily share files, folders and text between computers on the local network.
+It uses the Go implementation of magic-wormhole, called [wormhole-william](https://github.com/psanford/wormhole-william), and compiles into a single binary.
 
 <p align="center">
   <img src="internal/assets/screenshot.png" />
@@ -11,11 +12,12 @@ Built using the following Go modules:
 - [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.4 + [f69f6e8](https://github.com/psanford/wormhole-william/commit/f69f6e823d8cec6b3756b8ce63024c8cd3c3ebf2))
 - [archiver](https://github.com/mholt/archiver) (version 3.5.0)
 
-The initial version was built in less than one day to show how quick and easy it is to use fyne for developing applications. The application has since developed into a more feature-full cross-platform application for sharing files, folders, and text between devices on the local network.
+The initial version was built in less than one day to show how quick and easy it is to use [fyne](https://github.com/fyne-io/fyne) for developing applications.
 
 ## Requirements
 
 Wormhole-gui compiles into a statically linked binary with no runtime dependencies.
+Compiling requires a [Go](https://golang.org) compiler (1.13 or later) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
 
 ## Downloads
 
@@ -24,7 +26,7 @@ Versions for Linux (`x86-64` and `arm64`), FreeBSD, MacOS and Windows (`x86-64`)
 
 ## Building
 
-Systems that have a recent [Go](https://golang.org) compiler and the [required prequsites for Fyne](https://fyne.io/develop/) should be able to just build the project using `go build` in the project root:
+Systems with the compile-time requirements satisfied can build the project using `go build` in the project root:
 ```bash
 go build 
 ```
