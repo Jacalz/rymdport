@@ -1,4 +1,4 @@
-package bridge
+package transport
 
 import (
 	"context"
@@ -11,13 +11,13 @@ import (
 )
 
 // NewFileSend takes the chosen file and sends it using wormhole-william.
-func (b *Bridge) NewFileSend(file fyne.URIReadCloser, progress wormhole.SendOption) (string, chan wormhole.SendResult, fyne.URIReadCloser, error) {
-	code, result, err := b.SendFile(context.Background(), file.URI().Name(), file.(io.ReadSeeker), progress)
+func (c *Client) NewFileSend(file fyne.URIReadCloser, progress wormhole.SendOption) (string, chan wormhole.SendResult, fyne.URIReadCloser, error) {
+	code, result, err := c.SendFile(context.Background(), file.URI().Name(), file.(io.ReadSeeker), progress)
 	return code, result, file, err
 }
 
 // NewDirSend takes a listable URI and sends it using wormhole-william.
-func (b *Bridge) NewDirSend(dir fyne.ListableURI, progress wormhole.SendOption) (string, chan wormhole.SendResult, error) {
+func (c *Client) NewDirSend(dir fyne.ListableURI, progress wormhole.SendOption) (string, chan wormhole.SendResult, error) {
 	dirpath := dir.String()[7:]
 	prefixStr, _ := filepath.Split(dirpath)
 	prefix := len(prefixStr) // Where the prefix ends. Doing it this way is faster and works when paths don't use same separator (\ or /).
@@ -44,10 +44,10 @@ func (b *Bridge) NewDirSend(dir fyne.ListableURI, progress wormhole.SendOption) 
 		return "", nil, err
 	}
 
-	return b.SendDirectory(context.Background(), dir.Name(), files, progress)
+	return c.SendDirectory(context.Background(), dir.Name(), files, progress)
 }
 
 // NewTextSend takes a text input and sends the text using wormhole-william.
-func (b *Bridge) NewTextSend(text string, progress wormhole.SendOption) (string, chan wormhole.SendResult, error) {
-	return b.SendText(context.Background(), text, progress)
+func (c *Client) NewTextSend(text string, progress wormhole.SendOption) (string, chan wormhole.SendResult, error) {
+	return c.SendText(context.Background(), text, progress)
 }

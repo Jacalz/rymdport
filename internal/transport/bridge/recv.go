@@ -1,4 +1,4 @@
-package widgets
+package bridge
 
 import (
 	"fyne.io/fyne"
@@ -6,7 +6,7 @@ import (
 	"fyne.io/fyne/dialog"
 	"fyne.io/fyne/storage"
 	"fyne.io/fyne/widget"
-	"github.com/Jacalz/wormhole-gui/internal/bridge"
+	"github.com/Jacalz/wormhole-gui/internal/transport"
 )
 
 var emptyRecvItem = &RecvItem{}
@@ -21,7 +21,7 @@ type RecvItem struct {
 type RecvList struct {
 	widget.List
 
-	bridge *bridge.Bridge
+	client *transport.Client
 
 	Items []RecvItem
 }
@@ -40,7 +40,7 @@ func (p *RecvList) CreateItem() fyne.CanvasObject {
 func (p *RecvList) UpdateItem(i int, item fyne.CanvasObject) {
 	item.(*fyne.Container).Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
 	item.(*fyne.Container).Objects[1].(*widget.Label).SetText(p.Items[i].URI.Name())
-	item.(*fyne.Container).Objects[2].(*fyne.Container).Objects[0].(*recvProgress).SetStatus(p.Items[i].Status)
+	item.(*fyne.Container).Objects[2].(*fyne.Container).Objects[0].(*recvProgress).setStatus(p.Items[i].Status)
 }
 
 // RemoveItem removes the item at the specified index.
@@ -77,7 +77,7 @@ func (p *RecvList) NewReceive(code string) {
 	}()
 
 	go func(code string) {
-		if err := p.bridge.NewReceive(code, uri); err != nil {
+		if err := p.client.NewReceive(code, uri); err != nil {
 			p.Items[index].Status = "Failed"
 			fyne.LogError("Error on sending file", err)
 			dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
@@ -90,8 +90,8 @@ func (p *RecvList) NewReceive(code string) {
 }
 
 // NewRecvList greates a list of progress bars.
-func NewRecvList(bridge *bridge.Bridge) *RecvList {
-	p := &RecvList{bridge: bridge}
+func NewRecvList(client *transport.Client) *RecvList {
+	p := &RecvList{client: client}
 	p.List.Length = p.Length
 	p.List.CreateItem = p.CreateItem
 	p.List.UpdateItem = p.UpdateItem

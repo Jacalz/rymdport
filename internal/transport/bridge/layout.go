@@ -1,4 +1,4 @@
-package widgets
+package bridge
 
 import (
 	"fyne.io/fyne"
@@ -34,7 +34,7 @@ func (g *listLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
 
 			_, isLabel := child.(*widget.Label)
 			if cont, ok := child.(*fyne.Container); ok {
-				_, isLabel = cont.Objects[0].(*CodeDisplay)
+				_, isLabel = cont.Objects[0].(*codeDisplay)
 			}
 
 			if isLabel {

@@ -1,4 +1,4 @@
-package widgets
+package bridge
 
 import (
 	"fyne.io/fyne"
@@ -24,9 +24,9 @@ func (p *PressEntry) TypedKey(ev *fyne.KeyEvent) {
 }
 
 // NewPressEntry returns a new entry that runs a function on pressing return.
-func NewPressEntry(placeholder string) *PressEntry {
-	p := &PressEntry{}
+func NewPressEntry(placeholder string, onReturn func()) *PressEntry {
+	p := &PressEntry{OnReturn: onReturn}
+	p.Entry.PlaceHolder = placeholder
 	p.ExtendBaseWidget(p)
-	p.SetPlaceHolder(placeholder)
 	return p
 }

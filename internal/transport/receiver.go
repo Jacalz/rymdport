@@ -1,4 +1,4 @@
-package bridge
+package transport
 
 import (
 	"context"
@@ -21,8 +21,8 @@ func bail(msg *wormhole.IncomingMessage, err error) error {
 }
 
 // NewReceive runs a receive using wormhole-william and handles types accordingly.
-func (b *Bridge) NewReceive(code string, uri chan fyne.URI) error {
-	msg, err := b.Receive(context.Background(), code)
+func (c *Client) NewReceive(code string, uri chan fyne.URI) error {
+	msg, err := c.Receive(context.Background(), code)
 	if err != nil {
 		fyne.LogError("Error on receiving data", err)
 		return bail(msg, err)
@@ -35,12 +35,12 @@ func (b *Bridge) NewReceive(code string, uri chan fyne.URI) error {
 			return err
 		}
 
-		b.displayReceivedText(content)
+		c.displayReceivedText(content)
 
 		uri <- storage.NewURI("Text Snippet")
 	}
 
-	path := filepath.Join(b.DownloadPath, msg.Name)
+	path := filepath.Join(c.DownloadPath, msg.Name)
 
 	switch msg.Type {
 	case wormhole.TransferFile:
@@ -89,7 +89,7 @@ func (b *Bridge) NewReceive(code string, uri chan fyne.URI) error {
 			return err
 		}
 
-		err = b.zip.Unarchive(tmp.Name(), path)
+		err = c.zip.Unarchive(tmp.Name(), path)
 		if err != nil {
 			fyne.LogError("Error on unzipping contents", err)
 			return err

@@ -6,8 +6,8 @@ import (
 	"fyne.io/fyne/dialog"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
-	"github.com/Jacalz/wormhole-gui/internal/bridge"
-	"github.com/Jacalz/wormhole-gui/internal/bridge/widgets"
+	"github.com/Jacalz/wormhole-gui/internal/transport"
+	"github.com/Jacalz/wormhole-gui/internal/transport/bridge"
 )
 
 type send struct {
@@ -20,16 +20,16 @@ type send struct {
 	textChoice      *widget.Button
 
 	contentToSend *widget.Button
-	sendList      *widgets.SendList
+	sendList      *bridge.SendList
 
-	bridge      *bridge.Bridge
+	client      *transport.Client
 	appSettings *AppSettings
 	window      fyne.Window
 	app         fyne.App
 }
 
-func newSend(a fyne.App, w fyne.Window, b *bridge.Bridge, as *AppSettings) *send {
-	return &send{app: a, window: w, bridge: b, appSettings: as}
+func newSend(a fyne.App, w fyne.Window, c *transport.Client, as *AppSettings) *send {
+	return &send{app: a, window: w, client: c, appSettings: as}
 }
 
 func (s *send) onFileSend() {
@@ -59,7 +59,7 @@ func (s *send) buildUI() *fyne.Container {
 	choiceContent := container.NewGridWithColumns(1, s.fileChoice, s.directoryChoice, s.textChoice)
 	s.contentPicker = dialog.NewCustom("Pick a content type", "Cancel", choiceContent, s.window)
 
-	s.sendList = widgets.NewSendList(s.bridge)
+	s.sendList = bridge.NewSendList(s.client)
 	s.contentToSend = &widget.Button{Text: "Add content to send", Icon: theme.ContentAddIcon(), OnTapped: s.onContentToSend}
 
 	s.fileDialog = dialog.NewFileOpen(s.sendList.OnFileSelect, s.window)

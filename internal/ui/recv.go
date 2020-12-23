@@ -7,24 +7,24 @@ import (
 	"fyne.io/fyne/dialog"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
-	"github.com/Jacalz/wormhole-gui/internal/bridge"
-	"github.com/Jacalz/wormhole-gui/internal/bridge/widgets"
+	"github.com/Jacalz/wormhole-gui/internal/transport"
+	"github.com/Jacalz/wormhole-gui/internal/transport/bridge"
 )
 
 type recv struct {
-	codeEntry  *widgets.PressEntry
+	codeEntry  *bridge.PressEntry
 	codeButton *widget.Button
 
-	recvList *widgets.RecvList
+	recvList *bridge.RecvList
 
-	bridge      *bridge.Bridge
+	bridge      *transport.Client
 	appSettings *AppSettings
 	window      fyne.Window
 	app         fyne.App
 }
 
-func newRecv(a fyne.App, w fyne.Window, b *bridge.Bridge, as *AppSettings) *recv {
-	return &recv{app: a, window: w, bridge: b, appSettings: as}
+func newRecv(a fyne.App, w fyne.Window, c *transport.Client, as *AppSettings) *recv {
+	return &recv{app: a, window: w, bridge: c, appSettings: as}
 }
 
 func (r *recv) onRecv() {
@@ -38,13 +38,12 @@ func (r *recv) onRecv() {
 }
 
 func (r *recv) buildUI() *fyne.Container {
-	r.codeEntry = widgets.NewPressEntry("Enter code")
+	r.codeEntry = bridge.NewPressEntry("Enter code", r.onRecv)
 	r.codeEntry.Validator = validation.NewRegexp(`^\d\d?(-\w{2,12}){2,6}$`, "Invalid code")
-	r.codeEntry.OnReturn = r.onRecv
 
 	r.codeButton = &widget.Button{Text: "Download", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
 
-	r.recvList = widgets.NewRecvList(r.bridge)
+	r.recvList = bridge.NewRecvList(r.bridge)
 
 	box := container.NewVBox(container.NewGridWithColumns(2, r.codeEntry, r.codeButton), &widget.Label{})
 	return container.NewBorder(box, nil, nil, nil, r.recvList)

@@ -1,4 +1,5 @@
-package bridge
+// Package transport handles sending and receiving using wormhole-william
+package transport
 
 import (
 	"os"
@@ -9,8 +10,8 @@ import (
 	"github.com/psanford/wormhole-william/wormhole"
 )
 
-// Bridge holds settings and other meathods specific to the bridge using wormhole-willam.
-type Bridge struct {
+// Client defines the client for handling sending and receiving using wormhole-william
+type Client struct {
 	wormhole.Client
 
 	// Save a reference to the window to avoid creating a new one when sending and receiving text
@@ -26,9 +27,9 @@ type Bridge struct {
 	DownloadPath string
 }
 
-// NewBridge returns a new bridge that is configured and ready
-func NewBridge() *Bridge {
-	b := &Bridge{window: fyne.CurrentApp().NewWindow(""), zip: &archiver.Zip{MkdirAll: true}}
+// NewClient returns a new client for sending and receiving using wormhole-william
+func NewClient() *Client {
+	b := &Client{window: fyne.CurrentApp().NewWindow(""), zip: &archiver.Zip{MkdirAll: true}}
 	b.window.Resize(fyne.NewSize(400, 300))
 	return b
 }
