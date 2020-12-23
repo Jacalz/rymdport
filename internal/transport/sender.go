@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 
 	"fyne.io/fyne"
 	"github.com/psanford/wormhole-william/wormhole"
@@ -28,6 +29,10 @@ func (c *Client) NewDirSend(dir fyne.ListableURI, progress wormhole.SendOption) 
 			return err
 		} else if info.IsDir() || !info.Mode().IsRegular() {
 			return nil
+		}
+
+		if runtime.GOOS == "windows" {
+			path = filepath.ToSlash(path)
 		}
 
 		files = append(files, wormhole.DirectoryEntry{
