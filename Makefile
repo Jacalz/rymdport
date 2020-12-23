@@ -18,7 +18,8 @@ build:
 install:
 	install -Dm00755 $(NAME) $(DESTDIR)$(PREFIX)/bin/$(NAME)
 	install -Dm00644 $(ICON) $(DESTDIR)$(PREFIX)/share/pixmaps/$(NAME).png
-	install -Dm00644 internal/assets/$(NAME).desktop $(DESTDIR)$(PREFIX)/share/applications/$(NAME).desktop
+	install -Dm00644 internal/assets/unix/$(NAME).desktop $(DESTDIR)$(PREFIX)/share/applications/$(NAME).desktop
+	install -Dm00644 internal/assets/unix/com.github.jacalz.$(NAME).metainfo.xml $(DESTDIR)$(PREFIX)/share/metainfo/com.github.jacalz.$(NAME).metainfo.xml
 
 uninstall:
 	-rm $(DESTDIR)$(PREFIX)/share/applications/$(NAME).desktop
