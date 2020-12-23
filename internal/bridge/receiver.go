@@ -9,7 +9,6 @@ import (
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/storage"
-	"github.com/mholt/archiver/v3"
 	"github.com/psanford/wormhole-william/wormhole"
 )
 
@@ -90,7 +89,7 @@ func (b *Bridge) NewReceive(code string, uri chan fyne.URI) error {
 			return err
 		}
 
-		err = archiver.NewZip().Unarchive(tmp.Name(), path)
+		err = b.zip.Unarchive(tmp.Name(), path)
 		if err != nil {
 			fyne.LogError("Error on unzipping contents", err)
 			return err
