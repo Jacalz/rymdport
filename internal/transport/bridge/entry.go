@@ -8,15 +8,15 @@ import (
 // PressEntry is an extended entry for running a function on pressing enter.
 type PressEntry struct {
 	widget.Entry
-	OnReturn func()
+	OnEnter func()
 }
 
 // TypedKey handles the key presses inside our UsernameEntry and uses Action to press the linked button.
 func (p *PressEntry) TypedKey(ev *fyne.KeyEvent) {
 	switch ev.Name {
-	case fyne.KeyReturn:
-		if p.OnReturn != nil {
-			p.OnReturn()
+	case fyne.KeyReturn, fyne.KeyEnter: // fyne.KeyReturn is the enter/return key on the keyboard, fyne.KeyEnter is on the NumPad.
+		if p.OnEnter != nil {
+			p.OnEnter()
 		}
 	default:
 		p.Entry.TypedKey(ev)
@@ -24,8 +24,8 @@ func (p *PressEntry) TypedKey(ev *fyne.KeyEvent) {
 }
 
 // NewPressEntry returns a new entry that runs a function on pressing return.
-func NewPressEntry(placeholder string, onReturn func()) *PressEntry {
-	p := &PressEntry{OnReturn: onReturn}
+func NewPressEntry(placeholder string, onEnter func()) *PressEntry {
+	p := &PressEntry{OnEnter: onEnter}
 	p.Entry.PlaceHolder = placeholder
 	p.ExtendBaseWidget(p)
 	return p
