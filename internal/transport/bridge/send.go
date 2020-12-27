@@ -70,8 +70,8 @@ func (p *SendList) OnSelected(i int) {
 }
 
 // NewSendItem adds data about a new send to the list and then returns the channel to update the code.
-func (p *SendList) NewSendItem(URI fyne.URI) {
-	p.Items = append(p.Items, SendItem{URI: URI, Code: "Waiting for code..."})
+func (p *SendList) NewSendItem(uri fyne.URI) {
+	p.Items = append(p.Items, SendItem{URI: uri, Code: "Waiting for code..."})
 	p.Refresh()
 }
 
