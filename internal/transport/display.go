@@ -23,7 +23,7 @@ func (c *Client) displayReceivedText(content []byte) {
 
 	saveFile := widget.NewButtonWithIcon("Save text to file", theme.MoveDownIcon(), func() {
 		go func() {
-			dialog.ShowFileSave(func(file fyne.URIWriteCloser, err error) {
+			save := dialog.NewFileSave(func(file fyne.URIWriteCloser, err error) { // TODO: Might want to save this instead of recreating each time
 				if err != nil {
 					fyne.LogError("Error on slecting file to write to", err)
 					dialog.ShowError(err, c.window)
@@ -42,6 +42,8 @@ func (c *Client) displayReceivedText(content []byte) {
 					dialog.ShowError(err, c.window)
 				}
 			}, c.window)
+			save.SetFileName("received.txt")
+			save.Show()
 		}()
 	})
 
