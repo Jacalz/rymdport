@@ -44,6 +44,13 @@ func (c *Client) NewReceive(code string, uri chan fyne.URI) error {
 
 	switch msg.Type {
 	case wormhole.TransferFile:
+		if !c.Zip.OverwriteExisting {
+			if _, err := os.Stat(path); err == nil || os.IsExist(err) {
+				fyne.LogError("Error on creating file, settings prevent overwriting existing files", err)
+				return bail(msg, os.ErrExist)
+			}
+		}
+
 		file, err := os.Create(path)
 		if err != nil {
 			fyne.LogError("Error on creating file", err)
@@ -89,7 +96,7 @@ func (c *Client) NewReceive(code string, uri chan fyne.URI) error {
 			return err
 		}
 
-		err = c.zip.Unarchive(tmp.Name(), path)
+		err = c.Zip.Unarchive(tmp.Name(), path)
 		if err != nil {
 			fyne.LogError("Error on unzipping contents", err)
 			return err

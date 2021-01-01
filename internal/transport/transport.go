@@ -18,7 +18,7 @@ type Client struct {
 	window fyne.Window
 
 	// Save a reference to the zip handler to avoid creating a new one each time when unzipping folders
-	zip *archiver.Zip
+	Zip *archiver.Zip
 
 	// Notification holds the settings value for if we have notifications enabled or not.
 	Notifications bool
@@ -29,7 +29,7 @@ type Client struct {
 
 // NewClient returns a new client for sending and receiving using wormhole-william
 func NewClient() *Client {
-	b := &Client{window: fyne.CurrentApp().NewWindow(""), zip: &archiver.Zip{MkdirAll: true}}
+	b := &Client{window: fyne.CurrentApp().NewWindow(""), Zip: &archiver.Zip{MkdirAll: true}}
 	b.window.Resize(fyne.NewSize(400, 300))
 	return b
 }

@@ -79,7 +79,6 @@ func (p *RecvList) NewReceive(code string) {
 	go func(code string) {
 		if err := p.client.NewReceive(code, uri); err != nil {
 			p.Items[index].Status = "Failed"
-			fyne.LogError("Error on sending file", err)
 			dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
 		} else {
 			p.Items[index].Status = "Completed"

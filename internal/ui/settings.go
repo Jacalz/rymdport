@@ -14,6 +14,7 @@ import (
 
 var (
 	themes              = []string{"Adaptive (requires restart)", "Light", "Dark"}
+	overwriteOptions    = []string{"On", "Off"}
 	notificationOptions = []string{"On", "Off"}
 )
 
@@ -27,8 +28,8 @@ type settings struct {
 	themeSelect *widget.Select
 
 	downloadPathButton *widget.Button
-
-	notificationRadio *widget.RadioGroup
+	overwriteFiles     *widget.RadioGroup
+	notificationRadio  *widget.RadioGroup
 
 	componentSlider *widget.Slider
 	componentLabel  *widget.Label
@@ -63,6 +64,11 @@ func (s *settings) onDownloadsPathChanged() {
 	}, s.window)
 }
 
+func (s *settings) onOverwriteFilesChanged(selected string) {
+	s.client.Zip.OverwriteExisting = selected == "On"
+	s.app.Preferences().SetString("OverwriteFiles", selected)
+}
+
 func (s *settings) onNotificationsChanged(selected string) {
 	s.client.Notifications = selected == "On"
 	s.app.Preferences().SetString("Notifications", selected)
@@ -80,6 +86,9 @@ func (s *settings) buildUI() *container.Scroll {
 	s.client.DownloadPath = s.app.Preferences().StringWithFallback("DownloadPath", transport.UserDownloadsFolder())
 	s.downloadPathButton = &widget.Button{Icon: theme.FolderOpenIcon(), OnTapped: s.onDownloadsPathChanged, Text: filepath.Base(s.client.DownloadPath)}
 
+	s.overwriteFiles = &widget.RadioGroup{Options: overwriteOptions, Horizontal: true, Required: true, OnChanged: s.onOverwriteFilesChanged}
+	s.overwriteFiles.SetSelected(s.app.Preferences().StringWithFallback("OverwriteFiles", "Off"))
+
 	s.notificationRadio = &widget.RadioGroup{Options: notificationOptions, Horizontal: true, Required: true, OnChanged: s.onNotificationsChanged}
 	s.notificationRadio.SetSelected(s.app.Preferences().StringWithFallback("Notifications", notificationOptions[1]))
 
@@ -94,6 +103,7 @@ func (s *settings) buildUI() *container.Scroll {
 
 	dataContainer := container.NewGridWithColumns(2,
 		newSettingLabel("Downloads Path"), s.downloadPathButton,
+		newSettingLabel("Overwrite Files"), s.overwriteFiles,
 		newSettingLabel("Notifications"), s.notificationRadio,
 	)
 	dataCard := widget.NewCard("Data Handling", "Settings for handling of data.", dataContainer)
