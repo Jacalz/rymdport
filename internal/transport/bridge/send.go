@@ -88,7 +88,7 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 	p.NewSendItem(file.URI())
 
 	go func(i int) {
-		code, result, f, err := p.client.NewFileSend(file, p.Items[i].Progress.update)
+		code, result, err := p.client.NewFileSend(file, p.Items[i].Progress.update)
 		if err != nil {
 			fyne.LogError("Error on sending file", err)
 			dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
@@ -105,7 +105,7 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 			fyne.CurrentApp().SendNotification(fyne.NewNotification("Send completed", "The file was sent successfully"))
 		}
 
-		if err = f.Close(); err != nil {
+		if err = file.Close(); err != nil {
 			fyne.LogError("Error on closing file", err)
 		}
 	}(p.Length() - 1)
