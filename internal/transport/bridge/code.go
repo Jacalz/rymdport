@@ -1,7 +1,6 @@
 package bridge
 
 import (
-	"regexp"
 	"time"
 
 	"fyne.io/fyne"
@@ -10,20 +9,17 @@ import (
 	"fyne.io/fyne/widget"
 )
 
-var codeValidator = regexp.MustCompile(`^\d\d?(-\w{2,12}){2,6}$`)
-
 // codeDisplay is a label extended to copy the code with a menu popup on rightclick.
 type codeDisplay struct {
 	widget.Label
-	button *widget.Button
+	button    *widget.Button
+	clipboard fyne.Clipboard
 }
 
 func (c *codeDisplay) copyOnPress() {
-	clipboard := fyne.CurrentApp().Driver().AllWindows()[0].Clipboard()
-
-	if codeValidator.MatchString(c.Text) {
+	if c.Text != "Waiting for code..." {
 		c.button.SetIcon(theme.ConfirmIcon())
-		clipboard.SetContent(c.Text)
+		c.clipboard.SetContent(c.Text)
 	} else {
 		c.button.SetIcon(theme.CancelIcon())
 	}
@@ -33,7 +29,8 @@ func (c *codeDisplay) copyOnPress() {
 }
 
 func newCodeDisplay() *fyne.Container {
-	c := &codeDisplay{button: &widget.Button{Icon: theme.ContentCopyIcon(), Importance: widget.LowImportance}}
+	c := &codeDisplay{button: &widget.Button{Icon: theme.ContentCopyIcon(), Importance: widget.LowImportance},
+		clipboard: fyne.CurrentApp().Driver().AllWindows()[0].Clipboard()}
 	c.ExtendBaseWidget(c)
 
 	c.Text = "Waiting for code..."
