@@ -45,7 +45,6 @@ func (r *recvProgress) status() string {
 }
 
 func (r *recvProgress) finished() {
-	r.Stop()
 	r.Hide()
 	r.done.Show()
 }
@@ -62,8 +61,6 @@ func (r *recvProgress) failed() {
 
 func (r *recvProgress) setStatus(stat string) {
 	switch stat {
-	case "start":
-		r.Start()
 	case "Failed":
 		r.failed()
 	case "Completed":
@@ -76,9 +73,10 @@ func (r *recvProgress) setStatus(stat string) {
 func newRecvProgress() *fyne.Container {
 	r := &recvProgress{done: &widget.ProgressBar{}}
 	r.ExtendBaseWidget(r)
-	r.container = container.NewMax(r, r.done)
 
+	r.container = container.NewMax(r, r.done)
 	r.done.TextFormatter = r.status
 	r.done.Hide()
+
 	return r.container
 }

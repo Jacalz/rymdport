@@ -65,7 +65,7 @@ func (p *RecvList) OnSelected(i int) {
 
 // NewReceive adds data about a new send to the list and then returns the channel to update the code.
 func (p *RecvList) NewReceive(code string) {
-	p.Items = append(p.Items, RecvItem{URI: storage.NewURI("Waiting for filename..."), Status: "start"})
+	p.Items = append(p.Items, RecvItem{URI: storage.NewURI("Waiting for filename...")})
 	p.Refresh()
 
 	uri := make(chan fyne.URI)
