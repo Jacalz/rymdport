@@ -101,8 +101,9 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending file", res.Error)
 			dialog.ShowError(res.Error, fyne.CurrentApp().Driver().AllWindows()[0])
-		} else if res.OK && p.client.Notifications {
-			fyne.CurrentApp().SendNotification(fyne.NewNotification("Send completed", "The file was sent successfully"))
+			p.client.ShowNotification("File send failed", "An error occurred when sending the file.")
+		} else if res.OK {
+			p.client.ShowNotification("File send completed", "The file was sent successfully.")
 		}
 
 		if err = file.Close(); err != nil {
@@ -137,8 +138,9 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending directory", res.Error)
 			dialog.ShowError(res.Error, fyne.CurrentApp().Driver().AllWindows()[0])
-		} else if res.OK && p.client.Notifications {
-			fyne.CurrentApp().SendNotification(fyne.NewNotification("Send completed", "The directory was sent successfully"))
+			p.client.ShowNotification("Directory send failed", "An error occurred when sending the directory.")
+		} else if res.OK {
+			fyne.CurrentApp().SendNotification(fyne.NewNotification("Directory send completed", "The directory was sent successfully."))
 		}
 	}(p.Length() - 1)
 }
@@ -160,19 +162,11 @@ func (p *SendList) SendText() {
 			p.Refresh()
 
 			if res := <-result; res.Error != nil {
-				fyne.LogError("Error on sending text", err)
-				dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
-				return
-			}
-
-			p.Items[i].Code = code
-			p.Refresh()
-
-			if res := <-result; res.Error != nil {
 				fyne.LogError("Error on sending text", res.Error)
 				dialog.ShowError(res.Error, fyne.CurrentApp().Driver().AllWindows()[0])
+				p.client.ShowNotification("Text send failed", "An error occurred when sending the text.")
 			} else if res.OK && p.client.Notifications {
-				fyne.CurrentApp().SendNotification(fyne.NewNotification("Send completed", "The text was sent successfully"))
+				fyne.CurrentApp().SendNotification(fyne.NewNotification("Text send completed", "The text was sent successfully."))
 			}
 		}(p.Length() - 1)
 	}

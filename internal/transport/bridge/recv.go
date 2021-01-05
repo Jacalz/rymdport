@@ -79,9 +79,11 @@ func (p *RecvList) NewReceive(code string) {
 	go func(code string) {
 		if err := p.client.NewReceive(code, uri); err != nil {
 			p.Items[index].Status = "Failed"
+			p.client.ShowNotification("Receive failed", "An error occurred when receiving the data.")
 			dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
 		} else {
 			p.Items[index].Status = "Completed"
+			p.client.ShowNotification("Receive completed", "The data was received successfully.")
 		}
 
 		p.Refresh()
