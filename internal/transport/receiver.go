@@ -13,7 +13,9 @@ import (
 )
 
 func bail(msg *wormhole.IncomingMessage, err error) error {
-	if rerr := msg.Reject(); rerr != nil {
+	if msg == nil {
+		return err
+	} else if rerr := msg.Reject(); rerr != nil {
 		return rerr
 	}
 
