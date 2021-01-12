@@ -13,9 +13,8 @@ import (
 )
 
 var (
-	themes              = []string{"Adaptive (requires restart)", "Light", "Dark"}
-	overwriteOptions    = []string{"On", "Off"}
-	notificationOptions = []string{"On", "Off"}
+	themes       = []string{"Adaptive (requires restart)", "Light", "Dark"}
+	onOffOptions = []string{"On", "Off"}
 )
 
 // AppSettings contains settings specific to the application
@@ -86,11 +85,11 @@ func (s *settings) buildUI() *container.Scroll {
 	s.client.DownloadPath = s.app.Preferences().StringWithFallback("DownloadPath", transport.UserDownloadsFolder())
 	s.downloadPathButton = &widget.Button{Icon: theme.FolderOpenIcon(), OnTapped: s.onDownloadsPathChanged, Text: filepath.Base(s.client.DownloadPath)}
 
-	s.overwriteFiles = &widget.RadioGroup{Options: overwriteOptions, Horizontal: true, Required: true, OnChanged: s.onOverwriteFilesChanged}
+	s.overwriteFiles = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onOverwriteFilesChanged}
 	s.overwriteFiles.SetSelected(s.app.Preferences().StringWithFallback("OverwriteFiles", "Off"))
 
-	s.notificationRadio = &widget.RadioGroup{Options: notificationOptions, Horizontal: true, Required: true, OnChanged: s.onNotificationsChanged}
-	s.notificationRadio.SetSelected(s.app.Preferences().StringWithFallback("Notifications", notificationOptions[1]))
+	s.notificationRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onNotificationsChanged}
+	s.notificationRadio.SetSelected(s.app.Preferences().StringWithFallback("Notifications", onOffOptions[1]))
 
 	s.componentLabel = &widget.Label{}
 	s.componentSlider = &widget.Slider{Min: 2.0, Max: 6.0, Step: 1, OnChanged: s.onComponentsChange}

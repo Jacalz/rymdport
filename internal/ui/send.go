@@ -47,10 +47,6 @@ func (s *send) onTextSend() {
 	s.sendList.SendText()
 }
 
-func (s *send) onContentToSend() {
-	s.contentPicker.Show()
-}
-
 func (s *send) buildUI() *fyne.Container {
 	s.fileChoice = &widget.Button{Text: "File", Icon: theme.FileIcon(), OnTapped: s.onFileSend}
 	s.directoryChoice = &widget.Button{Text: "Directory", Icon: theme.FolderOpenIcon(), OnTapped: s.onDirSend}
@@ -60,7 +56,7 @@ func (s *send) buildUI() *fyne.Container {
 	s.contentPicker = dialog.NewCustom("Pick a content type", "Cancel", choiceContent, s.window)
 
 	s.sendList = bridge.NewSendList(s.client)
-	s.contentToSend = &widget.Button{Text: "Add content to send", Icon: theme.ContentAddIcon(), OnTapped: s.onContentToSend}
+	s.contentToSend = &widget.Button{Text: "Add content to send", Icon: theme.ContentAddIcon(), OnTapped: s.contentPicker.Show}
 
 	s.fileDialog = dialog.NewFileOpen(s.sendList.OnFileSelect, s.window)
 	s.directoryDialog = dialog.NewFolderOpen(s.sendList.OnDirSelect, s.window)
