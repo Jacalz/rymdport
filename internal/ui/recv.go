@@ -12,7 +12,7 @@ import (
 )
 
 type recv struct {
-	codeEntry  *bridge.PressEntry
+	codeEntry  *widget.Entry
 	codeButton *widget.Button
 
 	recvList *bridge.RecvList
@@ -38,8 +38,9 @@ func (r *recv) onRecv() {
 }
 
 func (r *recv) buildUI() *fyne.Container {
-	r.codeEntry = bridge.NewPressEntry("Enter code", r.onRecv)
-	r.codeEntry.Validator = validation.NewRegexp(`^\d\d?(-\w{2,12}){2,6}$`, "Invalid code")
+	r.codeEntry = &widget.Entry{PlaceHolder: "Enter code", OnSubmitted: func(_ string) { r.onRecv() },
+		Validator: validation.NewRegexp(`^\d\d?(-\w{2,12}){2,6}$`, "The code is invalid"),
+	}
 
 	r.codeButton = &widget.Button{Text: "Download", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
 
