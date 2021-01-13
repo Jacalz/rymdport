@@ -15,7 +15,7 @@ type Client struct {
 	wormhole.Client
 
 	// Save a reference to the window to avoid creating a new one when sending and receiving text
-	window fyne.Window
+	display *textDisplay
 
 	// Save a reference to the zip handler to avoid creating a new one each time when unzipping folders
 	Zip *archiver.Zip
@@ -36,9 +36,7 @@ func (c *Client) ShowNotification(title, content string) {
 
 // NewClient returns a new client for sending and receiving using wormhole-william
 func NewClient() *Client {
-	b := &Client{window: fyne.CurrentApp().NewWindow(""), Zip: &archiver.Zip{MkdirAll: true}}
-	b.window.Resize(fyne.NewSize(400, 300))
-	return b
+	return &Client{display: createTextWindow(), Zip: &archiver.Zip{MkdirAll: true}}
 }
 
 // UserDownloadsFolder returns the downloads folder corresponding to the current user.

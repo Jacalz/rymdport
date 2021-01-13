@@ -37,7 +37,7 @@ func (c *Client) NewReceive(code string, uri chan fyne.URI) error {
 			return err
 		}
 
-		c.displayReceivedText(content)
+		c.showTextReceiveWindow(string(content))
 
 		uri <- storage.NewURI("Text Snippet")
 	}

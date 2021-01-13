@@ -8,79 +8,108 @@ import (
 	"fyne.io/fyne/widget"
 )
 
-// displayReceivedText handles the creation of a window for displaying text content.
-func (c *Client) displayReceivedText(content []byte) {
-	c.window.SetTitle("Received Text")
-	c.window.SetCloseIntercept(func() {
-		c.window.Hide()
+type textDisplay struct {
+	textEntry               *widget.Entry
+	leftButton, rightButton *widget.Button
+	window                  fyne.Window
+}
+
+func (d *textDisplay) Refresh() {
+	d.textEntry.Refresh()
+	d.leftButton.Refresh()
+	d.rightButton.Refresh()
+}
+
+func createTextWindow() *textDisplay {
+	display := &textDisplay{
+		window:      fyne.CurrentApp().NewWindow(""),
+		textEntry:   &widget.Entry{MultiLine: true},
+		leftButton:  &widget.Button{},
+		rightButton: &widget.Button{},
+	}
+
+	actionContainer := container.NewGridWithColumns(2, display.leftButton, display.rightButton)
+	display.window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, display.textEntry))
+	display.window.Resize(fyne.NewSize(400, 300))
+
+	return display
+}
+
+// showTextReceiveWindow handles the creation of a window for displaying text content.
+func (c *Client) showTextReceiveWindow(text string) {
+	d := c.display
+
+	d.window.SetTitle("Received Text")
+	d.window.SetCloseIntercept(func() {
+		d.window.Hide()
 	})
 
-	textEntry := &widget.Entry{MultiLine: true, Text: string(content)}
+	d.leftButton.Text = "Copy text"
+	d.leftButton.Icon = theme.ContentCopyIcon()
+	d.leftButton.OnTapped = func() {
+		d.window.Clipboard().SetContent(text)
+	}
 
-	copyText := widget.NewButtonWithIcon("Copy text", theme.ContentCopyIcon(), func() {
-		c.window.Clipboard().SetContent(string(content))
-	})
-
-	saveFile := widget.NewButtonWithIcon("Save text to file", theme.MoveDownIcon(), func() {
+	d.rightButton.Text = "Save to file"
+	d.rightButton.Icon = theme.DocumentSaveIcon()
+	d.rightButton.OnTapped = func() {
 		go func() {
 			save := dialog.NewFileSave(func(file fyne.URIWriteCloser, err error) { // TODO: Might want to save this instead of recreating each time
 				if err != nil {
 					fyne.LogError("Error on slecting file to write to", err)
-					dialog.ShowError(err, c.window)
+					dialog.ShowError(err, d.window)
 					return
 				} else if file == nil {
 					return
 				}
 
-				if _, err := file.Write(content); err != nil {
+				if _, err := file.Write([]byte(text)); err != nil {
 					fyne.LogError("Error on writing data to the file", err)
-					dialog.ShowError(err, c.window)
+					dialog.ShowError(err, d.window)
 				}
 
 				if err := file.Close(); err != nil {
 					fyne.LogError("Error on writing data to the file", err)
-					dialog.ShowError(err, c.window)
+					dialog.ShowError(err, d.window)
 				}
-			}, c.window)
+			}, d.window)
 			save.SetFileName("received.txt")
 			save.Show()
 		}()
-	})
+	}
 
-	textContainer := container.NewScroll(textEntry)
-	actionContainer := container.NewGridWithColumns(2, copyText, saveFile)
-
-	c.window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, textContainer))
-	c.window.Show()
+	d.Refresh() // Update all contents in the window
+	d.window.Show()
 }
 
-// EnterSendText opens a new window for setting up text to send.
-func (c *Client) EnterSendText() chan string {
+// ShowTextSendWindow opens a new window for setting up text to send.
+func (c *Client) ShowTextSendWindow() chan string {
 	text := make(chan string)
-	textEntry := &widget.Entry{MultiLine: true, PlaceHolder: "Enter text to send..."}
+	d := c.display
 
-	c.window.SetTitle("Send text")
-	c.window.SetCloseIntercept(func() {
+	d.window.SetTitle("Send text")
+	d.window.SetCloseIntercept(func() {
 		text <- ""
-		c.window.Hide()
+		d.window.Hide()
 	})
 
-	cancel := widget.NewButtonWithIcon("Cancel", theme.CancelIcon(), func() {
-		text <- ""
-		c.window.Hide()
-	})
+	d.leftButton.Text = "Cancel"
+	d.leftButton.Icon = theme.CancelIcon()
+	d.leftButton.OnTapped = func() {
+		d.window.Close()
+	}
 
-	send := &widget.Button{Text: "Send", Icon: theme.MailSendIcon(), OnTapped: func() {
-		text <- textEntry.Text
-		c.window.Hide()
-	}, Importance: widget.HighImportance}
+	d.rightButton.Text = "Send"
+	d.rightButton.Icon = theme.MailSendIcon()
+	d.rightButton.Importance = widget.HighImportance
+	d.rightButton.OnTapped = func() {
+		text <- d.textEntry.Text
+		d.window.Hide()
+	}
 
-	textContainer := container.NewScroll(textEntry)
-	actionContainer := container.NewGridWithColumns(2, cancel, send)
-
-	c.window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, textContainer))
-	c.window.Canvas().Focus(textEntry)
-	c.window.Show()
+	d.Refresh() // Update all contents in the window
+	d.window.Canvas().Focus(d.textEntry)
+	d.window.Show()
 
 	return text
 }

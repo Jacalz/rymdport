@@ -15,5 +15,6 @@ func main() {
 
 	w.SetContent(ui.Create(a, w))
 	w.Resize(fyne.NewSize(700, 400))
+	w.SetMaster()
 	w.ShowAndRun()
 }
