@@ -87,16 +87,18 @@ func (c *Client) ShowTextSendWindow() chan string {
 	text := make(chan string)
 	d := c.display
 
-	d.window.SetTitle("Send text")
-	d.window.SetCloseIntercept(func() {
+	onClose := func() {
 		text <- ""
 		d.window.Hide()
-	})
+	}
+
+	d.window.SetTitle("Send text")
+	d.window.SetCloseIntercept(onClose)
 
 	d.leftButton.Text = "Cancel"
 	d.leftButton.Icon = theme.CancelIcon()
 	d.leftButton.OnTapped = func() {
-		d.window.Close()
+		onClose()
 	}
 
 	d.rightButton.Text = "Send"
