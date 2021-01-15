@@ -9,8 +9,6 @@ import (
 	"github.com/Jacalz/wormhole-gui/internal/transport"
 )
 
-var emptySendItem = &SendItem{}
-
 // SendItem is the item that is being sent.
 type SendItem struct {
 	Progress *sendProgress
@@ -24,7 +22,7 @@ type SendList struct {
 
 	client *transport.Client
 
-	Items []SendItem
+	Items []*SendItem
 }
 
 // Length returns the length of the data.
@@ -48,7 +46,7 @@ func (p *SendList) UpdateItem(i int, item fyne.CanvasObject) {
 // RemoveItem removes the item at the specified index.
 func (p *SendList) RemoveItem(i int) {
 	copy(p.Items[i:], p.Items[i+1:])
-	p.Items[p.Length()-1] = *emptySendItem // Make sure that GC run on removed element
+	p.Items[p.Length()-1] = nil // Make sure that GC run on removed element
 	p.Items = p.Items[:p.Length()-1]
 	p.Refresh()
 }
@@ -71,7 +69,7 @@ func (p *SendList) OnSelected(i int) {
 
 // NewSendItem adds data about a new send to the list and then returns the channel to update the code.
 func (p *SendList) NewSendItem(uri fyne.URI) {
-	p.Items = append(p.Items, SendItem{URI: uri, Code: "Waiting for code..."})
+	p.Items = append(p.Items, &SendItem{URI: uri, Code: "Waiting for code..."})
 	p.Refresh()
 }
 

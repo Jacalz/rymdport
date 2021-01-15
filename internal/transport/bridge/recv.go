@@ -9,8 +9,6 @@ import (
 	"github.com/Jacalz/wormhole-gui/internal/transport"
 )
 
-var emptyRecvItem = &RecvItem{}
-
 // RecvItem is the item that is being received
 type RecvItem struct {
 	URI    fyne.URI
@@ -23,7 +21,7 @@ type RecvList struct {
 
 	client *transport.Client
 
-	Items []RecvItem
+	Items []*RecvItem
 }
 
 // Length returns the length of the data.
@@ -46,7 +44,7 @@ func (p *RecvList) UpdateItem(i int, item fyne.CanvasObject) {
 // RemoveItem removes the item at the specified index.
 func (p *RecvList) RemoveItem(i int) {
 	copy(p.Items[i:], p.Items[i+1:])
-	p.Items[p.Length()-1] = *emptyRecvItem // Make sure that GC run on removed element
+	p.Items[p.Length()-1] = nil // Make sure that GC run on removed element
 	p.Items = p.Items[:p.Length()-1]
 	p.Refresh()
 }
@@ -65,7 +63,7 @@ func (p *RecvList) OnSelected(i int) {
 
 // NewReceive adds data about a new send to the list and then returns the channel to update the code.
 func (p *RecvList) NewReceive(code string) {
-	p.Items = append(p.Items, RecvItem{URI: storage.NewURI("Waiting for filename...")})
+	p.Items = append(p.Items, &RecvItem{URI: storage.NewURI("Waiting for filename...")})
 	p.Refresh()
 
 	uri := make(chan fyne.URI)
