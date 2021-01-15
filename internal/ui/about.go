@@ -32,7 +32,7 @@ func (a *about) buildUI() *fyne.Container {
 	return container.NewVBox(
 		layout.NewSpacer(),
 		container.NewHBox(layout.NewSpacer(), a.icon, layout.NewSpacer()),
-		widget.NewHBox(
+		container.NewHBox(
 			layout.NewSpacer(),
 			widget.NewLabelWithStyle("wormhole-gui", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
 			widget.NewLabelWithStyle("-", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
