@@ -51,5 +51,5 @@ func (r *recv) buildUI() *fyne.Container {
 }
 
 func (r *recv) tabItem() *container.TabItem {
-	return container.NewTabItemWithIcon("Receive", theme.DownloadIcon(), r.buildUI())
+	return &container.TabItem{Text: "Receive", Icon: theme.DownloadIcon(), Content: r.buildUI()}
 }

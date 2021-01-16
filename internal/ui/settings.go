@@ -96,31 +96,28 @@ func (s *settings) buildUI() *container.Scroll {
 	s.componentSlider.SetValue(s.app.Preferences().FloatWithFallback("ComponentLength", 2))
 
 	interfaceContainer := container.NewGridWithColumns(2,
-		newSettingLabel("Application Theme"), s.themeSelect,
+		newBoldLabel("Application Theme"), s.themeSelect,
 	)
-	interfaceCard := widget.NewCard("User Interface", "Settings to manage the application appearance.", interfaceContainer)
 
 	dataContainer := container.NewGridWithColumns(2,
-		newSettingLabel("Downloads Path"), s.downloadPathButton,
-		newSettingLabel("Overwrite Files"), s.overwriteFiles,
-		newSettingLabel("Notifications"), s.notificationRadio,
+		newBoldLabel("Downloads Path"), s.downloadPathButton,
+		newBoldLabel("Overwrite Files"), s.overwriteFiles,
+		newBoldLabel("Notifications"), s.notificationRadio,
 	)
-	dataCard := widget.NewCard("Data Handling", "Settings for handling of data.", dataContainer)
 
 	wormholeContainer := container.NewGridWithColumns(2,
-		newSettingLabel("Passphrase Length"), container.NewBorder(nil, nil, nil, s.componentLabel, s.componentSlider),
+		newBoldLabel("Passphrase Length"), container.NewBorder(nil, nil, nil, s.componentLabel, s.componentSlider),
 	)
-	wormholeCard := widget.NewCard("Wormhole Options", "Settings for configuring wormhole.", wormholeContainer)
 
 	return container.NewScroll(container.NewVBox(
-		interfaceCard,
-		dataCard,
-		wormholeCard,
+		&widget.Card{Title: "User Interface", Content: interfaceContainer},
+		&widget.Card{Title: "Data Handling", Content: dataContainer},
+		&widget.Card{Title: "Wormhole Options", Content: wormholeContainer},
 	))
 }
 
 func (s *settings) tabItem() *container.TabItem {
-	return container.NewTabItemWithIcon("Settings", theme.SettingsIcon(), s.buildUI())
+	return &container.TabItem{Text: "Settings", Icon: theme.SettingsIcon(), Content: s.buildUI()}
 }
 
 func checkTheme(themec string, a fyne.App) string {
@@ -134,6 +131,6 @@ func checkTheme(themec string, a fyne.App) string {
 	return themec
 }
 
-func newSettingLabel(text string) *widget.Label {
-	return &widget.Label{TextStyle: fyne.TextStyle{Bold: true}, Text: text}
+func newBoldLabel(text string) *widget.Label {
+	return &widget.Label{Text: text, TextStyle: fyne.TextStyle{Bold: true}}
 }

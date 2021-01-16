@@ -66,5 +66,5 @@ func (s *send) buildUI() *fyne.Container {
 }
 
 func (s *send) tabItem() *container.TabItem {
-	return container.NewTabItemWithIcon("Send", theme.MailSendIcon(), s.buildUI())
+	return &container.TabItem{Text: "Send", Icon: theme.MailSendIcon(), Content: s.buildUI()}
 }
