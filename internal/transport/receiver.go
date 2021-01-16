@@ -24,6 +24,12 @@ func bail(msg *wormhole.IncomingMessage, err error) error {
 
 // NewReceive runs a receive using wormhole-william and handles types accordingly.
 func (c *Client) NewReceive(code string, uri chan fyne.URI) error {
+	// We want to always send a URI, even on fail, in order to not block goroutines
+	uriToSend := storage.NewURI("Waiting for filename...")
+	defer func() {
+		uri <- uriToSend
+	}()
+
 	msg, err := c.Receive(context.Background(), code)
 	if err != nil {
 		fyne.LogError("Error on receiving data", err)
@@ -37,15 +43,15 @@ func (c *Client) NewReceive(code string, uri chan fyne.URI) error {
 			return err
 		}
 
+		uriToSend = storage.NewURI("Text Snippet")
 		c.showTextReceiveWindow(string(content))
-
-		uri <- storage.NewURI("Text Snippet")
+		return nil
 	}
 
 	path := filepath.Join(c.DownloadPath, msg.Name)
+	uriToSend = storage.NewFileURI(path)
 
-	switch msg.Type {
-	case wormhole.TransferFile:
+	if msg.Type == wormhole.TransferFile {
 		if !c.Zip.OverwriteExisting {
 			if _, err := os.Stat(path); err == nil || os.IsExist(err) {
 				fyne.LogError("Error on creating file, settings prevent overwriting existing files", err)
@@ -72,39 +78,37 @@ func (c *Client) NewReceive(code string, uri chan fyne.URI) error {
 			return err
 		}
 
-		uri <- storage.NewFileURI(path)
-	case wormhole.TransferDirectory:
-		tmp, err := ioutil.TempFile("", msg.Name+".zip.tmp")
-		if err != nil {
-			fyne.LogError("Error on creating tempfile", err)
-			return bail(msg, err)
+		return nil
+	}
+
+	tmp, err := ioutil.TempFile("", msg.Name+"-*.zip.tmp")
+	if err != nil {
+		fyne.LogError("Error on creating tempfile", err)
+		return bail(msg, err)
+	}
+
+	defer func() {
+		if cerr := tmp.Close(); cerr != nil {
+			fyne.LogError("Error on closing file", err)
+			err = cerr
 		}
 
-		defer func() {
-			if cerr := tmp.Close(); cerr != nil {
-				fyne.LogError("Error on closing file", err)
-				err = cerr
-			}
-
-			if rerr := os.Remove(tmp.Name()); rerr != nil {
-				fyne.LogError("Error on removing temp file", err)
-				err = rerr
-			}
-		}()
-
-		_, err = io.Copy(tmp, ioutil.NopCloser(msg))
-		if err != nil {
-			fyne.LogError("Error on copying contents to file", err)
-			return err
+		if rerr := os.Remove(tmp.Name()); rerr != nil {
+			fyne.LogError("Error on removing temp file", err)
+			err = rerr
 		}
+	}()
 
-		err = c.Zip.Unarchive(tmp.Name(), path)
-		if err != nil {
-			fyne.LogError("Error on unzipping contents", err)
-			return err
-		}
+	_, err = io.Copy(tmp, ioutil.NopCloser(msg))
+	if err != nil {
+		fyne.LogError("Error on copying contents to file", err)
+		return err
+	}
 
-		uri <- storage.NewFileURI(path)
+	err = c.Zip.Unarchive(tmp.Name(), path)
+	if err != nil {
+		fyne.LogError("Error on unzipping contents", err)
+		return err
 	}
 
 	return nil

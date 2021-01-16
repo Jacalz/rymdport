@@ -71,6 +71,7 @@ func (p *RecvList) NewReceive(code string) {
 
 	go func() {
 		p.Items[index].URI = <-uri
+		close(uri)
 		p.Refresh()
 	}()
 
