@@ -44,19 +44,20 @@ func (c *Client) showTextReceiveWindow(text string) {
 		d.window.Hide()
 	})
 
-	d.leftButton.Text = "Copy text"
+	d.leftButton.Text = "Copy"
 	d.leftButton.Icon = theme.ContentCopyIcon()
 	d.leftButton.OnTapped = func() {
 		d.window.Clipboard().SetContent(text)
 	}
 
-	d.rightButton.Text = "Save to file"
+	d.rightButton.Text = "Save"
 	d.rightButton.Icon = theme.DocumentSaveIcon()
+	d.rightButton.Importance = widget.MediumImportance
 	d.rightButton.OnTapped = func() {
 		go func() {
 			save := dialog.NewFileSave(func(file fyne.URIWriteCloser, err error) { // TODO: Might want to save this instead of recreating each time
 				if err != nil {
-					fyne.LogError("Error on slecting file to write to", err)
+					fyne.LogError("Error on selecting file to write to", err)
 					dialog.ShowError(err, d.window)
 					return
 				} else if file == nil {
@@ -77,6 +78,9 @@ func (c *Client) showTextReceiveWindow(text string) {
 			save.Show()
 		}()
 	}
+
+	d.textEntry.OnSubmitted = nil
+	d.textEntry.Text = text
 
 	d.Refresh() // Update all contents in the window
 	d.window.Show()
@@ -108,6 +112,9 @@ func (c *Client) ShowTextSendWindow() chan string {
 		text <- d.textEntry.Text
 		d.window.Hide()
 	}
+
+	d.textEntry.OnSubmitted = func(_ string) { d.rightButton.OnTapped() }
+	d.textEntry.Text = ""
 
 	d.Refresh() // Update all contents in the window
 	d.window.Canvas().Focus(d.textEntry)
