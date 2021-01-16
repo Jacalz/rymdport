@@ -1,6 +1,5 @@
 ### Description:
-<!-- A summary of the change included and which issue it addresses.
-Please include any relevant motivation and background.
+<!-- A description of the included change. Please include any relevant motivation and background.
 If it fixes an issue, please add a line with: Fixes #issue-number -->
 
 ### Checklist:

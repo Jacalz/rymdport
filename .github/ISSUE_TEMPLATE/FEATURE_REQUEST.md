@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for improving the application
+about: Suggest an idea or improvement
 title: ''
 labels: 'enhancement'
 assignees: ''
