@@ -53,9 +53,14 @@ func displayRecievedText(content []byte) {
 
 // EnterSendText opens a new window for setting up text to send.
 func EnterSendText() chan string {
-	w := fyne.CurrentApp().NewWindow("Send text")
-
 	text := make(chan string)
+
+	w := fyne.CurrentApp().NewWindow("Send text")
+	w.SetCloseIntercept(func() {
+		text <- ""
+		w.Close()
+	})
+
 	textEntry := widget.NewMultiLineEntry()
 
 	cancel := widget.NewButtonWithIcon("Cancel", theme.CancelIcon(), func() {

@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	version = "v2.0.1"
+	version = "v2.0.2"
 	rurl    = "https://github.com/Jacalz/wormhole-gui/releases/tag/" + version
 )
 

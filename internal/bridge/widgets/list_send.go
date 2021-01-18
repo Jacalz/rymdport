@@ -6,7 +6,6 @@ import (
 	"fyne.io/fyne/storage"
 	"fyne.io/fyne/widget"
 	"github.com/Jacalz/wormhole-gui/internal/bridge"
-	"github.com/psanford/wormhole-william/wormhole"
 )
 
 var emptySendItem = &SendItem{}
@@ -84,17 +83,18 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 	}
 
 	p.NewSendItem(file.URI())
-	code, result, f, err := p.bridge.NewFileSend(file, p.Items[p.Length()-1].Progress.Update)
-	if err != nil {
-		fyne.LogError("Error on sending file", err)
-		dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
-		return
-	}
 
-	p.Items[p.Length()-1].Code = code
-	p.Refresh()
+	go func() {
+		code, result, f, err := p.bridge.NewFileSend(file, p.Items[p.Length()-1].Progress.Update)
+		if err != nil {
+			fyne.LogError("Error on sending file", err)
+			dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
+			return
+		}
 
-	go func(status chan wormhole.SendResult) {
+		p.Items[p.Length()-1].Code = code
+		p.Refresh()
+
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending file", res.Error)
 			dialog.ShowError(res.Error, fyne.CurrentApp().Driver().AllWindows()[0])
@@ -105,7 +105,7 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 		if err = f.Close(); err != nil {
 			fyne.LogError("Error on closing file", err)
 		}
-	}(result)
+	}()
 }
 
 // OnDirSelect is intended to be passed as callback to a FolderOpen dialog.
@@ -119,33 +119,10 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 	}
 
 	p.NewSendItem(dir)
-	code, result, err := p.bridge.NewDirSend(dir, p.Items[p.Length()-1].Progress.Update)
-	if err != nil {
-		fyne.LogError("Error on sending directory", err)
-		dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
-		return
-	}
-
-	p.Items[p.Length()-1].Code = code
-	p.Refresh()
-
-	go func(status chan wormhole.SendResult) {
-		if res := <-result; res.Error != nil {
-			fyne.LogError("Error on sending directory", res.Error)
-			dialog.ShowError(res.Error, fyne.CurrentApp().Driver().AllWindows()[0])
-		} else if res.OK && p.bridge.Notifications {
-			fyne.CurrentApp().SendNotification(fyne.NewNotification("Send completed", "The directory was sent successfully"))
-		}
-	}(result)
-}
-
-// SendText sends new text.
-func (p *SendList) SendText() {
-	if text := <-bridge.EnterSendText(); text != "" {
-		p.NewSendItem(storage.NewURI("Text Snippet"))
-		code, result, err := p.bridge.NewTextSend(text, p.Items[p.Length()-1].Progress.Update)
+	go func() {
+		code, result, err := p.bridge.NewDirSend(dir, p.Items[p.Length()-1].Progress.Update)
 		if err != nil {
-			fyne.LogError("Error on sending text", err)
+			fyne.LogError("Error on sending directory", err)
 			dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
 			return
 		}
@@ -153,14 +130,38 @@ func (p *SendList) SendText() {
 		p.Items[p.Length()-1].Code = code
 		p.Refresh()
 
-		go func(status chan wormhole.SendResult) {
-			if res := <-result; res.Error != nil {
+		if res := <-result; res.Error != nil {
+			fyne.LogError("Error on sending directory", res.Error)
+			dialog.ShowError(res.Error, fyne.CurrentApp().Driver().AllWindows()[0])
+		} else if res.OK && p.bridge.Notifications {
+			fyne.CurrentApp().SendNotification(fyne.NewNotification("Send completed", "The directory was sent successfully"))
+		}
+	}()
+}
+
+// SendText sends new text.
+func (p *SendList) SendText() {
+	if text := <-bridge.EnterSendText(); text != "" {
+		p.NewSendItem(storage.NewURI("Text Snippet"))
+
+		go func() {
+			code, result, err := p.bridge.NewTextSend(text, p.Items[p.Length()-1].Progress.Update)
+			if err != nil {
 				fyne.LogError("Error on sending text", err)
 				dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
+				return
+			}
+
+			p.Items[p.Length()-1].Code = code
+			p.Refresh()
+
+			if res := <-result; res.Error != nil {
+				fyne.LogError("Error on sending text", res.Error)
+				dialog.ShowError(res.Error, fyne.CurrentApp().Driver().AllWindows()[0])
 			} else if res.OK && p.bridge.Notifications {
 				fyne.CurrentApp().SendNotification(fyne.NewNotification("Send completed", "The text was sent successfully"))
 			}
-		}(result)
+		}()
 	}
 }
 

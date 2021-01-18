@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0.2 - A few fixes while waiting for 2.1.0
+- Fix a bug that prevented folder send to work on Windows.
+- Fix an issue where the ui would become unresponsive on dismissing text send.
+- Fixed a bug where the application could crash on typing an incorrect code.
+- Sending large files, folders or text will no longer slow down the ui.
+- Updated `fyne` to [v1.4.3](https://github.com/fyne-io/fyne/releases/tag/v1.4.2).
+  - Fix an issue where with notifications sometimes not showing on MacOS.
+- Release binaries are built with `Go 1.14.15` for faster performance.
+
 ## 2.0.1 - Minor fixes and FreeBSD release binaries
 - Binaries for `freeBSD/amd64` are now available on the release page.
 - Corrected the icon for the receive tab.
