@@ -13,6 +13,7 @@ import (
 type RecvItem struct {
 	URI    fyne.URI
 	Status string
+	Name   string
 }
 
 // RecvList is a list of progress bars that track send progress.
@@ -37,7 +38,7 @@ func (p *RecvList) CreateItem() fyne.CanvasObject {
 // UpdateItem updates the data in the list.
 func (p *RecvList) UpdateItem(i int, item fyne.CanvasObject) {
 	item.(*fyne.Container).Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
-	item.(*fyne.Container).Objects[1].(*widget.Label).SetText(p.Items[i].URI.Name())
+	item.(*fyne.Container).Objects[1].(*widget.Label).SetText(p.Items[i].Name)
 	item.(*fyne.Container).Objects[2].(*fyne.Container).Objects[0].(*recvProgress).setStatus(p.Items[i].Status)
 }
 
@@ -63,20 +64,25 @@ func (p *RecvList) OnSelected(i int) {
 
 // NewReceive adds data about a new send to the list and then returns the channel to update the code.
 func (p *RecvList) NewReceive(code string) {
-	p.Items = append(p.Items, &RecvItem{URI: storage.NewURI("Waiting for filename...")})
+	p.Items = append(p.Items, &RecvItem{Name: "Waiting for filename..."})
 	p.Refresh()
 
-	uri := make(chan fyne.URI)
+	path := make(chan string)
 	index := p.Length() - 1
 
 	go func() {
-		p.Items[index].URI = <-uri
-		close(uri)
+		p.Items[index].Name = <-path
+		if p.Items[index].Name != "Text Snippet" {
+			p.Items[index].URI = storage.NewFileURI(p.Items[index].Name)
+			p.Items[index].Name = p.Items[index].URI.Name()
+		}
+
+		close(path)
 		p.Refresh()
 	}()
 
 	go func(code string) {
-		if err := p.client.NewReceive(code, uri); err != nil {
+		if err := p.client.NewReceive(code, path); err != nil {
 			p.Items[index].Status = "Failed"
 			p.client.ShowNotification("Receive failed", "An error occurred when receiving the data.")
 			dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])

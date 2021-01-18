@@ -23,11 +23,11 @@ func bail(msg *wormhole.IncomingMessage, err error) error {
 }
 
 // NewReceive runs a receive using wormhole-william and handles types accordingly.
-func (c *Client) NewReceive(code string, uri chan fyne.URI) error {
+func (c *Client) NewReceive(code string, pathname chan string) error {
 	// We want to always send a URI, even on fail, in order to not block goroutines
-	uriToSend := storage.NewURI("Waiting for filename...")
+	pathToSend := "Text Snippet"
 	defer func() {
-		uri <- uriToSend
+		pathname <- pathToSend
 	}()
 
 	msg, err := c.Receive(context.Background(), code)
@@ -43,13 +43,12 @@ func (c *Client) NewReceive(code string, uri chan fyne.URI) error {
 			return err
 		}
 
-		uriToSend = storage.NewURI("Text Snippet")
 		c.showTextReceiveWindow(string(content))
 		return nil
 	}
 
 	path := filepath.Join(c.DownloadPath, msg.Name)
-	uriToSend = storage.NewFileURI(path)
+	pathToSend = storage.NewFileURI(path).String()
 
 	if msg.Type == wormhole.TransferFile {
 		if !c.Zip.OverwriteExisting {

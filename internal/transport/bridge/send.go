@@ -4,16 +4,16 @@ import (
 	"fyne.io/fyne"
 	"fyne.io/fyne/container"
 	"fyne.io/fyne/dialog"
-	"fyne.io/fyne/storage"
 	"fyne.io/fyne/widget"
 	"github.com/Jacalz/wormhole-gui/internal/transport"
 )
 
 // SendItem is the item that is being sent.
 type SendItem struct {
+	URI      fyne.URI
 	Progress *sendProgress
 	Code     string
-	URI      fyne.URI
+	Name     string
 }
 
 // SendList is a list of progress bars that track send progress.
@@ -38,7 +38,7 @@ func (p *SendList) CreateItem() fyne.CanvasObject {
 // UpdateItem updates the data in the list.
 func (p *SendList) UpdateItem(i int, item fyne.CanvasObject) {
 	item.(*fyne.Container).Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
-	item.(*fyne.Container).Objects[1].(*widget.Label).SetText(p.Items[i].URI.Name())
+	item.(*fyne.Container).Objects[1].(*widget.Label).SetText(p.Items[i].Name)
 	item.(*fyne.Container).Objects[2].(*fyne.Container).Objects[0].(*codeDisplay).SetText(p.Items[i].Code)
 	p.Items[i].Progress = item.(*fyne.Container).Objects[3].(*sendProgress)
 }
@@ -68,8 +68,8 @@ func (p *SendList) OnSelected(i int) {
 }
 
 // NewSendItem adds data about a new send to the list and then returns the channel to update the code.
-func (p *SendList) NewSendItem(uri fyne.URI) {
-	p.Items = append(p.Items, &SendItem{URI: uri, Code: "Waiting for code..."})
+func (p *SendList) NewSendItem(name string, uri fyne.URI) {
+	p.Items = append(p.Items, &SendItem{Name: name, Code: "Waiting for code...", URI: uri})
 	p.Refresh()
 }
 
@@ -83,7 +83,7 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 		return
 	}
 
-	p.NewSendItem(file.URI())
+	p.NewSendItem(file.URI().Name(), file.URI())
 
 	go func(i int) {
 		code, result, err := p.client.NewFileSend(file, p.Items[i].Progress.update)
@@ -120,7 +120,7 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 		return
 	}
 
-	p.NewSendItem(dir)
+	p.NewSendItem(dir.Name(), dir)
 
 	go func(i int) {
 		code, result, err := p.client.NewDirSend(dir, p.Items[i].Progress.update)
@@ -146,7 +146,7 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 // SendText sends new text.
 func (p *SendList) SendText() {
 	if text := <-p.client.ShowTextSendWindow(); text != "" {
-		p.NewSendItem(storage.NewURI("Text Snippet"))
+		p.NewSendItem("Text Snippet", nil)
 
 		go func(i int) {
 			code, result, err := p.client.NewTextSend(text, p.Items[i].Progress.update)
