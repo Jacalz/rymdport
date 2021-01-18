@@ -19,6 +19,8 @@ The initial version was built in less than one day to show how quick and easy it
 Wormhole-gui compiles into a statically linked binary with no runtime dependencies.
 Compiling requires a [Go](https://golang.org) compiler (1.13 or later) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
 
+NOTE: Wormhole-gui does not currently run natively on Apple silicon (M1), but works through Rosetta 2.
+
 ## Downloads
 
 Please visit the [release page](https://github.com/Jacalz/wormhole-gui/releases) for downloading the latest releases.
