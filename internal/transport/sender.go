@@ -12,8 +12,7 @@ import (
 
 // NewFileSend takes the chosen file and sends it using wormhole-william.
 func (c *Client) NewFileSend(file fyne.URIReadCloser, progress wormhole.SendOption) (string, chan wormhole.SendResult, error) {
-	code, result, err := c.SendFile(context.Background(), file.URI().Name(), file.(io.ReadSeeker), progress)
-	return code, result, err
+	return c.SendFile(context.Background(), file.URI().Name(), file.(io.ReadSeeker), progress)
 }
 
 // NewDirSend takes a listable URI and sends it using wormhole-william.
