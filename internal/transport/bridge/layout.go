@@ -1,9 +1,9 @@
 package bridge
 
 import (
-	"fyne.io/fyne"
-	"fyne.io/fyne/theme"
-	"fyne.io/fyne/widget"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/theme"
+	"fyne.io/fyne/v2/widget"
 )
 
 var maxMinSizeHeight float32 // Keeping all instances of the list layout consistent in height
