@@ -7,7 +7,7 @@
 - Sending large files, folders or text will no longer slow down the ui.
 - Updated `fyne` to [v1.4.3](https://github.com/fyne-io/fyne/releases/tag/v1.4.2).
   - Fix an issue where with notifications sometimes not showing on MacOS.
-- Release binaries are built with `Go 1.14.15` for faster performance.
+- Release binaries are built with `Go 1.14.13` for faster performance.
 
 ## 2.0.1 - Minor fixes and FreeBSD release binaries
 - Binaries for `freeBSD/amd64` are now available on the release page.
