@@ -6,8 +6,10 @@
 - Fixed a bug where the application could crash on typing an incorrect code.
 - Sending large files, folders or text will no longer slow down the ui.
 - Updated `fyne` to [v1.4.3](https://github.com/fyne-io/fyne/releases/tag/v1.4.2).
-  - Fix an issue where with notifications sometimes not showing on MacOS.
-- Release binaries are built with `Go 1.14.13` for faster performance.
+  - Fix an issue with notifications sometimes not showing on MacOS.
+- Release binaries are now built with `Go 1.14.13`.
+  - Improved performance thanks to multiple runtime improvements.
+  - Windows binaries now have [DEP (Data Execution Prevention)](https://docs.microsoft.com/en-us/windows/win32/memory/data-execution-prevention) enabled.
 
 ## 2.0.1 - Minor fixes and FreeBSD release binaries
 - Binaries for `freeBSD/amd64` are now available on the release page.
