@@ -71,7 +71,7 @@ func (c *Client) NewReceive(code string, pathname chan string) error {
 			}
 		}()
 
-		_, err = io.Copy(file, ioutil.NopCloser(msg))
+		_, err = io.Copy(file, msg)
 		if err != nil {
 			fyne.LogError("Error on copying contents to file", err)
 			return err
@@ -98,7 +98,7 @@ func (c *Client) NewReceive(code string, pathname chan string) error {
 		}
 	}()
 
-	_, err = io.Copy(tmp, ioutil.NopCloser(msg))
+	_, err = io.Copy(tmp, msg)
 	if err != nil {
 		fyne.LogError("Error on copying contents to file", err)
 		return err
