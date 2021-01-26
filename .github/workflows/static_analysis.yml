@@ -15,7 +15,7 @@ jobs:
         go-version: '1.15.x'     
 
     - name: Install build dependencies
-      run: sudo apt-get update && sudo apt-get install golang gcc libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev libx11-dev xorg-dev
+      run: sudo apt-get update && sudo apt-get install gcc libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev libx11-dev xorg-dev
         
     - name: Get static analysis tools
       run: |
@@ -26,7 +26,7 @@ jobs:
         go get github.com/securego/gosec/v2/cmd/gosec
 
     - name: Vet
-      run: go vet -tags ci ./...
+      run: go vet ./...
 
     - name: Goimports
       run: test -z $(goimports -e -d . | tee /dev/stderr)
@@ -35,7 +35,7 @@ jobs:
       run: gocyclo -over 20 .
 
     - name: Golint
-      run: golint -set_exit_status $(go list -tags ci ./...)
+      run: golint -set_exit_status $(go list ./...)
 
     - name: Staticcheck
       run: staticcheck -f stylish ./...
