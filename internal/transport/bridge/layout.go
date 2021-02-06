@@ -51,7 +51,7 @@ func (g *listLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
 
 		// TODO: Better solution for too long text
 		if child.MinSize().Width > cellWidth {
-			oldx += (child.MinSize().Width - cellWidth)
+			oldx += (child.Size().Width - cellWidth)
 		}
 
 		child.Resize(fyne.NewSize(newx-oldx, y2))
@@ -70,5 +70,5 @@ func (g *listLayout) MinSize(objects []fyne.CanvasObject) fyne.Size {
 		}
 	}
 
-	return fyne.NewSize((maxMinSizeWidth+theme.Padding())*length, maxMinSizeHeight+2*theme.Padding())
+	return fyne.NewSize((maxMinSizeWidth+theme.Padding())*length, maxMinSizeHeight+theme.Padding())
 }
