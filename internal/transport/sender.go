@@ -17,12 +17,11 @@ func (c *Client) NewFileSend(file fyne.URIReadCloser, progress wormhole.SendOpti
 
 // NewDirSend takes a listable URI and sends it using wormhole-william.
 func (c *Client) NewDirSend(dir fyne.ListableURI, progress wormhole.SendOption) (string, chan wormhole.SendResult, error) {
-	dirpath := dir.String()[7:]
-	prefixStr, _ := filepath.Split(dirpath)
+	prefixStr, _ := filepath.Split(dir.Path())
 	prefix := len(prefixStr) // Where the prefix ends. Doing it this way is faster and works when paths don't use same separator (\ or /).
 
 	var files []wormhole.DirectoryEntry
-	if err := filepath.Walk(dirpath, func(path string, info os.FileInfo, err error) error {
+	if err := filepath.Walk(dir.Path(), func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		} else if info.IsDir() || !info.Mode().IsRegular() {

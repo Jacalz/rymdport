@@ -26,6 +26,7 @@
 - Fixed an issue that prevented enter on the numpad from starting the receive.
 - Fixed a bug where the component length slider did not have distinct steps.
 - Fixed an issue where the directory send option used the wrong icon.
+- Fixed an issue where file extensions would be displayed as `.` when waiting for data.
 - Multiple code cleanups, restructurings and minor fixes.
 - Updated `fyne` to [v2.0.0](https://github.com/fyne-io/fyne/releases/tag/v2.0.0).
   - The tabs are now animated to be more responsible on change.

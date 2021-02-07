@@ -4,6 +4,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/wormhole-gui/internal/transport"
 )
@@ -146,7 +147,7 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 // SendText sends new text.
 func (p *SendList) SendText() {
 	if text := <-p.client.ShowTextSendWindow(); text != "" {
-		p.NewSendItem("Text Snippet", nil)
+		p.NewSendItem("Text Snippet", storage.NewFileURI("text")) // The file URI is a hack to get the correct icon
 
 		go func(i int) {
 			code, result, err := p.client.NewTextSend(text, p.Items[i].Progress.update)
