@@ -40,9 +40,7 @@ func (c *Client) showTextReceiveWindow(text string) {
 	d := c.display
 
 	d.window.SetTitle("Received Text")
-	d.window.SetCloseIntercept(func() {
-		d.window.Hide()
-	})
+	d.window.SetCloseIntercept(d.window.Hide)
 
 	d.leftButton.Text = "Copy"
 	d.leftButton.Icon = theme.ContentCopyIcon()
@@ -101,9 +99,7 @@ func (c *Client) ShowTextSendWindow() chan string {
 
 	d.leftButton.Text = "Cancel"
 	d.leftButton.Icon = theme.CancelIcon()
-	d.leftButton.OnTapped = func() {
-		onClose()
-	}
+	d.leftButton.OnTapped = onClose
 
 	d.rightButton.Text = "Send"
 	d.rightButton.Icon = theme.MailSendIcon()
