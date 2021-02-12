@@ -25,6 +25,7 @@ uninstall:
 	-rm $(DESTDIR)$(PREFIX)/share/applications/$(NAME).desktop
 	-rm $(DESTDIR)$(PREFIX)/bin/$(NAME)
 	-rm $(DESTDIR)$(PREFIX)/share/pixmaps/$(NAME).png
+	-rm $(DESTDIR)$(PREFIX)/share/metainfo/com.github.jacalz.$(NAME).metainfo.xml
 
 check:
 	# Check the whole codebase for misspellings.
@@ -55,3 +56,18 @@ windows-debug:
 	$(GOBIN)fyne-cross windows -console -arch amd64 -app-id $(APPID) -icon $(ICON)
 
 cross-compile: darwin freebsd linux windows
+
+release: cross-compile
+	# Move Linux package bundles to the root with correct naming.
+	mv fyne-cross/dist/linux-amd64/wormhole-gui.tar.gz wormhole-gui-linux-amd64.tar.gz
+	mv fyne-cross/dist/linux-arm64/wormhole-gui.tar.gz wormhole-gui-linux-arm64.tar.gz
+
+	# Move FreeBSD package bundles to the root with correct naming.
+	mv fyne-cross/dist/freebsd-amd64/wormhole-gui.tar.gz wormhole-gui-freebsd-amd64.tar.gz
+
+	# Zip up the darwin package with correct name and move to the root.
+	(cd fyne-cross/dist/darwin-amd64/ && zip -r wormhole-gui-darwin-amd64.zip wormhole-gui.app/)
+	mv fyne-cross/dist/darwin-amd64/wormhole-gui-darwin-amd64.zip wormhole-gui-darwin-amd64.zip
+
+	# Move Windows package to the root with correct naming.
+	mv fyne-cross/dist/windows-amd64/wormhole-gui.exe.zip wormhole-gui-windows-amd64.zip
