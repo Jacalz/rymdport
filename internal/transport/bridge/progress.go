@@ -36,7 +36,6 @@ func newSendProgress() *sendProgress {
 type recvProgress struct {
 	widget.ProgressBarInfinite
 	done       *widget.ProgressBar
-	container  *fyne.Container
 	statusText string
 }
 
@@ -72,11 +71,9 @@ func (r *recvProgress) setStatus(stat string) {
 
 func newRecvProgress() *fyne.Container {
 	r := &recvProgress{done: &widget.ProgressBar{}}
-	r.ExtendBaseWidget(r)
-
-	r.container = container.NewMax(r, r.done)
 	r.done.TextFormatter = r.status
 	r.done.Hide()
+	r.ExtendBaseWidget(r)
 
-	return r.container
+	return container.NewMax(r, r.done)
 }
