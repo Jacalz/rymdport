@@ -139,7 +139,7 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 			dialog.ShowError(res.Error, fyne.CurrentApp().Driver().AllWindows()[0])
 			p.client.ShowNotification("Directory send failed", "An error occurred when sending the directory.")
 		} else if res.OK {
-			fyne.CurrentApp().SendNotification(fyne.NewNotification("Directory send completed", "The directory was sent successfully."))
+			p.client.ShowNotification("Directory send completed", "The directory was sent successfully.")
 		}
 	}(p.Length() - 1)
 }
@@ -165,7 +165,7 @@ func (p *SendList) SendText() {
 				dialog.ShowError(res.Error, fyne.CurrentApp().Driver().AllWindows()[0])
 				p.client.ShowNotification("Text send failed", "An error occurred when sending the text.")
 			} else if res.OK && p.client.Notifications {
-				fyne.CurrentApp().SendNotification(fyne.NewNotification("Text send completed", "The text was sent successfully."))
+				p.client.ShowNotification("Text send completed", "The text was sent successfully.")
 			}
 		}(p.Length() - 1)
 	}
