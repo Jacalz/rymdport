@@ -3,7 +3,7 @@
   <id>com.github.jacalz.wormhole-gui</id>
   
   <name>wormhole-gui</name>
-  <summary>Cross-platform graphical user interface for easy encrypted sharing of files, folders, and text between devices.</summary>
+  <summary>Cross-platform graphical user interface for easy encrypted sharing of files, folders, and text between devices. </summary>
   
   <metadata_license>CC-BY-SA-4.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
@@ -16,14 +16,14 @@
   
   <description>
     <p>
-      Wormhole-gui is a cross-platform graphical interface for magic-wormhole, providing easy and secure end-to-end encrypted sharing of files, folders and text between computers on a local network. It uses the Go implementation of magic-wormhole, called [wormhole-william](https://github.com/psanford/wormhole-william), and compiles into a single binary.
+      Wormhole-gui is a cross-platform graphical interface for [magic-wormhole](https://github.com/magic-wormhole/magic-wormhole) that lets you easily share files, folders and text between computers on the local network. It uses the Go implementation of magic-wormhole, called [wormhole-william](https://github.com/psanford/wormhole-william), and compiles statically into a single binary. Wormhole-gui is compatible with the cli applications from both [wormhole-william](https://github.com/psanford/wormhole-william) and [magic-wormhole](https://github.com/magic-wormhole/magic-wormhole).
     </p>
   </description>
   
   <launchable type="desktop-id">wormhole-gui.desktop</launchable>
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/Jacalz/wormhole-gui/main/internal/assets/screenshot.png</image>
+      <image>https://user-images.githubusercontent.com/25466657/108594736-fd227e80-737b-11eb-9577-6b9993c80675.png</image>
     </screenshot>
   </screenshots>
 </component>
