@@ -11,9 +11,7 @@
   - Buttons now use better wording and better icons.
 - Improved performance of sending files by not opening the file twice.
 - Removed some unnecessary code for slightly faster receives.
-- A couple changes for faster send and receive of directories.
-  - Filepaths are not cleaned twice for each file on send.
-  - The zip decompresser is no longer recreated on each receive.
+- Filepaths in are not cleaned twice for each file on sending directories.
 - Receives are now properly rejected instead of just not being downloaded.
 - Better notification handling by indicating success and fail for both sends and receives.
 - Added a setting to allow existing files to overwritten (disabled by default).
