@@ -1,6 +1,9 @@
 package transport
 
 import (
+	"bytes"
+	"io"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
@@ -36,7 +39,7 @@ func createTextWindow() *textDisplay {
 }
 
 // showTextReceiveWindow handles the creation of a window for displaying text content.
-func (c *Client) showTextReceiveWindow(text string) {
+func (c *Client) showTextReceiveWindow(text *bytes.Buffer) {
 	d := c.display
 
 	d.window.SetTitle("Received Text")
@@ -45,7 +48,7 @@ func (c *Client) showTextReceiveWindow(text string) {
 	d.leftButton.Text = "Copy"
 	d.leftButton.Icon = theme.ContentCopyIcon()
 	d.leftButton.OnTapped = func() {
-		d.window.Clipboard().SetContent(text)
+		d.window.Clipboard().SetContent(text.String())
 	}
 
 	d.rightButton.Text = "Save"
@@ -62,8 +65,9 @@ func (c *Client) showTextReceiveWindow(text string) {
 					return
 				}
 
-				if _, err := file.Write([]byte(text)); err != nil {
-					fyne.LogError("Error on writing data to the file", err)
+				_, err = io.Copy(file, text)
+				if err != nil {
+					fyne.LogError("Error on writing text to the file", err)
 					dialog.ShowError(err, d.window)
 				}
 
@@ -78,7 +82,7 @@ func (c *Client) showTextReceiveWindow(text string) {
 	}
 
 	d.textEntry.OnSubmitted = nil
-	d.textEntry.Text = text
+	d.textEntry.Text = text.String()
 
 	d.Refresh() // Update all contents in the window
 	d.window.Show()

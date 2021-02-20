@@ -1,6 +1,7 @@
 package transport
 
 import (
+	"bytes"
 	"context"
 	"io"
 	"io/ioutil"
@@ -38,13 +39,16 @@ func (c *Client) NewReceive(code string, pathname chan string) error {
 	}
 
 	if msg.Type == wormhole.TransferText {
-		content, err := ioutil.ReadAll(msg)
+		text := &bytes.Buffer{}
+		text.Grow(int(msg.TransferBytes64))
+
+		_, err := io.Copy(text, msg)
 		if err != nil {
-			fyne.LogError("Error on reading received data", err)
+			fyne.LogError("Could not copy the received text", err)
 			return err
 		}
 
-		c.showTextReceiveWindow(string(content))
+		c.showTextReceiveWindow(text)
 		return nil
 	}
 
