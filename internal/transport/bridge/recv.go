@@ -72,7 +72,7 @@ func (p *RecvList) NewReceive(code string) {
 
 	go func() {
 		if name := <-path; name != "Text Snippet" {
-			p.Items[index].URI = storage.NewFileURI(p.Items[index].Name)
+			p.Items[index].URI = storage.NewFileURI(name)
 			p.Items[index].Name = p.Items[index].URI.Name()
 		} else {
 			p.Items[index].URI = storage.NewFileURI("text") // The file URI is a hack to get the correct icon
