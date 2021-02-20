@@ -61,14 +61,13 @@ func (g *listLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
 // MinSize finds the smallest size that satisfies all the child objects.
 // Height will stay consistent between each each instance.
 func (g *listLayout) MinSize(objects []fyne.CanvasObject) fyne.Size {
-	length := float32(len(objects) - 1)
 	maxMinSizeWidth := float32(0)
 	for _, child := range objects {
 		if child.Visible() {
-			maxMinSizeWidth = fyne.Max(child.MinSize().Width, maxMinSizeWidth)
+			maxMinSizeWidth += child.MinSize().Width
 			maxMinSizeHeight = fyne.Max(child.MinSize().Height, maxMinSizeHeight)
 		}
 	}
 
-	return fyne.NewSize((maxMinSizeWidth+theme.Padding())*length, maxMinSizeHeight+theme.Padding())
+	return fyne.NewSize(maxMinSizeWidth, maxMinSizeHeight+theme.Padding())
 }
