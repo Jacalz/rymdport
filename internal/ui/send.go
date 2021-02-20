@@ -1,13 +1,13 @@
 package ui
 
 import (
-	"fyne.io/fyne"
-	"fyne.io/fyne/container"
-	"fyne.io/fyne/dialog"
-	"fyne.io/fyne/theme"
-	"fyne.io/fyne/widget"
-	"github.com/Jacalz/wormhole-gui/internal/bridge"
-	"github.com/Jacalz/wormhole-gui/internal/bridge/widgets"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/theme"
+	"fyne.io/fyne/v2/widget"
+	"github.com/Jacalz/wormhole-gui/internal/transport"
+	"github.com/Jacalz/wormhole-gui/internal/transport/bridge"
 )
 
 type send struct {
@@ -20,16 +20,16 @@ type send struct {
 	textChoice      *widget.Button
 
 	contentToSend *widget.Button
-	sendList      *widgets.SendList
+	sendList      *bridge.SendList
 
-	bridge      *bridge.Bridge
+	client      *transport.Client
 	appSettings *AppSettings
 	window      fyne.Window
 	app         fyne.App
 }
 
-func newSend(a fyne.App, w fyne.Window, b *bridge.Bridge, as *AppSettings) *send {
-	return &send{app: a, window: w, bridge: b, appSettings: as}
+func newSend(a fyne.App, w fyne.Window, c *transport.Client, as *AppSettings) *send {
+	return &send{app: a, window: w, client: c, appSettings: as}
 }
 
 func (s *send) onFileSend() {
@@ -47,21 +47,16 @@ func (s *send) onTextSend() {
 	s.sendList.SendText()
 }
 
-func (s *send) onContentToSend() {
-	s.contentPicker.Show()
-}
-
 func (s *send) buildUI() *fyne.Container {
 	s.fileChoice = &widget.Button{Text: "File", Icon: theme.FileIcon(), OnTapped: s.onFileSend}
-	s.directoryChoice = &widget.Button{Text: "Directory", Icon: theme.FolderIcon(), OnTapped: s.onDirSend}
+	s.directoryChoice = &widget.Button{Text: "Directory", Icon: theme.FolderOpenIcon(), OnTapped: s.onDirSend}
 	s.textChoice = &widget.Button{Text: "Text", Icon: theme.DocumentCreateIcon(), OnTapped: s.onTextSend}
 
 	choiceContent := container.NewGridWithColumns(1, s.fileChoice, s.directoryChoice, s.textChoice)
 	s.contentPicker = dialog.NewCustom("Pick a content type", "Cancel", choiceContent, s.window)
-	s.contentPicker.Hide() // Bug in Fyne API. Can be removed after Fyne 2.0 and later.
 
-	s.sendList = widgets.NewSendList(s.bridge)
-	s.contentToSend = &widget.Button{Text: "Add content to send", Icon: theme.ContentAddIcon(), OnTapped: s.onContentToSend}
+	s.sendList = bridge.NewSendList(s.client)
+	s.contentToSend = &widget.Button{Text: "Add content to send", Icon: theme.ContentAddIcon(), OnTapped: s.contentPicker.Show}
 
 	s.fileDialog = dialog.NewFileOpen(s.sendList.OnFileSelect, s.window)
 	s.directoryDialog = dialog.NewFolderOpen(s.sendList.OnDirSelect, s.window)
@@ -71,5 +66,5 @@ func (s *send) buildUI() *fyne.Container {
 }
 
 func (s *send) tabItem() *container.TabItem {
-	return container.NewTabItemWithIcon("Send", theme.MailSendIcon(), s.buildUI())
+	return &container.TabItem{Text: "Send", Icon: theme.MailSendIcon(), Content: s.buildUI()}
 }

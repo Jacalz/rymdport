@@ -3,22 +3,25 @@ package ui
 import (
 	"net/url"
 
-	"fyne.io/fyne"
-	"fyne.io/fyne/canvas"
-	"fyne.io/fyne/container"
-	"fyne.io/fyne/layout"
-	"fyne.io/fyne/theme"
-	"fyne.io/fyne/widget"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/theme"
+	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/wormhole-gui/internal/assets"
 )
 
 const (
-	version = "v2.0.2"
-	rurl    = "https://github.com/Jacalz/wormhole-gui/releases/tag/" + version
+	version    = "v2.1.0"
+	releaseURL = "https://github.com/Jacalz/wormhole-gui/releases/tag/" + version
 )
 
 type about struct {
-	icon *canvas.Image
+	icon        *canvas.Image
+	nameLabel   *widget.Label
+	spacerLabel *widget.Label
+	hyperlink   *widget.Hyperlink
 }
 
 func newAbout() *about {
@@ -29,14 +32,18 @@ func (a *about) buildUI() *fyne.Container {
 	a.icon = canvas.NewImageFromResource(assets.AppIcon)
 	a.icon.SetMinSize(fyne.NewSize(256, 256))
 
+	a.nameLabel = newBoldLabel("wormhole-gui")
+	a.spacerLabel = newBoldLabel("-")
+	a.hyperlink = &widget.Hyperlink{Text: version, URL: parseURL(releaseURL), TextStyle: fyne.TextStyle{Bold: true}}
+
 	return container.NewVBox(
 		layout.NewSpacer(),
 		container.NewHBox(layout.NewSpacer(), a.icon, layout.NewSpacer()),
-		widget.NewHBox(
+		container.NewHBox(
 			layout.NewSpacer(),
-			widget.NewLabelWithStyle("wormhole-gui", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
-			widget.NewLabelWithStyle("-", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
-			widget.NewHyperlinkWithStyle(version, parseURL(rurl), fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+			a.nameLabel,
+			a.spacerLabel,
+			a.hyperlink,
 			layout.NewSpacer(),
 		),
 		layout.NewSpacer(),
@@ -44,7 +51,7 @@ func (a *about) buildUI() *fyne.Container {
 }
 
 func (a *about) tabItem() *container.TabItem {
-	return container.NewTabItemWithIcon("About", theme.InfoIcon(), a.buildUI())
+	return &container.TabItem{Text: "About", Icon: theme.InfoIcon(), Content: a.buildUI()}
 }
 
 func parseURL(input string) *url.URL {

@@ -2,21 +2,22 @@ package ui
 
 import (
 	"path/filepath"
+	"strconv"
 
-	"fyne.io/fyne"
-	"fyne.io/fyne/container"
-	"fyne.io/fyne/dialog"
-	"fyne.io/fyne/theme"
-	"fyne.io/fyne/widget"
-	"github.com/Jacalz/wormhole-gui/internal/bridge"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/theme"
+	"fyne.io/fyne/v2/widget"
+	"github.com/Jacalz/wormhole-gui/internal/transport"
 )
 
 var (
-	themes              = []string{"Adaptive (requires restart)", "Light", "Dark"}
-	notificationOptions = []string{"On", "Off"}
+	themes       = []string{"Adaptive (requires restart)", "Light", "Dark"}
+	onOffOptions = []string{"On", "Off"}
 )
 
-// AppSettings cotains settings specific to the application
+// AppSettings contains settings specific to the application
 type AppSettings struct {
 	// Theme holds the current theme
 	Theme string
@@ -26,19 +27,20 @@ type settings struct {
 	themeSelect *widget.Select
 
 	downloadPathButton *widget.Button
-
-	notificationRadio *widget.RadioGroup
+	overwriteFiles     *widget.RadioGroup
+	notificationRadio  *widget.RadioGroup
 
 	componentSlider *widget.Slider
+	componentLabel  *widget.Label
 
-	bridge      *bridge.Bridge
+	client      *transport.Client
 	appSettings *AppSettings
 	window      fyne.Window
 	app         fyne.App
 }
 
-func newSettings(a fyne.App, w fyne.Window, b *bridge.Bridge, as *AppSettings) *settings {
-	return &settings{app: a, window: w, bridge: b, appSettings: as}
+func newSettings(a fyne.App, w fyne.Window, c *transport.Client, as *AppSettings) *settings {
+	return &settings{app: a, window: w, client: c, appSettings: as}
 }
 
 func (s *settings) onThemeChanged(selected string) {
@@ -56,63 +58,66 @@ func (s *settings) onDownloadsPathChanged() {
 		}
 
 		s.app.Preferences().SetString("DownloadPath", folder.String()[7:])
-		s.bridge.DownloadPath = folder.String()[7:]
+		s.client.DownloadPath = folder.String()[7:]
 		s.downloadPathButton.SetText(folder.Name())
 	}, s.window)
 }
 
-func (s *settings) onNotificationsChanged(selected string) {
-	if selected == "On" {
-		s.bridge.Notifications = true
-	} else {
-		s.bridge.Notifications = false
-	}
+func (s *settings) onOverwriteFilesChanged(selected string) {
+	s.client.Zip.OverwriteExisting = selected == "On"
+	s.app.Preferences().SetString("OverwriteFiles", selected)
+}
 
+func (s *settings) onNotificationsChanged(selected string) {
+	s.client.Notifications = selected == "On"
 	s.app.Preferences().SetString("Notifications", selected)
 }
 
 func (s *settings) onComponentsChange(value float64) {
-	s.bridge.PassPhraseComponentLength = int(value)
+	s.client.PassPhraseComponentLength = int(value)
 	s.app.Preferences().SetFloat("ComponentLength", value)
+	s.componentLabel.SetText(strconv.Itoa(int(value)))
 }
 
 func (s *settings) buildUI() *container.Scroll {
 	s.themeSelect = &widget.Select{Options: themes, OnChanged: s.onThemeChanged, Selected: s.appSettings.Theme}
 
-	s.bridge.DownloadPath = s.app.Preferences().StringWithFallback("DownloadPath", bridge.UserDownloadsFolder())
-	s.downloadPathButton = &widget.Button{Icon: theme.FolderOpenIcon(), OnTapped: s.onDownloadsPathChanged, Text: filepath.Base(s.bridge.DownloadPath)}
+	s.client.DownloadPath = s.app.Preferences().StringWithFallback("DownloadPath", transport.UserDownloadsFolder())
+	s.downloadPathButton = &widget.Button{Icon: theme.FolderOpenIcon(), OnTapped: s.onDownloadsPathChanged, Text: filepath.Base(s.client.DownloadPath)}
 
-	s.notificationRadio = &widget.RadioGroup{Options: notificationOptions, Horizontal: true, Required: true, OnChanged: s.onNotificationsChanged}
-	s.notificationRadio.SetSelected(s.app.Preferences().StringWithFallback("Notifications", notificationOptions[1]))
+	s.overwriteFiles = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onOverwriteFilesChanged}
+	s.overwriteFiles.SetSelected(s.app.Preferences().StringWithFallback("OverwriteFiles", "Off"))
 
-	s.componentSlider = &widget.Slider{Min: 2.0, Max: 6.0, OnChanged: s.onComponentsChange}
+	s.notificationRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onNotificationsChanged}
+	s.notificationRadio.SetSelected(s.app.Preferences().StringWithFallback("Notifications", onOffOptions[1]))
+
+	s.componentLabel = &widget.Label{}
+	s.componentSlider = &widget.Slider{Min: 2.0, Max: 6.0, Step: 1, OnChanged: s.onComponentsChange}
 	s.componentSlider.SetValue(s.app.Preferences().FloatWithFallback("ComponentLength", 2))
 
 	interfaceContainer := container.NewGridWithColumns(2,
-		newSettingLabel("Application Theme"), s.themeSelect,
+		newBoldLabel("Application Theme"), s.themeSelect,
 	)
-	interfaceGroup := widget.NewGroup("User Interface", interfaceContainer)
 
 	dataContainer := container.NewGridWithColumns(2,
-		newSettingLabel("Downloads Path"), s.downloadPathButton,
-		newSettingLabel("Notifications"), s.notificationRadio,
+		newBoldLabel("Downloads Path"), s.downloadPathButton,
+		newBoldLabel("Overwrite Files"), s.overwriteFiles,
+		newBoldLabel("Notifications"), s.notificationRadio,
 	)
-	dataGroup := widget.NewGroup("Data Handling", dataContainer)
 
 	wormholeContainer := container.NewGridWithColumns(2,
-		newSettingLabel("Passphrase Length"), s.componentSlider,
+		newBoldLabel("Passphrase Length"), container.NewBorder(nil, nil, nil, s.componentLabel, s.componentSlider),
 	)
-	wormholeGroup := widget.NewGroup("Wormhole Options", wormholeContainer)
 
 	return container.NewScroll(container.NewVBox(
-		interfaceGroup,
-		dataGroup,
-		wormholeGroup,
+		&widget.Card{Title: "User Interface", Content: interfaceContainer},
+		&widget.Card{Title: "Data Handling", Content: dataContainer},
+		&widget.Card{Title: "Wormhole Options", Content: wormholeContainer},
 	))
 }
 
 func (s *settings) tabItem() *container.TabItem {
-	return container.NewTabItemWithIcon("Settings", theme.SettingsIcon(), s.buildUI())
+	return &container.TabItem{Text: "Settings", Icon: theme.SettingsIcon(), Content: s.buildUI()}
 }
 
 func checkTheme(themec string, a fyne.App) string {
@@ -126,6 +131,6 @@ func checkTheme(themec string, a fyne.App) string {
 	return themec
 }
 
-func newSettingLabel(text string) *widget.Label {
-	return &widget.Label{TextStyle: fyne.TextStyle{Bold: true}, Text: text}
+func newBoldLabel(text string) *widget.Label {
+	return &widget.Label{Text: text, TextStyle: fyne.TextStyle{Bold: true}}
 }

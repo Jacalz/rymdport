@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fyne.io/fyne"
-	"fyne.io/fyne/app"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
 
 	"github.com/Jacalz/wormhole-gui/internal/assets"
 	"github.com/Jacalz/wormhole-gui/internal/ui"
@@ -15,5 +15,6 @@ func main() {
 
 	w.SetContent(ui.Create(a, w))
 	w.Resize(fyne.NewSize(700, 400))
+	w.SetMaster()
 	w.ShowAndRun()
 }

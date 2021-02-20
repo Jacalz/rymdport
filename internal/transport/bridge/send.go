@@ -1,29 +1,29 @@
-package widgets
+package bridge
 
 import (
-	"fyne.io/fyne"
-	"fyne.io/fyne/dialog"
-	"fyne.io/fyne/storage"
-	"fyne.io/fyne/widget"
-	"github.com/Jacalz/wormhole-gui/internal/bridge"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/storage"
+	"fyne.io/fyne/v2/widget"
+	"github.com/Jacalz/wormhole-gui/internal/transport"
 )
-
-var emptySendItem = &SendItem{}
 
 // SendItem is the item that is being sent.
 type SendItem struct {
-	Progress *SendProgress
-	Code     string
 	URI      fyne.URI
+	Progress *sendProgress
+	Code     string
+	Name     string
 }
 
 // SendList is a list of progress bars that track send progress.
 type SendList struct {
 	widget.List
 
-	bridge *bridge.Bridge
+	client *transport.Client
 
-	Items []SendItem
+	Items []*SendItem
 }
 
 // Length returns the length of the data.
@@ -33,21 +33,21 @@ func (p *SendList) Length() int {
 
 // CreateItem creates a new item in the list.
 func (p *SendList) CreateItem() fyne.CanvasObject {
-	return fyne.NewContainerWithLayout(&listLayout{}, widget.NewFileIcon(nil), widget.NewLabel("Waiting for filename..."), newCodeDisplay(), NewSendProgress())
+	return container.New(&listLayout{}, widget.NewFileIcon(nil), widget.NewLabel("Waiting for filename..."), newCodeDisplay(), newSendProgress())
 }
 
 // UpdateItem updates the data in the list.
 func (p *SendList) UpdateItem(i int, item fyne.CanvasObject) {
 	item.(*fyne.Container).Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
-	item.(*fyne.Container).Objects[1].(*widget.Label).SetText(p.Items[i].URI.Name())
-	item.(*fyne.Container).Objects[2].(*fyne.Container).Objects[0].(*CodeDisplay).SetText(p.Items[i].Code)
-	p.Items[i].Progress = item.(*fyne.Container).Objects[3].(*SendProgress)
+	item.(*fyne.Container).Objects[1].(*widget.Label).SetText(p.Items[i].Name)
+	item.(*fyne.Container).Objects[2].(*fyne.Container).Objects[0].(*codeDisplay).SetText(p.Items[i].Code)
+	p.Items[i].Progress = item.(*fyne.Container).Objects[3].(*sendProgress)
 }
 
 // RemoveItem removes the item at the specified index.
 func (p *SendList) RemoveItem(i int) {
 	copy(p.Items[i:], p.Items[i+1:])
-	p.Items[p.Length()-1] = *emptySendItem // Make sure that GC run on removed element
+	p.Items[p.Length()-1] = nil // Make sure that GC run on removed element
 	p.Items = p.Items[:p.Length()-1]
 	p.Refresh()
 }
@@ -64,11 +64,13 @@ func (p *SendList) OnSelected(i int) {
 			p.Refresh()
 		}
 	}, fyne.CurrentApp().Driver().AllWindows()[0])
+
+	p.Unselect(i)
 }
 
 // NewSendItem adds data about a new send to the list and then returns the channel to update the code.
-func (p *SendList) NewSendItem(URI fyne.URI) {
-	p.Items = append(p.Items, SendItem{URI: URI, Code: "Waiting for code..."})
+func (p *SendList) NewSendItem(name string, uri fyne.URI) {
+	p.Items = append(p.Items, &SendItem{Name: name, Code: "Waiting for code...", URI: uri})
 	p.Refresh()
 }
 
@@ -82,30 +84,31 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 		return
 	}
 
-	p.NewSendItem(file.URI())
+	p.NewSendItem(file.URI().Name(), file.URI())
 
-	go func() {
-		code, result, f, err := p.bridge.NewFileSend(file, p.Items[p.Length()-1].Progress.Update)
+	go func(i int) {
+		code, result, err := p.client.NewFileSend(file, p.Items[i].Progress.update)
 		if err != nil {
 			fyne.LogError("Error on sending file", err)
 			dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
 			return
 		}
 
-		p.Items[p.Length()-1].Code = code
+		p.Items[i].Code = code
 		p.Refresh()
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending file", res.Error)
 			dialog.ShowError(res.Error, fyne.CurrentApp().Driver().AllWindows()[0])
-		} else if res.OK && p.bridge.Notifications {
-			fyne.CurrentApp().SendNotification(fyne.NewNotification("Send completed", "The file was sent successfully"))
+			p.client.ShowNotification("File send failed", "An error occurred when sending the file.")
+		} else if res.OK {
+			p.client.ShowNotification("File send completed", "The file was sent successfully.")
 		}
 
-		if err = f.Close(); err != nil {
+		if err = file.Close(); err != nil {
 			fyne.LogError("Error on closing file", err)
 		}
-	}()
+	}(p.Length() - 1)
 }
 
 // OnDirSelect is intended to be passed as callback to a FolderOpen dialog.
@@ -118,56 +121,59 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 		return
 	}
 
-	p.NewSendItem(dir)
-	go func() {
-		code, result, err := p.bridge.NewDirSend(dir, p.Items[p.Length()-1].Progress.Update)
+	p.NewSendItem(dir.Name(), dir)
+
+	go func(i int) {
+		code, result, err := p.client.NewDirSend(dir, p.Items[i].Progress.update)
 		if err != nil {
 			fyne.LogError("Error on sending directory", err)
 			dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
 			return
 		}
 
-		p.Items[p.Length()-1].Code = code
+		p.Items[i].Code = code
 		p.Refresh()
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending directory", res.Error)
 			dialog.ShowError(res.Error, fyne.CurrentApp().Driver().AllWindows()[0])
-		} else if res.OK && p.bridge.Notifications {
-			fyne.CurrentApp().SendNotification(fyne.NewNotification("Send completed", "The directory was sent successfully"))
+			p.client.ShowNotification("Directory send failed", "An error occurred when sending the directory.")
+		} else if res.OK {
+			p.client.ShowNotification("Directory send completed", "The directory was sent successfully.")
 		}
-	}()
+	}(p.Length() - 1)
 }
 
 // SendText sends new text.
 func (p *SendList) SendText() {
-	if text := <-bridge.EnterSendText(); text != "" {
-		p.NewSendItem(storage.NewURI("Text Snippet"))
+	if text := <-p.client.ShowTextSendWindow(); text != "" {
+		p.NewSendItem("Text Snippet", storage.NewFileURI("text")) // The file URI is a hack to get the correct icon
 
-		go func() {
-			code, result, err := p.bridge.NewTextSend(text, p.Items[p.Length()-1].Progress.Update)
+		go func(i int) {
+			code, result, err := p.client.NewTextSend(text, p.Items[i].Progress.update)
 			if err != nil {
 				fyne.LogError("Error on sending text", err)
 				dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
 				return
 			}
 
-			p.Items[p.Length()-1].Code = code
+			p.Items[i].Code = code
 			p.Refresh()
 
 			if res := <-result; res.Error != nil {
 				fyne.LogError("Error on sending text", res.Error)
 				dialog.ShowError(res.Error, fyne.CurrentApp().Driver().AllWindows()[0])
-			} else if res.OK && p.bridge.Notifications {
-				fyne.CurrentApp().SendNotification(fyne.NewNotification("Send completed", "The text was sent successfully"))
+				p.client.ShowNotification("Text send failed", "An error occurred when sending the text.")
+			} else if res.OK && p.client.Notifications {
+				p.client.ShowNotification("Text send completed", "The text was sent successfully.")
 			}
-		}()
+		}(p.Length() - 1)
 	}
 }
 
 // NewSendList greates a list of progress bars.
-func NewSendList(bridge *bridge.Bridge) *SendList {
-	p := &SendList{bridge: bridge}
+func NewSendList(client *transport.Client) *SendList {
+	p := &SendList{client: client}
 	p.List.Length = p.Length
 	p.List.CreateItem = p.CreateItem
 	p.List.UpdateItem = p.UpdateItem

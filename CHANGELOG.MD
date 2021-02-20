@@ -1,5 +1,37 @@
 # Changelog
 
+## 2.1.0 - Major ui changes and a lot of improvements
+- Major rework of the receive tab to use progress bars.
+  - Dialogs are no longer used to indicate finished receives.
+- Redesigned settings tab to use a more modern layout.
+  - The component slider setting now displays the currently selected number.
+  - Fixed a bug where the component length slider did not have distinct steps.
+  - Added a setting to allow existing files to overwritten (disabled by default).
+- Multiple improvements to the text send and receive windows.
+  - Opens faster by only being created once instead of on each send/receive.
+  - Clicking `CTRL + SHIFT` in the send window now starts the send.
+  - Tab characters are now displayed correctly (bug fix in fyne).
+  - Buttons now use better wording and better icons.
+- Some small performance improvements for send and receive of files and directories.
+- Receives are now properly rejected instead of just not being downloaded.
+- Better notification handling by indicating success and fail for both sends and receives.
+- Copying the code of a sent item is now slightly faster.
+- Fixed an issue where existing files could be overwritten.
+- Fixed a couple possible race conditions on sending data.
+- Fixed an issue that prevented enter on the numpad from starting the receive.
+- Fixed an issue where file extensions would be displayed as `.` when waiting for data.
+- Fixed a bug that caused the window to not be able to shrink to the correct smallest size.
+- Multiple other code cleanups, restructurings and minor fixes.
+- Added an [appstream metadata](https://www.freedesktop.org/software/appstream/docs/) file for Linux and BSD systems (installed via `make install`).
+- Updated `fyne` to [v2.0.0](https://github.com/fyne-io/fyne/releases/tag/v2.0.0).
+  - The tabs are now animated to be more responsible on change.
+  - Buttons now show an animation on tapped.
+  - Theme changes and other improvements to styling.
+  - Multiple smaller performance optimizations for widgets.
+  - Improved scaling on HIDPI displays.
+- Release binaries are now built with `Go 1.14.15`.
+  - A security fix for `crypto/elliptic` and a few smaller bug fixes.
+
 ## 2.0.2 - A few fixes while waiting for 2.1.0
 - Fix a bug that prevented folder send to work on Windows.
 - Fix an issue where the ui would become unresponsive on dismissing text send.

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=wormhole-gui
+Exec=wormhole-gui
+Icon=wormhole-gui
+Comment=Send and receive files, folders and text over the local network
+Categories=Network;Utility;FileTransfer;P2P;
+Keywords=magic-wormhole;send;receive;sharing;transfer;fyne;

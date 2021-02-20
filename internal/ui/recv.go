@@ -1,30 +1,30 @@
 package ui
 
 import (
-	"fyne.io/fyne"
-	"fyne.io/fyne/container"
-	"fyne.io/fyne/data/validation"
-	"fyne.io/fyne/dialog"
-	"fyne.io/fyne/theme"
-	"fyne.io/fyne/widget"
-	"github.com/Jacalz/wormhole-gui/internal/bridge"
-	"github.com/Jacalz/wormhole-gui/internal/bridge/widgets"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/data/validation"
+	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/theme"
+	"fyne.io/fyne/v2/widget"
+	"github.com/Jacalz/wormhole-gui/internal/transport"
+	"github.com/Jacalz/wormhole-gui/internal/transport/bridge"
 )
 
 type recv struct {
-	codeEntry  *widgets.PressEntry
+	codeEntry  *widget.Entry
 	codeButton *widget.Button
 
-	recvList *widgets.RecvList
+	recvList *bridge.RecvList
 
-	bridge      *bridge.Bridge
+	bridge      *transport.Client
 	appSettings *AppSettings
 	window      fyne.Window
 	app         fyne.App
 }
 
-func newRecv(a fyne.App, w fyne.Window, b *bridge.Bridge, as *AppSettings) *recv {
-	return &recv{app: a, window: w, bridge: b, appSettings: as}
+func newRecv(a fyne.App, w fyne.Window, c *transport.Client, as *AppSettings) *recv {
+	return &recv{app: a, window: w, bridge: c, appSettings: as}
 }
 
 func (r *recv) onRecv() {
@@ -38,18 +38,18 @@ func (r *recv) onRecv() {
 }
 
 func (r *recv) buildUI() *fyne.Container {
-	r.codeEntry = widgets.NewPressEntry("Enter code")
-	r.codeEntry.Validator = validation.NewRegexp(`^\d\d?(-\w{2,12}){2,6}$`, "Invalid code")
-	r.codeEntry.OnReturn = r.onRecv
+	r.codeEntry = &widget.Entry{PlaceHolder: "Enter code", OnSubmitted: func(_ string) { r.onRecv() },
+		Validator: validation.NewRegexp(`^\d\d?(-\w{2,12}){2,6}$`, "The code is invalid"),
+	}
 
 	r.codeButton = &widget.Button{Text: "Download", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
 
-	r.recvList = widgets.NewRecvList(r.bridge)
+	r.recvList = bridge.NewRecvList(r.bridge)
 
 	box := container.NewVBox(container.NewGridWithColumns(2, r.codeEntry, r.codeButton), &widget.Label{})
 	return container.NewBorder(box, nil, nil, nil, r.recvList)
 }
 
 func (r *recv) tabItem() *container.TabItem {
-	return container.NewTabItemWithIcon("Receive", theme.DownloadIcon(), r.buildUI())
+	return &container.TabItem{Text: "Receive", Icon: theme.DownloadIcon(), Content: r.buildUI()}
 }

@@ -1,14 +1,14 @@
 package ui
 
 import (
-	"fyne.io/fyne"
-	"fyne.io/fyne/container"
-	"github.com/Jacalz/wormhole-gui/internal/bridge"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/container"
+	"github.com/Jacalz/wormhole-gui/internal/transport"
 )
 
 // Create will stitch together all ui components
 func Create(app fyne.App, window fyne.Window) *container.AppTabs {
-	bridge := &bridge.Bridge{}
+	bridge := transport.NewClient() // To make sure that it is configured correctly
 	appSettings := &AppSettings{}
 	appSettings.Theme = checkTheme(app.Preferences().StringWithFallback("Theme", "Adaptive (requires restart)"), app)
 

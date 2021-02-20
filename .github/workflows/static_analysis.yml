@@ -4,29 +4,25 @@ on: [push, pull_request]
 jobs:
   checks:
     runs-on: ubuntu-latest
-    env:
-      GO111MODULE: on
-      CGO_ENABLED: on
-
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-go@v2
+    - uses: WillAbides/setup-go-faster@v1.5.0
       with:
-        go-version: '1.15.x'     
+        go-version: '1.16.x'     
 
     - name: Install build dependencies
-      run: sudo apt-get update && sudo apt-get install golang gcc libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev libx11-dev xorg-dev
+      run: sudo apt-get update && sudo apt-get install gcc libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev libx11-dev xorg-dev
         
     - name: Get static analysis tools
       run: |
-        go get golang.org/x/tools/cmd/goimports                               
-        go get github.com/fzipp/gocyclo/cmd/gocyclo
-        go get golang.org/x/lint/golint
-        go get honnef.co/go/tools/cmd/staticcheck
-        go get github.com/securego/gosec/v2/cmd/gosec
+        go install golang.org/x/tools/cmd/goimports@latest
+        go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
+        go install golang.org/x/lint/golint@latest
+        go install honnef.co/go/tools/cmd/staticcheck@v0.1.2
+        go install github.com/securego/gosec/v2/cmd/gosec@v2.6.1
 
     - name: Vet
-      run: go vet -tags ci ./...
+      run: go vet ./...
 
     - name: Goimports
       run: test -z $(goimports -e -d . | tee /dev/stderr)
@@ -35,10 +31,10 @@ jobs:
       run: gocyclo -over 20 .
 
     - name: Golint
-      run: golint -set_exit_status $(go list -tags ci ./...)
+      run: golint -set_exit_status $(go list ./...)
 
     - name: Staticcheck
-      run: staticcheck -f stylish ./...
+      run: staticcheck -go 1.14 -f stylish ./...
 
     - name: Gosec
       run: gosec ./...
