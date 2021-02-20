@@ -64,7 +64,7 @@ func (s *settings) onDownloadsPathChanged() {
 }
 
 func (s *settings) onOverwriteFilesChanged(selected string) {
-	s.client.Zip.OverwriteExisting = selected == "On"
+	s.client.OverwriteExisting = selected == "On"
 	s.app.Preferences().SetString("OverwriteFiles", selected)
 }
 

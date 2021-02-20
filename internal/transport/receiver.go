@@ -9,6 +9,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/storage"
+	"github.com/Jacalz/wormhole-gui/internal/transport/zip"
 	"github.com/psanford/wormhole-william/wormhole"
 )
 
@@ -50,14 +51,14 @@ func (c *Client) NewReceive(code string, pathname chan string) error {
 	path := filepath.Join(c.DownloadPath, msg.Name)
 	pathToSend = storage.NewFileURI(path).String()
 
-	if msg.Type == wormhole.TransferFile {
-		if !c.Zip.OverwriteExisting {
-			if _, err := os.Stat(path); err == nil || os.IsExist(err) {
-				fyne.LogError("Error on creating file, settings prevent overwriting existing files", err)
-				return bail(msg, os.ErrExist)
-			}
+	if !c.OverwriteExisting {
+		if _, err := os.Stat(path); err == nil || os.IsExist(err) {
+			fyne.LogError("Settings prevent overwriting existing files and folders", err)
+			return bail(msg, os.ErrExist)
 		}
+	}
 
+	if msg.Type == wormhole.TransferFile {
 		file, err := os.Create(path)
 		if err != nil {
 			fyne.LogError("Error on creating file", err)
@@ -104,7 +105,7 @@ func (c *Client) NewReceive(code string, pathname chan string) error {
 		return err
 	}
 
-	err = c.Zip.Unarchive(tmp.Name(), path)
+	err = zip.Extract(tmp.Name(), path)
 	if err != nil {
 		fyne.LogError("Error on unzipping contents", err)
 		return err

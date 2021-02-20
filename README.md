@@ -10,7 +10,7 @@ It uses the Go implementation of magic-wormhole, called [wormhole-william](https
 Built using the following Go modules:
 - [fyne](https://github.com/fyne-io/fyne) (version 2.0.0)
 - [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.4 + [f69f6e8](https://github.com/psanford/wormhole-william/commit/f69f6e823d8cec6b3756b8ce63024c8cd3c3ebf2))
-- [archiver](https://github.com/mholt/archiver) (version 3.5.0)
+- [compress](https://github.com/klauspost/compress) (version 1.11.7)
 
 The initial version was built in less than one day to show how quick and easy it is to use [fyne](https://github.com/fyne-io/fyne) for developing applications.
 
