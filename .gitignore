@@ -4,6 +4,9 @@
 *.dll
 *.so
 *.dylib
+*.tar.gz
+*.tar.xz
+*.zip
 wormhole-gui
 
 # Output from fyne-cross when running cross-compilation.
