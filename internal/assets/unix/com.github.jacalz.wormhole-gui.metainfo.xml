@@ -3,7 +3,7 @@
   <id>com.github.jacalz.wormhole-gui</id>
   
   <name>wormhole-gui</name>
-  <summary>Cross-platform graphical user interface for easy encrypted sharing of files, folders, and text between devices. </summary>
+  <summary>Cross-platform graphical user interface for easy encrypted sharing of files, folders, and text between devices.</summary>
   
   <metadata_license>CC-BY-SA-4.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
@@ -23,7 +23,7 @@
   <launchable type="desktop-id">wormhole-gui.desktop</launchable>
   <screenshots>
     <screenshot type="default">
-      <image>https://user-images.githubusercontent.com/25466657/108594736-fd227e80-737b-11eb-9577-6b9993c80675.png</image>
+      <image>https://raw.githubusercontent.com/Jacalz/wormhole-gui/main/internal/assets/screenshot.png</image>
     </screenshot>
   </screenshots>
 </component>
