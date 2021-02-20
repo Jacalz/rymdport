@@ -1,32 +1,28 @@
 # Changelog
 
 ## 2.1.0 - Major ui changes and a lot of improvements
-- Reworked the settings page to use a more modern layout.
 - Major rework of the receive tab to use progress bars.
   - Dialogs are no longer used to indicate finished receives.
+- Redesigned settings tab to use a more modern layout.
+  - The component slider setting now displays the currently selected number.
+  - Fixed a bug where the component length slider did not have distinct steps.
+  - Added a setting to allow existing files to overwritten (disabled by default).
 - Multiple improvements to the text send and receive windows.
   - Opens faster by only being created once instead of on each send/receive.
   - Clicking `CTRL + SHIFT` in the send window now starts the send.
   - Tab characters are now displayed correctly (bug fix in fyne).
   - Buttons now use better wording and better icons.
-- Improved performance of sending files by not opening the file twice.
-- Removed some unnecessary code for slightly faster receives.
-- Filepaths in are not cleaned twice for each file on sending directories.
+- Some small performance improvements for send and receive of files and directories.
 - Receives are now properly rejected instead of just not being downloaded.
 - Better notification handling by indicating success and fail for both sends and receives.
-- Added a setting to allow existing files to overwritten (disabled by default).
-- The component slider setting now displays the currently selected number.
-- Clicking on sent and received items is now more reliable.
-- Copying the code of a sent item is now faster.
-- Added an [appstream metadata](https://www.freedesktop.org/software/appstream/docs/) file for Linux and BSD systems (installed via `make install`).
+- Copying the code of a sent item is now slightly faster.
 - Fixed an issue where existing files could be overwritten.
 - Fixed a couple possible race conditions on sending data.
 - Fixed an issue that prevented enter on the numpad from starting the receive.
-- Fixed a bug where the component length slider did not have distinct steps.
-- Fixed an issue where the directory send option used the wrong icon.
 - Fixed an issue where file extensions would be displayed as `.` when waiting for data.
 - Fixed a bug that caused the window to not be able to shrink to the correct smallest size.
-- Multiple code cleanups, restructurings and minor fixes.
+- Multiple other code cleanups, restructurings and minor fixes.
+- Added an [appstream metadata](https://www.freedesktop.org/software/appstream/docs/) file for Linux and BSD systems (installed via `make install`).
 - Updated `fyne` to [v2.0.0](https://github.com/fyne-io/fyne/releases/tag/v2.0.0).
   - The tabs are now animated to be more responsible on change.
   - Buttons now show an animation on tapped.
