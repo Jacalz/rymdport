@@ -43,7 +43,10 @@ func (c *Client) showTextReceiveWindow(text *bytes.Buffer) {
 	d := c.display
 
 	d.window.SetTitle("Received Text")
-	d.window.SetCloseIntercept(d.window.Hide)
+	d.window.SetCloseIntercept(func() {
+		text.Reset() // Empty the text on closing...
+		d.window.Hide()
+	})
 
 	d.leftButton.Text = "Copy"
 	d.leftButton.Icon = theme.ContentCopyIcon()
