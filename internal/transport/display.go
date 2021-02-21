@@ -44,8 +44,10 @@ func (c *Client) showTextReceiveWindow(text *bytes.Buffer) {
 
 	d.window.SetTitle("Received Text")
 	d.window.SetCloseIntercept(func() {
-		text.Reset() // Empty the text on closing...
 		d.window.Hide()
+		// Empty the text on closing...
+		text.Reset()
+		d.textEntry.SetText("")
 	})
 
 	d.leftButton.Text = "Copy"
@@ -99,6 +101,7 @@ func (c *Client) ShowTextSendWindow() chan string {
 	onClose := func() {
 		text <- ""
 		d.window.Hide()
+		d.textEntry.SetText("")
 	}
 
 	d.window.SetTitle("Send text")
@@ -114,6 +117,7 @@ func (c *Client) ShowTextSendWindow() chan string {
 	d.rightButton.OnTapped = func() {
 		text <- d.textEntry.Text
 		d.window.Hide()
+		d.textEntry.SetText("")
 	}
 
 	d.textEntry.OnSubmitted = func(_ string) { d.rightButton.OnTapped() }

@@ -86,5 +86,5 @@ func extractFile(file *zip.File, target string) (err error) {
 		return err
 	}
 
-	return nil
+	return
 }
