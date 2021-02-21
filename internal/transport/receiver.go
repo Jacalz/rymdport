@@ -103,13 +103,13 @@ func (c *Client) NewReceive(code string, pathname chan string) (err error) {
 		}
 	}()
 
-	_, err = io.Copy(tmp, msg)
+	n, err := io.Copy(tmp, msg)
 	if err != nil {
 		fyne.LogError("Error on copying contents to file", err)
 		return err
 	}
 
-	err = zip.Extract(tmp.Name(), path)
+	err = zip.Extract(tmp, n, path)
 	if err != nil {
 		fyne.LogError("Error on unzipping contents", err)
 		return err

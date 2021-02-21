@@ -11,21 +11,12 @@ import (
 	"github.com/klauspost/compress/zip"
 )
 
-// Extract extracts the zip archive at source to the target.
-// If overwrite is set, it will overwrite existing files.
-func Extract(source, target string) error {
-	reader, err := zip.OpenReader(source)
+// Extract takes a reader and the length and then extracts it to the target.
+func Extract(source io.ReaderAt, length int64, target string) error {
+	reader, err := zip.NewReader(source, length)
 	if err != nil {
-		fyne.LogError("Could not open the zip archive file", err)
 		return err
 	}
-
-	defer func() {
-		if cerr := reader.Close(); cerr != nil {
-			fyne.LogError("Could not close the zip reader", cerr)
-			err = cerr
-		}
-	}()
 
 	for _, file := range reader.File {
 		if err := extractFile(file, target); err != nil {
