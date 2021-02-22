@@ -14,6 +14,10 @@ Built using the following Go modules:
 
 The initial version was built in less than one day to show how quick and easy it is to use [fyne](https://github.com/fyne-io/fyne) for developing applications.
 
+## Sponsoring
+
+Wormhole-gui an open source project that is provided free of charge and that will continue to be the case forever. If you use wormhole-gui and appreciate the work being put into it, please consider supporting the development through [GitHub Sponsors](https://github.com/sponsors/Jacalz). This is in now way a requirement, but would be greatly appreciated and would allow for even more improvements to come further down the road.
+
 ## Requirements
 
 Wormhole-gui compiles into a statically linked binary with no runtime dependencies.
