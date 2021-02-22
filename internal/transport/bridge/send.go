@@ -148,10 +148,10 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 
 // SendText sends new text.
 func (p *SendList) SendText() {
-	if text := <-p.client.ShowTextSendWindow(); text != "" {
-		p.NewSendItem("Text Snippet", storage.NewFileURI("text")) // The file URI is a hack to get the correct icon
+	go func(i int) {
+		if text := <-p.client.ShowTextSendWindow(); text != "" {
+			p.NewSendItem("Text Snippet", storage.NewFileURI("text")) // The file URI is a hack to get the correct icon
 
-		go func(i int) {
 			code, result, err := p.client.NewTextSend(text, p.Items[i].Progress.update)
 			if err != nil {
 				fyne.LogError("Error on sending text", err)
@@ -169,8 +169,8 @@ func (p *SendList) SendText() {
 			} else if res.OK && p.client.Notifications {
 				p.client.ShowNotification("Text send completed", "The text was sent successfully.")
 			}
-		}(p.Length() - 1)
-	}
+		}
+	}(p.Length() - 1)
 }
 
 // NewSendList greates a list of progress bars.
