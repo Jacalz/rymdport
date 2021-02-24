@@ -169,6 +169,8 @@ func (p *SendList) SendText() {
 			} else if res.OK && p.client.Notifications {
 				p.client.ShowNotification("Text send completed", "The text was sent successfully.")
 			}
+		} else {
+			p.RemoveItem(i)
 		}
 	}(p.Length() - 1)
 }
