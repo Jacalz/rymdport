@@ -22,7 +22,7 @@ type Client struct {
 	// OverwriteExisting holds the settings value for if we should overwrite already existing files.
 	OverwriteExisting bool
 
-	// DownloadPath holds the download path used for saving recvieved files.
+	// DownloadPath holds the download path used for saving received files.
 	DownloadPath string
 }
 
