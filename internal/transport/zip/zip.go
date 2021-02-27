@@ -11,10 +11,13 @@ import (
 	"github.com/klauspost/compress/zip"
 )
 
+var errorDangerousFilename = errors.New("dangerous filename detected")
+
 // Extract takes a reader and the length and then extracts it to the target.
 func Extract(source io.ReaderAt, length int64, target string) error {
 	reader, err := zip.NewReader(source, length)
 	if err != nil {
+		fyne.LogError("Could not create zip reader", err)
 		return err
 	}
 
@@ -35,8 +38,8 @@ func extractFile(file *zip.File, target string) (err error) {
 	}
 
 	if !strings.HasPrefix(path, target) {
-		fyne.LogError("Dangerous filename detected", nil)
-		return errors.New("dangerous filename detected: " + path)
+		fyne.LogError("Dangerous filename detected", errorDangerousFilename)
+		return errorDangerousFilename
 	}
 
 	fileReader, err := file.Open()
@@ -52,13 +55,17 @@ func extractFile(file *zip.File, target string) (err error) {
 		}
 	}()
 
-	err = os.MkdirAll(filepath.Dir(path), 0750)
-	if err != nil {
-		fyne.LogError("Could not create the directory", err)
-		return err
+	if file.FileInfo().IsDir() {
+		err = os.MkdirAll(path, 0750)
+		if err != nil {
+			fyne.LogError("Could not create the directory", err)
+			return err
+		}
+
+		return nil
 	}
 
-	targetFile, err := os.Create(path)
+	targetFile, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
 	if err != nil {
 		fyne.LogError("Could not create the target file", err)
 		return err
