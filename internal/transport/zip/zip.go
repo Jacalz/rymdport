@@ -65,7 +65,7 @@ func extractFile(file *zip.File, target string) (err error) {
 		return nil
 	}
 
-	targetFile, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
+	targetFile, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode()) // #nosec - The path has already been cleaned by filepath.Abs()
 	if err != nil {
 		fyne.LogError("Could not create the target file", err)
 		return err
