@@ -8,9 +8,9 @@ It uses the Go implementation of magic-wormhole, called [wormhole-william](https
 </p>
 
 Built using the following Go modules:
-- [fyne](https://github.com/fyne-io/fyne) (version 2.0.0)
-- [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.4 + [f69f6e8](https://github.com/psanford/wormhole-william/commit/f69f6e823d8cec6b3756b8ce63024c8cd3c3ebf2))
-- [archiver](https://github.com/mholt/archiver) (version 3.5.0)
+- [fyne](https://github.com/fyne-io/fyne) (version 2.0.1)
+- [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.5)
+- [compress](https://github.com/klauspost/compress) (version 1.11.7)
 
 The initial version was built in less than one day to show how quick and easy it is to use [fyne](https://github.com/fyne-io/fyne) for developing applications.
 
@@ -21,7 +21,7 @@ Wormhole-gui an open source project that is provided free of charge and that wil
 ## Requirements
 
 Wormhole-gui compiles into a statically linked binary with no runtime dependencies.
-Compiling requires a [Go](https://golang.org) compiler (1.13 or later) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
+Compiling requires a [Go](https://golang.org) compiler (1.14 or later) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
 
 NOTE: Wormhole-gui does not currently run natively on Apple silicon (M1), but works through Rosetta 2.
 

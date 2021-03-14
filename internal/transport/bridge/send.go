@@ -87,6 +87,12 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 	p.NewSendItem(file.URI().Name(), file.URI())
 
 	go func(i int) {
+		defer func() {
+			if err = file.Close(); err != nil {
+				fyne.LogError("Error on closing file", err)
+			}
+		}()
+
 		code, result, err := p.client.NewFileSend(file, p.Items[i].Progress.update)
 		if err != nil {
 			fyne.LogError("Error on sending file", err)
@@ -103,10 +109,6 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 			p.client.ShowNotification("File send failed", "An error occurred when sending the file.")
 		} else if res.OK {
 			p.client.ShowNotification("File send completed", "The file was sent successfully.")
-		}
-
-		if err = file.Close(); err != nil {
-			fyne.LogError("Error on closing file", err)
 		}
 	}(p.Length() - 1)
 }
@@ -146,10 +148,10 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 
 // SendText sends new text.
 func (p *SendList) SendText() {
-	if text := <-p.client.ShowTextSendWindow(); text != "" {
-		p.NewSendItem("Text Snippet", storage.NewFileURI("text")) // The file URI is a hack to get the correct icon
+	p.NewSendItem("Text Snippet", storage.NewFileURI("text")) // The file URI is a hack to get the correct icon
 
-		go func(i int) {
+	go func(i int) {
+		if text := <-p.client.ShowTextSendWindow(); text != "" {
 			code, result, err := p.client.NewTextSend(text, p.Items[i].Progress.update)
 			if err != nil {
 				fyne.LogError("Error on sending text", err)
@@ -167,8 +169,10 @@ func (p *SendList) SendText() {
 			} else if res.OK && p.client.Notifications {
 				p.client.ShowNotification("Text send completed", "The text was sent successfully.")
 			}
-		}(p.Length() - 1)
-	}
+		} else {
+			p.RemoveItem(i)
+		}
+	}(p.Length() - 1)
 }
 
 // NewSendList greates a list of progress bars.

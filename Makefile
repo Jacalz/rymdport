@@ -45,7 +45,7 @@ freebsd:
 	$(GOBIN)fyne-cross freebsd -arch amd64 -app-id $(APPID) -icon $(ICON)
 
 darwin:
-	$(GOBIN)fyne-cross darwin -arch amd64 -app-id $(APPID) -icon $(ICON) -output $(NAME)
+	$(GOBIN)fyne-cross darwin -arch amd64,arm64 -app-id $(APPID) -icon $(ICON) -output $(NAME)
 
 linux:
 	$(GOBIN)fyne-cross linux -arch amd64,arm64 -app-id $(APPID) -icon $(ICON)
@@ -56,10 +56,9 @@ windows:
 windows-debug:
 	$(GOBIN)fyne-cross windows -console -arch amd64 -app-id $(APPID) -icon $(ICON)
 
-release: darwin freebsd linux windows
-	# Usage: make release VERSION=v2.x.x
-	# If no version is specified, it will default to "dev" instead.
-
+bundle:
+	# Usage: make bundle VERSION=v2.x.x
+	
 	# Move Linux package bundles to the root with correct naming.
 	mv fyne-cross/dist/linux-amd64/wormhole-gui.tar.gz $(NAME)-$(VERSION)-linux-amd64.tar.gz
 	mv fyne-cross/dist/linux-arm64/wormhole-gui.tar.gz $(NAME)-$(VERSION)-linux-arm64.tar.gz
@@ -67,9 +66,16 @@ release: darwin freebsd linux windows
 	# Move FreeBSD package bundles to the root with correct naming.
 	mv fyne-cross/dist/freebsd-amd64/wormhole-gui.tar.gz $(NAME)-$(VERSION)-freebsd-amd64.tar.gz
 
-	# Zip up the darwin package with correct name and move to the root.
+	# Zip up the darwin packages with correct name and move to the root.
 	(cd fyne-cross/dist/darwin-amd64/ && zip -r wormhole-gui-darwin-amd64.zip wormhole-gui.app/)
 	mv fyne-cross/dist/darwin-amd64/wormhole-gui-darwin-amd64.zip $(NAME)-$(VERSION)-darwin-amd64.zip
 
+	(cd fyne-cross/dist/darwin-arm64/ && zip -r wormhole-gui-darwin-arm64.zip wormhole-gui.app/)
+	mv fyne-cross/dist/darwin-arm64/wormhole-gui-darwin-arm64.zip $(NAME)-$(VERSION)-darwin-arm64.zip
+
 	# Move Windows package to the root with correct naming.
 	mv fyne-cross/dist/windows-amd64/wormhole-gui.exe.zip $(NAME)-$(VERSION)-windows-amd64.zip
+
+release: darwin freebsd linux windows bundle
+	# Usage: make release VERSION=v2.x.x
+	# If no version is specified, it will default to "dev" instead.

@@ -30,8 +30,11 @@ type settings struct {
 	overwriteFiles     *widget.RadioGroup
 	notificationRadio  *widget.RadioGroup
 
-	componentSlider *widget.Slider
-	componentLabel  *widget.Label
+	componentSlider     *widget.Slider
+	componentLabel      *widget.Label
+	appID               *widget.Entry
+	rendezvousURL       *widget.Entry
+	transitRelayAddress *widget.Entry
 
 	client      *transport.Client
 	appSettings *AppSettings
@@ -64,7 +67,7 @@ func (s *settings) onDownloadsPathChanged() {
 }
 
 func (s *settings) onOverwriteFilesChanged(selected string) {
-	s.client.Zip.OverwriteExisting = selected == "On"
+	s.client.OverwriteExisting = selected == "On"
 	s.app.Preferences().SetString("OverwriteFiles", selected)
 }
 
@@ -79,6 +82,21 @@ func (s *settings) onComponentsChange(value float64) {
 	s.componentLabel.SetText(strconv.Itoa(int(value)))
 }
 
+func (s *settings) onAppIDChanged(appID string) {
+	s.client.AppID = appID
+	s.app.Preferences().SetString("AppID", appID)
+}
+
+func (s *settings) onRendezvousURLChange(url string) {
+	s.client.RendezvousURL = url
+	s.app.Preferences().SetString("RendezvousURL", url)
+}
+
+func (s *settings) onTransitAdressChange(adress string) {
+	s.client.TransitRelayAddress = adress
+	s.app.Preferences().SetString("TransitRelayAddress", adress)
+}
+
 func (s *settings) buildUI() *container.Scroll {
 	s.themeSelect = &widget.Select{Options: themes, OnChanged: s.onThemeChanged, Selected: s.appSettings.Theme}
 
@@ -91,9 +109,17 @@ func (s *settings) buildUI() *container.Scroll {
 	s.notificationRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onNotificationsChanged}
 	s.notificationRadio.SetSelected(s.app.Preferences().StringWithFallback("Notifications", onOffOptions[1]))
 
-	s.componentLabel = &widget.Label{}
-	s.componentSlider = &widget.Slider{Min: 2.0, Max: 6.0, Step: 1, OnChanged: s.onComponentsChange}
+	s.componentSlider, s.componentLabel = &widget.Slider{Min: 2.0, Max: 6.0, Step: 1, OnChanged: s.onComponentsChange}, &widget.Label{}
 	s.componentSlider.SetValue(s.app.Preferences().FloatWithFallback("ComponentLength", 2))
+
+	s.appID = &widget.Entry{PlaceHolder: "lothar.com/wormhole/text-or-file-xfer", OnChanged: s.onAppIDChanged}
+	s.appID.SetText(s.app.Preferences().String("AppID"))
+
+	s.rendezvousURL = &widget.Entry{PlaceHolder: "ws://relay.magic-wormhole.io:4000/v1", OnChanged: s.onRendezvousURLChange}
+	s.rendezvousURL.SetText(s.app.Preferences().String("RendezvousURL"))
+
+	s.transitRelayAddress = &widget.Entry{PlaceHolder: "transit.magic-wormhole.io:4001", OnChanged: s.onTransitAdressChange}
+	s.transitRelayAddress.SetText(s.app.Preferences().String("TransitRelayAddress"))
 
 	interfaceContainer := container.NewGridWithColumns(2,
 		newBoldLabel("Application Theme"), s.themeSelect,
@@ -105,8 +131,15 @@ func (s *settings) buildUI() *container.Scroll {
 		newBoldLabel("Notifications"), s.notificationRadio,
 	)
 
-	wormholeContainer := container.NewGridWithColumns(2,
-		newBoldLabel("Passphrase Length"), container.NewBorder(nil, nil, nil, s.componentLabel, s.componentSlider),
+	wormholeContainer := container.NewVBox(
+		container.NewGridWithColumns(2, newBoldLabel("Passphrase Length"), container.NewBorder(nil, nil, nil, s.componentLabel, s.componentSlider)),
+		&widget.Accordion{Items: []*widget.AccordionItem{
+			{Title: "Advanced", Detail: container.NewGridWithColumns(2,
+				newBoldLabel("AppID"), s.appID,
+				newBoldLabel("Rendezvous URL"), s.rendezvousURL,
+				newBoldLabel("Transit Relay Address"), s.transitRelayAddress,
+			)},
+		}},
 	)
 
 	return container.NewScroll(container.NewVBox(
