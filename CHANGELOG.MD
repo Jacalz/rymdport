@@ -1,5 +1,34 @@
 # Changelog
 
+## 2.2.0 - Much faster directory transfers
+- Replace [mholt/archiver](https://github.com/mholt/archiver) with a custom zip extractor using [klauspost/compress/zip](https://github.com/klauspost/compress).
+  - Binaries are about 0.5 MB smaller due to not including unused compression standards.
+  - Improved performance when receiving directories.
+- Added advanced settings for the wormhole client.
+  - Support for changing the default AppID used for transfers.
+  - Support for changing the default Rendezvous Server URL.
+  - Support for changing the default Transit Relay Address.
+- Improved error handling for receives.
+- Improved memory usage when when receiving text.
+- Fixed files not being closed if send failed to start.
+- Fixed main window being unresponsive when sending text.
+- Fixed sent/received text staying in memory until the next send/receive.
+- Updated `wormhole-william` to [v1.0.5](https://github.com/psanford/wormhole-william/releases/tag/refs%2Ftags%2Fv1.0.5).
+  - Switched to [klauspost/compress/zip](https://github.com/klauspost/compress) for up to 2.5x faster zip compression when sending directories.
+- Updated `fyne` to [v2.0.1](https://github.com/fyne-io/fyne/releases/tag/v2.0.1).
+  - Improved refresh and resizing of dialogs.
+  - Initial support for building on Apple M1 computers (arm64).
+  - Fixed some buttons not showing hover effects.
+  - Fixed progress bars not having correct background.
+  - Fixed pointer and cursor misalignment when typing text.
+  - Fixed possible panic when selecting text.
+  - Fixed cursor animation sometimes distorting the text.
+- Release binaries are now built with `Go 1.16.2`.
+  - Binaries for macOS no longer support 10.11 El Capitan and instead require 10.12 Sierra or later.
+  - Windows binaries are built with [ASLR](https://en.wikipedia.org/wiki/Address_space_layout_randomization) support for improved security.
+  - All binaries are now smaller due to using an improved linker.
+  - Small performance improvements and other minor changes.
+
 ## 2.1.0 - Major ui changes and a lot of improvements
 - Major rework of the receive tab to use progress bars.
   - Dialogs are no longer used to indicate finished receives.
