@@ -135,7 +135,7 @@ func (s *settings) buildUI() *container.Scroll {
 		container.NewGridWithColumns(2, newBoldLabel("Passphrase Length"), container.NewBorder(nil, nil, nil, s.componentLabel, s.componentSlider)),
 		&widget.Accordion{Items: []*widget.AccordionItem{
 			{Title: "Advanced", Detail: container.NewGridWithColumns(2,
-				newBoldLabel("AppID (must be the same across clients)"), s.appID,
+				newBoldLabel("AppID"), s.appID,
 				newBoldLabel("Rendezvous URL"), s.rendezvousURL,
 				newBoldLabel("Transit Relay Address"), s.transitRelayAddress,
 			)},
