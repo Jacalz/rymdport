@@ -5,9 +5,7 @@
   - Binaries are about 0.5 MB smaller due to not including unused compression standards.
   - Improved performance when receiving directories.
 - Added advanced settings for the wormhole client.
-  - Support for changing the default AppID used for transfers.
-  - Support for changing the default Rendezvous Server URL.
-  - Support for changing the default Transit Relay Address.
+  - Support for changing the default AppID, Rendezvous Server URL and Transit Relay Address used for transfers.
 - Improved error handling for receives.
 - Improved memory usage when when receiving text.
 - Fixed files not being closed if send failed to start.

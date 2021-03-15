@@ -23,7 +23,7 @@ Wormhole-gui an open source project that is provided free of charge and that wil
 Wormhole-gui compiles into a statically linked binary with no runtime dependencies.
 Compiling requires a [Go](https://golang.org) compiler (1.14 or later) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
 
-NOTE: Wormhole-gui can be built to run natively on Apple silicon (`darwin/arm64`, M1) when paired with Go 1.16 or later. However, release binaires not yet avaliable, but regular `darwin/amd64` binaires should work through Rosetta 2 in the meantime.
+NOTE: Wormhole-gui can be built to run natively on Apple silicon (`darwin/arm64`, M1) when paired with Go 1.16 or later. However, release binaires not yet available, but regular `darwin/amd64` binaires should work through Rosetta 2 in the meantime.
 
 ## Downloads
 

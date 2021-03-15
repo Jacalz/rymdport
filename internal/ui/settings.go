@@ -92,9 +92,9 @@ func (s *settings) onRendezvousURLChange(url string) {
 	s.app.Preferences().SetString("RendezvousURL", url)
 }
 
-func (s *settings) onTransitAdressChange(adress string) {
-	s.client.TransitRelayAddress = adress
-	s.app.Preferences().SetString("TransitRelayAddress", adress)
+func (s *settings) onTransitAdressChange(address string) {
+	s.client.TransitRelayAddress = address
+	s.app.Preferences().SetString("TransitRelayAddress", address)
 }
 
 func (s *settings) buildUI() *container.Scroll {
