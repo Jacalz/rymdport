@@ -115,5 +115,5 @@ func (c *Client) NewReceive(code string, pathname chan string) (err error) {
 		return err
 	}
 
-	return nil
+	return
 }
