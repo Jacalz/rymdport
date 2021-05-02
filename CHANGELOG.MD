@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.2.1 - A few minor bug fixes
+- Fixed text wrapping being disabled for the text send/receive windows.
+- Updated `fyne` to [v2.0.3](https://github.com/fyne-io/fyne/releases/tag/v2.0.3).
+  - Fixed compilation on FreeBSD 13.
+  - Fixed an issue when clicking links on macOS.
+  - Improvements and fixes for text selection.
+  - A few minor performance improvements.
+
 ## 2.2.0 - Much faster directory transfers
 - Replace [mholt/archiver](https://github.com/mholt/archiver) with a custom zip extractor using [klauspost/compress/zip](https://github.com/klauspost/compress).
   - Binaries are about 0.5 MB smaller due to not including unused compression standards.
