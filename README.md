@@ -8,7 +8,7 @@ It uses the Go implementation of magic-wormhole, called [wormhole-william](https
 </p>
 
 Built using the following Go modules:
-- [fyne](https://github.com/fyne-io/fyne) (version 2.0.1)
+- [fyne](https://github.com/fyne-io/fyne) (version 2.0.3)
 - [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.5)
 - [compress](https://github.com/klauspost/compress) (version 1.11.7)
 
