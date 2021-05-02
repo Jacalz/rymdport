@@ -26,7 +26,7 @@ func (d *textDisplay) Refresh() {
 func createTextWindow() *textDisplay {
 	display := &textDisplay{
 		window:      fyne.CurrentApp().NewWindow(""),
-		textEntry:   &widget.Entry{MultiLine: true},
+		textEntry:   &widget.Entry{MultiLine: true, Wrapping: fyne.TextWrapWord},
 		leftButton:  &widget.Button{},
 		rightButton: &widget.Button{},
 	}
