@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.2 - A small hotfix release
+- Fixed the receive code validation been to strict in some cases.
+- Fixed incorrect version information on the about tab.
+
 ## 2.2.1 - A few minor bug fixes
 - Fixed text wrapping being disabled for the text send/receive windows.
 - Updated `fyne` to [v2.0.3](https://github.com/fyne-io/fyne/releases/tag/v2.0.3).
