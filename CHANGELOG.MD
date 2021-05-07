@@ -1,7 +1,7 @@
 # Changelog
 
 ## 2.2.2 - A small hotfix release
-- Fixed the receive code validation been to strict in some cases.
+- Fixed the receive code validation being too strict in some cases.
 - Fixed incorrect version information on the about tab.
 
 ## 2.2.1 - A few minor bug fixes
