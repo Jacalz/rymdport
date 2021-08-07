@@ -55,6 +55,7 @@ func (p *SendList) RemoveItem(i int) {
 // OnSelected handles removing items and stopping send (in the future)
 func (p *SendList) OnSelected(i int) {
 	if p.Items[i].Progress.Value != p.Items[i].Progress.Max { // TODO: Stop the send instead.
+		p.Unselect(i)
 		return // We can't stop running sends due to bug in wormhole-gui.
 	}
 
