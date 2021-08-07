@@ -39,7 +39,7 @@ func (r *recv) onRecv() {
 
 func (r *recv) buildUI() *fyne.Container {
 	r.codeEntry = &widget.Entry{PlaceHolder: "Enter code", OnSubmitted: func(_ string) { r.onRecv() },
-		Validator: validation.NewRegexp(`^\d{1,3}(-\w{2,12}){2,6}$`, "The code is invalid"),
+		Validator: validation.NewRegexp(`^\d+(-(\w|\d)+)+$`, "The code is invalid"),
 	}
 
 	r.codeButton = &widget.Button{Text: "Download", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
