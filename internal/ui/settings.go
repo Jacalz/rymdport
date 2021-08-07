@@ -10,6 +10,7 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/wormhole-gui/internal/transport"
+	"github.com/psanford/wormhole-william/wormhole"
 )
 
 var (
@@ -112,13 +113,13 @@ func (s *settings) buildUI() *container.Scroll {
 	s.componentSlider, s.componentLabel = &widget.Slider{Min: 2.0, Max: 6.0, Step: 1, OnChanged: s.onComponentsChange}, &widget.Label{}
 	s.componentSlider.SetValue(s.app.Preferences().FloatWithFallback("ComponentLength", 2))
 
-	s.appID = &widget.Entry{PlaceHolder: "lothar.com/wormhole/text-or-file-xfer", OnChanged: s.onAppIDChanged}
+	s.appID = &widget.Entry{PlaceHolder: wormhole.WormholeCLIAppID, OnChanged: s.onAppIDChanged}
 	s.appID.SetText(s.app.Preferences().String("AppID"))
 
-	s.rendezvousURL = &widget.Entry{PlaceHolder: "ws://relay.magic-wormhole.io:4000/v1", OnChanged: s.onRendezvousURLChange}
+	s.rendezvousURL = &widget.Entry{PlaceHolder: wormhole.DefaultRendezvousURL, OnChanged: s.onRendezvousURLChange}
 	s.rendezvousURL.SetText(s.app.Preferences().String("RendezvousURL"))
 
-	s.transitRelayAddress = &widget.Entry{PlaceHolder: "transit.magic-wormhole.io:4001", OnChanged: s.onTransitAdressChange}
+	s.transitRelayAddress = &widget.Entry{PlaceHolder: wormhole.DefaultTransitRelayAddress, OnChanged: s.onTransitAdressChange}
 	s.transitRelayAddress.SetText(s.app.Preferences().String("TransitRelayAddress"))
 
 	interfaceContainer := container.NewGridWithColumns(2,
