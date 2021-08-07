@@ -28,13 +28,13 @@ func bail(msg *wormhole.IncomingMessage, err error) error {
 func (c *Client) NewReceive(code string, pathname chan string) (err error) {
 	msg, err := c.Receive(context.Background(), code)
 	if err != nil {
-		pathname <- "fail"
+		pathname <- "fail" // We want to always send a URI, even on fail, in order to not block goroutines.
 		fyne.LogError("Error on receiving data", err)
 		return bail(msg, err)
 	}
 
 	if msg.Type == wormhole.TransferText {
-		pathname <- "text" // We want to always send a URI, even on fail, in order to not block goroutines.
+		pathname <- "text"
 		text := &bytes.Buffer{}
 		text.Grow(int(msg.TransferBytes64))
 
