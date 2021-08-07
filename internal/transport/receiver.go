@@ -9,7 +9,6 @@ import (
 	"path/filepath"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/storage"
 	"github.com/Jacalz/wormhole-gui/internal/transport/zip"
 	"github.com/psanford/wormhole-william/wormhole"
 )
@@ -49,7 +48,7 @@ func (c *Client) NewReceive(code string, pathname chan string) (err error) {
 	}
 
 	path := filepath.Join(c.DownloadPath, msg.Name)
-	pathname <- storage.NewFileURI(path).String()
+	pathname <- path
 
 	if !c.OverwriteExisting {
 		if _, err := os.Stat(path); err == nil || os.IsExist(err) {
