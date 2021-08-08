@@ -28,7 +28,7 @@ func newRecv(a fyne.App, w fyne.Window, c *transport.Client, as *AppSettings) *r
 }
 
 func (r *recv) onRecv() {
-	if err := r.codeEntry.Validate(); err != nil {
+	if err := r.codeEntry.Validate(); err != nil || r.codeEntry.Text == "" {
 		dialog.ShowInformation("Invalid code", "The code is invalid. Please try again.", r.window)
 		return
 	}
@@ -39,7 +39,7 @@ func (r *recv) onRecv() {
 
 func (r *recv) buildUI() *fyne.Container {
 	r.codeEntry = &widget.Entry{PlaceHolder: "Enter code", OnSubmitted: func(_ string) { r.onRecv() },
-		Validator: validation.NewRegexp(`^\d+(-(\w|\d)+)+$`, "The code is invalid"),
+		Validator: validation.NewRegexp(`(^\d+(-(\w|\d)+)+$)|(^$)`, "The code is invalid"),
 	}
 
 	r.codeButton = &widget.Button{Text: "Download", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
