@@ -69,10 +69,10 @@ bundle:
 
 	# Zip up the darwin packages with correct name and move to the root.
 	(cd fyne-cross/dist/darwin-amd64/ && zip -r wormhole-gui-darwin-amd64.zip wormhole-gui.app/)
-	mv fyne-cross/dist/darwin-amd64/wormhole-gui-darwin-amd64.zip $(NAME)-$(VERSION)-darwin-amd64.zip
+	mv fyne-cross/dist/darwin-amd64/wormhole-gui-darwin-amd64.zip $(NAME)-$(VERSION)-macOS-amd64.zip
 
 	(cd fyne-cross/dist/darwin-arm64/ && zip -r wormhole-gui-darwin-arm64.zip wormhole-gui.app/)
-	mv fyne-cross/dist/darwin-arm64/wormhole-gui-darwin-arm64.zip $(NAME)-$(VERSION)-darwin-arm64.zip
+	mv fyne-cross/dist/darwin-arm64/wormhole-gui-darwin-arm64.zip $(NAME)-$(VERSION)-macOS-arm64.zip
 
 	# Move Windows package to the root with correct naming.
 	mv fyne-cross/dist/windows-amd64/wormhole-gui.exe.zip $(NAME)-$(VERSION)-windows-amd64.zip
