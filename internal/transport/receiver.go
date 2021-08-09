@@ -14,7 +14,7 @@ import (
 )
 
 func bail(msg *wormhole.IncomingMessage, err error) error {
-	if msg == nil {
+	if msg == nil || msg.Type == wormhole.TransferText { // Rejecting text receives is not possible.
 		return err
 	} else if rerr := msg.Reject(); rerr != nil {
 		return rerr
@@ -35,7 +35,9 @@ func (c *Client) NewReceive(code string, pathname chan string) (err error) {
 	if msg.Type == wormhole.TransferText {
 		pathname <- "text"
 		text := &bytes.Buffer{}
-		text.Grow(int(msg.TransferBytes64))
+
+		// The size of text is always zero for some reason, see https://github.com/psanford/wormhole-william/issues/56.
+		//text.Grow(int(msg.TransferBytes64))
 
 		_, err := io.Copy(text, msg)
 		if err != nil {
