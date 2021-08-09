@@ -35,7 +35,8 @@ Systems with the compile-time requirements satisfied can build the project using
 go build
 ```
 
-The project can also be built and installed using GNU Make (installing is currently only supported on Linux and BSD):
+The project is avaliable in the [Fyne Apps Listing](https://apps.fyne.io/apps/wormhole-gui.html) and can be installed either using the `fyne get` command or using the [Fyne Apps Installer](https://apps.fyne.io/apps/io.fyne.apps.html).
+It can also be built and installed using GNU Make (installing is currently only supported on Linux and BSD):
 ```bash
 make
 sudo make install
