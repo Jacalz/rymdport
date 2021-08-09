@@ -32,7 +32,7 @@ Pre-built binaries are avaliable for FreeBSD, Linux, MacOS (`x86-64` and `arm64`
 
 Systems with the compile-time requirements satisfied can build the project using `go build` in the project root:
 ```bash
-go build 
+go build
 ```
 
 The project can also be built and installed using GNU Make (installing is currently only supported on Linux and BSD):

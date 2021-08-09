@@ -1,4 +1,4 @@
-module github.com/Jacalz/wormhole-gui
+module github.com/Jacalz/wormhole-gui/v2
 
 go 1.14
 

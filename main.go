@@ -4,8 +4,8 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 
-	"github.com/Jacalz/wormhole-gui/internal/assets"
-	"github.com/Jacalz/wormhole-gui/internal/ui"
+	"github.com/Jacalz/wormhole-gui/v2/internal/assets"
+	"github.com/Jacalz/wormhole-gui/v2/internal/ui"
 )
 
 func main() {

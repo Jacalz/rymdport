@@ -6,7 +6,7 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
-	"github.com/Jacalz/wormhole-gui/internal/transport"
+	"github.com/Jacalz/wormhole-gui/v2/internal/transport"
 )
 
 // RecvItem is the item that is being received

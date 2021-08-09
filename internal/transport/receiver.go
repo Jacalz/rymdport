@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 
 	"fyne.io/fyne/v2"
-	"github.com/Jacalz/wormhole-gui/internal/transport/zip"
+	"github.com/Jacalz/wormhole-gui/v2/internal/transport/zip"
 	"github.com/psanford/wormhole-william/wormhole"
 )
 
