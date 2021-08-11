@@ -65,7 +65,7 @@ bundle:
 
 	# Move FreeBSD package bundles to the root with correct naming.
 	mv fyne-cross/dist/freebsd-amd64/wormhole-gui.tar.gz $(NAME)-$(VERSION)-freebsd-amd64.tar.gz
-	mv fyne-cross/dist/freebsd-amd64/wormhole-gui.tar.gz $(NAME)-$(VERSION)-freebsd-arm64.tar.gz
+	mv fyne-cross/dist/freebsd-arm64/wormhole-gui.tar.gz $(NAME)-$(VERSION)-freebsd-arm64.tar.gz
 
 	# Zip up the darwin packages with correct name and move to the root.
 	(cd fyne-cross/dist/darwin-amd64/ && zip -r wormhole-gui-darwin-amd64.zip wormhole-gui.app/)
