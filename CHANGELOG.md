@@ -1,5 +1,24 @@
 # Changelog
 
+## 2.3.0 - FreeBSD and macOS arm64 binaries
+- Added support for receiving from custom codes (sending will be in the next big release)
+- Fixed received data not showing until after download completes, #17.
+- Fixed a possible incorrect error that could happen when a text receive failed.
+- Fixed an issue with the project module structure that made it impossible to download using `go get` or `go install`.
+- Slightly faster application startup time.
+- Fix issue with send items sometimes not being unselected correctly.
+- Very minor performance improvement for receives.
+- Avoid hardcoded defaults for advanced settings. We now use the defaults from `ẁormhole-william` directly instead.
+- Release binaries are now avaliable for FreeBSD and macOS (M1) on the arm64 architecture.
+- Release binaries for macOS are now called that instead of `darwin` for clarity.
+- Updated `compress` to [v1.13.3](https://github.com/klauspost/compress/releases/tag/v1.13.3).
+  - Better and faster zip compression and decompression (brings faster directory sends and receives).
+- Updated `fyne` to [v2.0.4](https://github.com/fyne-io/fyne/releases/tag/v2.0.4).
+  - The title bar on Windows 10 now matches the system theme (light or dark theme).
+  - Fixed the Windows 10 notifications view showing the text "app-id" as application name.
+  - Fixed a couple issues when running in fullscreen.
+  - Improved performance when drawing transparent rectangles or whitespace strings.  
+
 ## 2.2.2 - A small hotfix release
 - Fixed the receive code validation being too strict in some cases.
 - Fixed incorrect version information on the about tab.
