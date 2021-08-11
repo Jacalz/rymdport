@@ -26,7 +26,7 @@ Compiling requires a [Go](https://golang.org) compiler (1.14 or later) and the [
 ## Downloads
 
 Please visit the [release page](https://github.com/Jacalz/wormhole-gui/releases) for downloading the latest releases.
-Pre-built binaries are avaliable for FreeBSD, Linux, MacOS (`x86-64` and `arm64`) and Windows (`x86-64`).
+Pre-built binaries are available for FreeBSD, Linux, MacOS (`x86-64` and `arm64`) and Windows (`x86-64`).
 
 ## Building
 
@@ -35,7 +35,7 @@ Systems with the compile-time requirements satisfied can build the project using
 go build
 ```
 
-The project is avaliable in the [Fyne Apps Listing](https://apps.fyne.io/apps/wormhole-gui.html) and can be installed either using the `fyne get` command or using the [Fyne Apps Installer](https://apps.fyne.io/apps/io.fyne.apps.html).
+The project is available in the [Fyne Apps Listing](https://apps.fyne.io/apps/wormhole-gui.html) and can be installed either using the `fyne get` command or using the [Fyne Apps Installer](https://apps.fyne.io/apps/io.fyne.apps.html).
 It can also be built and installed using GNU Make (installing is currently only supported on Linux and BSD):
 ```bash
 make

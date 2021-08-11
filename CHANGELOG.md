@@ -9,8 +9,10 @@
 - Fix issue with send items sometimes not being unselected correctly.
 - Very minor performance improvement for receives.
 - Avoid hardcoded defaults for advanced settings. We now use the defaults from `ẁormhole-william` directly instead.
-- Release binaries are now avaliable for FreeBSD and macOS (M1) on the arm64 architecture.
+- Release binaries are now available for FreeBSD and macOS (M1) on the arm64 architecture.
 - Release binaries for macOS are now called that instead of `darwin` for clarity.
+- Release binaries are now built with `Go 1.16.7`.
+  - Fixes a couple security issues and contains a few bug fixes. 
 - Updated `compress` to [v1.13.3](https://github.com/klauspost/compress/releases/tag/v1.13.3).
   - Better and faster zip compression and decompression (brings faster directory sends and receives).
 - Updated `fyne` to [v2.0.4](https://github.com/fyne-io/fyne/releases/tag/v2.0.4).
