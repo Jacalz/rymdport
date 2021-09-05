@@ -12,7 +12,7 @@ import (
 	"github.com/Jacalz/wormhole-gui/v2/internal/assets"
 )
 
-const version = "v2.3.0"
+const version = "v2.3.1"
 
 var releaseURL = &url.URL{
 	Scheme: "https",
