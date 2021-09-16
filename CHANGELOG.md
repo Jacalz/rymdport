@@ -1,7 +1,7 @@
 # Changelog
 
 ## 2.3.1 - Rebuilt release binaries
-- This release only contains rebuilt release binaries due to an issue with the old release.
+- Updated `compress` to [v1.13.6](https://github.com/klauspost/compress/releases/tag/v1.13.6).
 
 ## 2.3.0 - FreeBSD and macOS arm64 binaries
 - Added support for receiving from custom codes (sending will be in the next big release)
