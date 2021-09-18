@@ -38,7 +38,7 @@ func (r *recv) onRecv() {
 }
 
 func (r *recv) buildUI() *fyne.Container {
-	r.codeEntry = &widget.Entry{PlaceHolder: "Enter code", OnSubmitted: func(_ string) { r.onRecv() },
+	r.codeEntry = &widget.Entry{PlaceHolder: "Enter code", Wrapping: fyne.TextTruncate, OnSubmitted: func(_ string) { r.onRecv() },
 		Validator: validation.NewRegexp(`(^\d+(-(\w|\d)+)+$)|(^$)`, "The code is invalid"),
 	}
 
