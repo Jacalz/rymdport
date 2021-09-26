@@ -1,0 +1,6 @@
+[Details]
+Name = "wormhole-gui"
+ID = "io.github.jacalz.wormhole_gui"
+Icon = "internal/assets/icon/icon-512.png"
+Version = "v3.0.0"
+Build = 14

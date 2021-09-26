@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+
+Name=wormhole-gui
+GenericName=File Transfer
+Comment=Easy encrypted sharing of files, folders, and text between devices.
+Categories=Network;FileTransfer;P2P;Utility;
+Keywords=magic-wormhole;send;receive;sharing;transfer;fyne;
+
+Icon=io.github.jacalz.wormhole_gui
+Exec=wormhole-gui
+Terminal=false

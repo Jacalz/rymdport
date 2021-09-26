@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	a := app.NewWithID("com.github.jacalz.wormhole-gui")
+	a := app.NewWithID("io.github.jacalz.wormhole_gui")
 	a.SetIcon(assets.AppIcon)
 	w := a.NewWindow("wormhole-gui")
 
