@@ -32,7 +32,7 @@ func (p *RecvList) Length() int {
 
 // CreateItem creates a new item in the list.
 func (p *RecvList) CreateItem() fyne.CanvasObject {
-	return container.New(&listLayout{}, widget.NewFileIcon(nil), widget.NewLabel("Waiting for filename..."), newRecvProgress())
+	return container.New(&listLayout{}, widget.NewFileIcon(nil), &widget.Label{Text: "Waiting for filename...", Wrapping: fyne.TextTruncate}, newRecvProgress())
 }
 
 // UpdateItem updates the data in the list.

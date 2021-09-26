@@ -10,48 +10,24 @@ var maxMinSizeHeight float32 // Keeping all instances of the list layout consist
 
 type listLayout struct{}
 
-// Layout is called to pack all child objects into a specified size.
 func (g *listLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
-	length := float32(len(objects) - 1)
-	padWidth := length * theme.Padding()
-	cellWidth := (size.Width - padWidth - objects[0].MinSize().Width) / length
 
-	start, end := float32(0), size.Height
-	for i, child := range objects {
-		if !child.Visible() {
-			continue
-		}
+	objects[0].Move(fyne.NewPos(0, theme.Padding()))
+	objects[0].Resize(fyne.NewSize(size.Height-theme.Padding(), size.Height-2*theme.Padding()))
 
-		if i == 0 {
-			child.Move(fyne.NewPos(0, 0))
-			child.Resize(fyne.NewSize(size.Height, size.Height))
-			start = end + theme.Padding()
-			continue
-		}
-
-		if i != 1 {
-			start += cellWidth + theme.Padding()
-		}
-
-		end = start + cellWidth
-
-		_, isLabel := child.(*widget.Label)
-		if cont, ok := child.(*fyne.Container); ok {
-			_, isLabel = cont.Objects[0].(*codeDisplay)
-		}
-
-		if isLabel { // Proper vertical alignment for text labels
+	cellSize := (size.Width - size.Height - theme.Padding()) / (float32(len(objects) - 1))
+	start, end := size.Height, size.Height+cellSize-theme.Padding()
+	for _, child := range objects[1:] {
+		if _, label := child.(*widget.Label); label {
 			child.Move(fyne.NewPos(start, (size.Height-child.MinSize().Height)/2))
 		} else {
-			child.Move(fyne.NewPos(start, 0))
+			child.Move(fyne.NewPos(start, theme.Padding()))
 		}
 
-		// TODO: Better solution for too long text
-		if width := child.MinSize().Width; width > cellWidth {
-			start += width - cellWidth
-		}
+		child.Resize(fyne.NewSize(end-start, size.Height-2*theme.Padding()))
 
-		child.Resize(fyne.NewSize(end-start, size.Height))
+		start = end + theme.Padding()
+		end = start + cellSize
 	}
 }
 
@@ -66,5 +42,5 @@ func (g *listLayout) MinSize(objects []fyne.CanvasObject) fyne.Size {
 		}
 	}
 
-	return fyne.NewSize(maxMinSizeWidth, maxMinSizeHeight+theme.Padding())
+	return fyne.NewSize(maxMinSizeWidth, maxMinSizeHeight+2*theme.Padding())
 }
