@@ -157,8 +157,10 @@ func (s *settings) tabItem() *container.TabItem {
 func checkTheme(themec string, a fyne.App) string {
 	switch themec {
 	case "Light":
+		//lint:ignore SA1019 Not quite ready for removal on Linux.
 		a.Settings().SetTheme(theme.LightTheme())
 	case "Dark":
+		//lint:ignore SA1019 Not quite ready for removal on Linux.
 		a.Settings().SetTheme(theme.DarkTheme())
 	}
 
