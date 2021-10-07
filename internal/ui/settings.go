@@ -2,7 +2,6 @@ package ui
 
 import (
 	"path/filepath"
-	"strconv"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -61,8 +60,8 @@ func (s *settings) onDownloadsPathChanged() {
 			return
 		}
 
-		s.app.Preferences().SetString("DownloadPath", folder.String()[7:])
-		s.client.DownloadPath = folder.String()[7:]
+		s.client.DownloadPath = folder.Path()
+		s.app.Preferences().SetString("DownloadPath", s.client.DownloadPath)
 		s.downloadPathButton.SetText(folder.Name())
 	}, s.window)
 }
@@ -79,8 +78,8 @@ func (s *settings) onNotificationsChanged(selected string) {
 
 func (s *settings) onComponentsChange(value float64) {
 	s.client.PassPhraseComponentLength = int(value)
-	s.app.Preferences().SetFloat("ComponentLength", value)
-	s.componentLabel.SetText(strconv.Itoa(int(value)))
+	s.app.Preferences().SetInt("ComponentLength", s.client.PassPhraseComponentLength)
+	s.componentLabel.SetText(string('0' + byte(value)))
 }
 
 func (s *settings) onAppIDChanged(appID string) {
