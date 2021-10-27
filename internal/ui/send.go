@@ -34,11 +34,13 @@ func newSend(a fyne.App, w fyne.Window, c *transport.Client, as *AppSettings) *s
 
 func (s *send) onFileSend() {
 	s.contentPicker.Hide()
+	s.fileDialog.Resize(transport.WindowSizeToDialog(s.window.Canvas().Size()))
 	s.fileDialog.Show()
 }
 
 func (s *send) onDirSend() {
 	s.contentPicker.Hide()
+	s.fileDialog.Resize(transport.WindowSizeToDialog(s.window.Canvas().Size()))
 	s.directoryDialog.Show()
 }
 

@@ -51,7 +51,7 @@ func (s *settings) onThemeChanged(selected string) {
 }
 
 func (s *settings) onDownloadsPathChanged() {
-	dialog.ShowFolderOpen(func(folder fyne.ListableURI, err error) {
+	folder := dialog.NewFolderOpen(func(folder fyne.ListableURI, err error) {
 		if err != nil {
 			fyne.LogError("Error on selecting folder", err)
 			dialog.ShowError(err, s.window)
@@ -64,6 +64,9 @@ func (s *settings) onDownloadsPathChanged() {
 		s.app.Preferences().SetString("DownloadPath", s.client.DownloadPath)
 		s.downloadPathButton.SetText(folder.Name())
 	}, s.window)
+
+	folder.Resize(transport.WindowSizeToDialog(s.window.Canvas().Size()))
+	folder.Show()
 }
 
 func (s *settings) onOverwriteFilesChanged(selected string) {
