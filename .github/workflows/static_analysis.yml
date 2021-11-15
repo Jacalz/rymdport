@@ -1,7 +1,5 @@
 name: Static Analysis
 on: [push, pull_request]
-permissions:
-  contents: read
 
 jobs:
   static_analysis:
@@ -11,6 +9,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        persist-credentials: false
     - uses: WillAbides/setup-go-faster@v1.7.0
       with:
         go-version: '1.16.x'     
