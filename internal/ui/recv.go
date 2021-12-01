@@ -17,14 +17,13 @@ type recv struct {
 
 	recvList *bridge.RecvList
 
-	bridge      *transport.Client
-	appSettings *AppSettings
-	window      fyne.Window
-	app         fyne.App
+	bridge *transport.Client
+	window fyne.Window
+	app    fyne.App
 }
 
-func newRecv(a fyne.App, w fyne.Window, c *transport.Client, as *AppSettings) *recv {
-	return &recv{app: a, window: w, bridge: c, appSettings: as}
+func newRecv(a fyne.App, w fyne.Window, c *transport.Client) *recv {
+	return &recv{app: a, window: w, bridge: c}
 }
 
 func (r *recv) onRecv() {

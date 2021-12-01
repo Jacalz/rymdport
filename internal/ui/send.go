@@ -22,14 +22,13 @@ type send struct {
 	contentToSend *widget.Button
 	sendList      *bridge.SendList
 
-	client      *transport.Client
-	appSettings *AppSettings
-	window      fyne.Window
-	app         fyne.App
+	client *transport.Client
+	window fyne.Window
+	app    fyne.App
 }
 
-func newSend(a fyne.App, w fyne.Window, c *transport.Client, as *AppSettings) *send {
-	return &send{app: a, window: w, client: c, appSettings: as}
+func newSend(a fyne.App, w fyne.Window, c *transport.Client) *send {
+	return &send{app: a, window: w, client: c}
 }
 
 func (s *send) onFileSend() {

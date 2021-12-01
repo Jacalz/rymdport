@@ -9,13 +9,11 @@ import (
 // Create will stitch together all ui components
 func Create(app fyne.App, window fyne.Window) *container.AppTabs {
 	bridge := transport.NewClient() // To make sure that it is configured correctly
-	appSettings := &AppSettings{}
-	appSettings.Theme = checkTheme(app.Preferences().StringWithFallback("Theme", "Adaptive (requires restart)"), app)
 
 	return &container.AppTabs{Items: []*container.TabItem{
-		newSend(app, window, bridge, appSettings).tabItem(),
-		newRecv(app, window, bridge, appSettings).tabItem(),
-		newSettings(app, window, bridge, appSettings).tabItem(),
+		newSend(app, window, bridge).tabItem(),
+		newRecv(app, window, bridge).tabItem(),
+		newSettings(app, window, bridge).tabItem(),
 		newAbout().tabItem(),
 	}}
 }

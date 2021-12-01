@@ -4,6 +4,7 @@ import (
 	"path/filepath"
 
 	"fyne.io/fyne/v2"
+	appearance "fyne.io/fyne/v2/cmd/fyne_settings/settings"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/theme"
@@ -12,20 +13,9 @@ import (
 	"github.com/psanford/wormhole-william/wormhole"
 )
 
-var (
-	themes       = []string{"Adaptive (requires restart)", "Light", "Dark"}
-	onOffOptions = []string{"On", "Off"}
-)
-
-// AppSettings contains settings specific to the application
-type AppSettings struct {
-	// Theme holds the current theme
-	Theme string
-}
+var onOffOptions = []string{"On", "Off"}
 
 type settings struct {
-	themeSelect *widget.Select
-
 	downloadPathButton *widget.Button
 	overwriteFiles     *widget.RadioGroup
 	notificationRadio  *widget.RadioGroup
@@ -36,18 +26,13 @@ type settings struct {
 	rendezvousURL       *widget.Entry
 	transitRelayAddress *widget.Entry
 
-	client      *transport.Client
-	appSettings *AppSettings
-	window      fyne.Window
-	app         fyne.App
+	client *transport.Client
+	window fyne.Window
+	app    fyne.App
 }
 
-func newSettings(a fyne.App, w fyne.Window, c *transport.Client, as *AppSettings) *settings {
-	return &settings{app: a, window: w, client: c, appSettings: as}
-}
-
-func (s *settings) onThemeChanged(selected string) {
-	s.app.Preferences().SetString("Theme", checkTheme(selected, s.app))
+func newSettings(a fyne.App, w fyne.Window, c *transport.Client) *settings {
+	return &settings{app: a, window: w, client: c}
 }
 
 func (s *settings) onDownloadsPathChanged() {
@@ -101,8 +86,6 @@ func (s *settings) onTransitAdressChange(address string) {
 }
 
 func (s *settings) buildUI() *container.Scroll {
-	s.themeSelect = &widget.Select{Options: themes, OnChanged: s.onThemeChanged, Selected: s.appSettings.Theme}
-
 	s.client.DownloadPath = s.app.Preferences().StringWithFallback("DownloadPath", transport.UserDownloadsFolder())
 	s.downloadPathButton = &widget.Button{Icon: theme.FolderOpenIcon(), OnTapped: s.onDownloadsPathChanged, Text: filepath.Base(s.client.DownloadPath)}
 
@@ -124,9 +107,7 @@ func (s *settings) buildUI() *container.Scroll {
 	s.transitRelayAddress = &widget.Entry{PlaceHolder: wormhole.DefaultTransitRelayAddress, OnChanged: s.onTransitAdressChange}
 	s.transitRelayAddress.SetText(s.app.Preferences().String("TransitRelayAddress"))
 
-	interfaceContainer := container.NewGridWithColumns(2,
-		newBoldLabel("Application Theme"), s.themeSelect,
-	)
+	interfaceContainer := appearance.NewSettings().LoadAppearanceScreen(s.window)
 
 	dataContainer := container.NewGridWithColumns(2,
 		newBoldLabel("Downloads Path"), s.downloadPathButton,
@@ -154,19 +135,6 @@ func (s *settings) buildUI() *container.Scroll {
 
 func (s *settings) tabItem() *container.TabItem {
 	return &container.TabItem{Text: "Settings", Icon: theme.SettingsIcon(), Content: s.buildUI()}
-}
-
-func checkTheme(themec string, a fyne.App) string {
-	switch themec {
-	case "Light":
-		//lint:ignore SA1019 Not quite ready for removal on Linux.
-		a.Settings().SetTheme(theme.LightTheme())
-	case "Dark":
-		//lint:ignore SA1019 Not quite ready for removal on Linux.
-		a.Settings().SetTheme(theme.DarkTheme())
-	}
-
-	return themec
 }
 
 func newBoldLabel(text string) *widget.Label {
