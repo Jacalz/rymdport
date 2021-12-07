@@ -25,7 +25,7 @@ jobs:
       run: |
         go install golang.org/x/tools/cmd/goimports@latest
         go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
-        go install golang.org/x/lint/golint@latest
+        go install github.com/mgechev/revive@71b31e26ab2e4d85e9b3afe7feee67106ebf353e
         go install honnef.co/go/tools/cmd/staticcheck@v0.2.2
         go install github.com/securego/gosec/v2/cmd/gosec@v2.9.3
 
@@ -38,8 +38,8 @@ jobs:
     - name: Gocyclo
       run: gocyclo -over 20 .
 
-    - name: Golint
-      run: golint -set_exit_status $(go list ./...)
+    - name: Revive
+      run: revive -set_exit_status ./...
 
     - name: Staticcheck
       run: staticcheck -go 1.14 ./...
