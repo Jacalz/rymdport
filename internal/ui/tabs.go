@@ -8,12 +8,12 @@ import (
 
 // Create will stitch together all ui components
 func Create(app fyne.App, window fyne.Window) *container.AppTabs {
-	bridge := transport.NewClient(app)
+	client := transport.NewClient(app)
 
 	return &container.AppTabs{Items: []*container.TabItem{
-		newSend(app, window, bridge).tabItem(),
-		newRecv(app, window, bridge).tabItem(),
-		newSettings(app, window, bridge).tabItem(),
+		newSend(app, window, client).tabItem(),
+		newRecv(app, window, client).tabItem(),
+		newSettings(app, window, client).tabItem(),
 		newAbout().tabItem(),
 	}}
 }
