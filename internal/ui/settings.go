@@ -13,8 +13,6 @@ import (
 	"github.com/psanford/wormhole-william/wormhole"
 )
 
-var onOffOptions = []string{"On", "Off"}
-
 type settings struct {
 	downloadPathButton *widget.Button
 	overwriteFiles     *widget.RadioGroup
@@ -26,13 +24,14 @@ type settings struct {
 	rendezvousURL       *widget.Entry
 	transitRelayAddress *widget.Entry
 
-	client *transport.Client
-	window fyne.Window
-	app    fyne.App
+	client      *transport.Client
+	preferences fyne.Preferences
+	window      fyne.Window
+	app         fyne.App
 }
 
 func newSettings(a fyne.App, w fyne.Window, c *transport.Client) *settings {
-	return &settings{app: a, window: w, client: c}
+	return &settings{app: a, window: w, client: c, preferences: a.Preferences()}
 }
 
 func (s *settings) onDownloadsPathChanged() {
@@ -46,7 +45,7 @@ func (s *settings) onDownloadsPathChanged() {
 		}
 
 		s.client.DownloadPath = folder.Path()
-		s.app.Preferences().SetString("DownloadPath", s.client.DownloadPath)
+		s.preferences.SetString("DownloadPath", s.client.DownloadPath)
 		s.downloadPathButton.SetText(folder.Name())
 	}, s.window)
 
@@ -56,56 +55,77 @@ func (s *settings) onDownloadsPathChanged() {
 
 func (s *settings) onOverwriteFilesChanged(selected string) {
 	s.client.OverwriteExisting = selected == "On"
-	s.app.Preferences().SetString("OverwriteFiles", selected)
+	s.preferences.SetBool("OverwriteFiles", s.client.OverwriteExisting)
 }
 
 func (s *settings) onNotificationsChanged(selected string) {
 	s.client.Notifications = selected == "On"
-	s.app.Preferences().SetString("Notifications", selected)
+	s.preferences.SetBool("Notifications", s.client.Notifications)
 }
 
 func (s *settings) onComponentsChange(value float64) {
 	s.client.PassPhraseComponentLength = int(value)
-	s.app.Preferences().SetInt("ComponentLength", s.client.PassPhraseComponentLength)
+	s.preferences.SetInt("ComponentLength", s.client.PassPhraseComponentLength)
 	s.componentLabel.SetText(string('0' + byte(value)))
 }
 
 func (s *settings) onAppIDChanged(appID string) {
 	s.client.AppID = appID
-	s.app.Preferences().SetString("AppID", appID)
+	s.preferences.SetString("AppID", appID)
 }
 
 func (s *settings) onRendezvousURLChange(url string) {
 	s.client.RendezvousURL = url
-	s.app.Preferences().SetString("RendezvousURL", url)
+	s.preferences.SetString("RendezvousURL", url)
 }
 
 func (s *settings) onTransitAdressChange(address string) {
 	s.client.TransitRelayAddress = address
-	s.app.Preferences().SetString("TransitRelayAddress", address)
+	s.preferences.SetString("TransitRelayAddress", address)
+}
+
+// getPreferences is used to set the preferences on startup without saving at the same time.
+func (s *settings) getPreferences() {
+	s.client.DownloadPath = s.preferences.StringWithFallback("DownloadPath", transport.UserDownloadsFolder())
+	s.downloadPathButton.Text = filepath.Base(s.client.DownloadPath)
+
+	s.client.OverwriteExisting = s.preferences.Bool("OverwriteFiles")
+	s.overwriteFiles.Selected = onOrOff(s.client.OverwriteExisting)
+
+	s.client.Notifications = s.preferences.Bool("Notifications")
+	s.notificationRadio.Selected = onOrOff(s.client.Notifications)
+
+	s.client.PassPhraseComponentLength = s.preferences.IntWithFallback("ComponentLength", 2)
+	s.componentSlider.Value = float64(s.client.PassPhraseComponentLength)
+	s.componentLabel.Text = string('0' + byte(s.componentSlider.Value))
+
+	s.client.AppID = s.preferences.String("AppID")
+	s.appID.Text = s.client.AppID
+
+	s.client.RendezvousURL = s.preferences.String("RendezvousURL")
+	s.rendezvousURL.Text = s.client.RendezvousURL
+
+	s.client.TransitRelayAddress = s.preferences.String("TransitRelayAddress")
+	s.transitRelayAddress.Text = s.client.TransitRelayAddress
 }
 
 func (s *settings) buildUI() *container.Scroll {
-	s.client.DownloadPath = s.app.Preferences().StringWithFallback("DownloadPath", transport.UserDownloadsFolder())
-	s.downloadPathButton = &widget.Button{Icon: theme.FolderOpenIcon(), OnTapped: s.onDownloadsPathChanged, Text: filepath.Base(s.client.DownloadPath)}
+	onOffOptions := []string{"On", "Off"}
+
+	s.downloadPathButton = &widget.Button{Icon: theme.FolderOpenIcon(), OnTapped: s.onDownloadsPathChanged}
 
 	s.overwriteFiles = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onOverwriteFilesChanged}
-	s.overwriteFiles.SetSelected(s.app.Preferences().StringWithFallback("OverwriteFiles", "Off"))
 
 	s.notificationRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onNotificationsChanged}
-	s.notificationRadio.SetSelected(s.app.Preferences().StringWithFallback("Notifications", onOffOptions[1]))
-
 	s.componentSlider, s.componentLabel = &widget.Slider{Min: 2.0, Max: 6.0, Step: 1, OnChanged: s.onComponentsChange}, &widget.Label{}
-	s.componentSlider.SetValue(s.app.Preferences().FloatWithFallback("ComponentLength", 2))
 
 	s.appID = &widget.Entry{PlaceHolder: wormhole.WormholeCLIAppID, OnChanged: s.onAppIDChanged}
-	s.appID.SetText(s.app.Preferences().String("AppID"))
 
 	s.rendezvousURL = &widget.Entry{PlaceHolder: wormhole.DefaultRendezvousURL, OnChanged: s.onRendezvousURLChange}
-	s.rendezvousURL.SetText(s.app.Preferences().String("RendezvousURL"))
 
 	s.transitRelayAddress = &widget.Entry{PlaceHolder: wormhole.DefaultTransitRelayAddress, OnChanged: s.onTransitAdressChange}
-	s.transitRelayAddress.SetText(s.app.Preferences().String("TransitRelayAddress"))
+
+	s.getPreferences()
 
 	interfaceContainer := appearance.NewSettings().LoadAppearanceScreen(s.window)
 
@@ -139,4 +159,12 @@ func (s *settings) tabItem() *container.TabItem {
 
 func newBoldLabel(text string) *widget.Label {
 	return &widget.Label{Text: text, TextStyle: fyne.TextStyle{Bold: true}}
+}
+
+func onOrOff(on bool) string {
+	if on {
+		return "On"
+	}
+
+	return "Off"
 }
