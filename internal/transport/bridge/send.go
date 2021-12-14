@@ -24,6 +24,8 @@ type SendList struct {
 	client *transport.Client
 
 	Items []*SendItem
+
+	window fyne.Window
 }
 
 // Length returns the length of the data.
@@ -33,7 +35,12 @@ func (p *SendList) Length() int {
 
 // CreateItem creates a new item in the list.
 func (p *SendList) CreateItem() fyne.CanvasObject {
-	return container.New(&listLayout{}, widget.NewFileIcon(nil), &widget.Label{Text: "Waiting for filename...", Wrapping: fyne.TextTruncate}, newCodeDisplay(), newSendProgress())
+	return container.New(&listLayout{},
+		widget.NewFileIcon(nil),
+		&widget.Label{Text: "Waiting for filename...", Wrapping: fyne.TextTruncate},
+		newCodeDisplay(p.window),
+		newSendProgress(),
+	)
 }
 
 // UpdateItem updates the data in the list.
@@ -64,7 +71,7 @@ func (p *SendList) OnSelected(i int) {
 			p.RemoveItem(i)
 			p.Refresh()
 		}
-	}, fyne.CurrentApp().Driver().AllWindows()[0])
+	}, p.window)
 
 	p.Unselect(i)
 }
@@ -79,7 +86,7 @@ func (p *SendList) NewSendItem(name string, uri fyne.URI) {
 func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 	if err != nil {
 		fyne.LogError("Error on selecting file to send", err)
-		dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
+		dialog.ShowError(err, p.window)
 		return
 	} else if file == nil {
 		return
@@ -97,7 +104,7 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 		code, result, err := p.client.NewFileSend(file, p.Items[i].Progress.update)
 		if err != nil {
 			fyne.LogError("Error on sending file", err)
-			dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
+			dialog.ShowError(err, p.window)
 			return
 		}
 
@@ -106,7 +113,7 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending file", res.Error)
-			dialog.ShowError(res.Error, fyne.CurrentApp().Driver().AllWindows()[0])
+			dialog.ShowError(res.Error, p.window)
 			p.client.ShowNotification("File send failed", "An error occurred when sending the file.")
 		} else if res.OK {
 			p.client.ShowNotification("File send completed", "The file was sent successfully.")
@@ -118,7 +125,7 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 	if err != nil {
 		fyne.LogError("Error on selecting dir to send", err)
-		dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
+		dialog.ShowError(err, p.window)
 		return
 	} else if dir == nil {
 		return
@@ -130,7 +137,7 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 		code, result, err := p.client.NewDirSend(dir, p.Items[i].Progress.update)
 		if err != nil {
 			fyne.LogError("Error on sending directory", err)
-			dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
+			dialog.ShowError(err, p.window)
 			return
 		}
 
@@ -139,7 +146,7 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending directory", res.Error)
-			dialog.ShowError(res.Error, fyne.CurrentApp().Driver().AllWindows()[0])
+			dialog.ShowError(res.Error, p.window)
 			p.client.ShowNotification("Directory send failed", "An error occurred when sending the directory.")
 		} else if res.OK {
 			p.client.ShowNotification("Directory send completed", "The directory was sent successfully.")
@@ -156,7 +163,7 @@ func (p *SendList) SendText() {
 			code, result, err := p.client.NewTextSend(text, p.Items[i].Progress.update)
 			if err != nil {
 				fyne.LogError("Error on sending text", err)
-				dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
+				dialog.ShowError(err, p.window)
 				return
 			}
 
@@ -165,7 +172,7 @@ func (p *SendList) SendText() {
 
 			if res := <-result; res.Error != nil {
 				fyne.LogError("Error on sending text", res.Error)
-				dialog.ShowError(res.Error, fyne.CurrentApp().Driver().AllWindows()[0])
+				dialog.ShowError(res.Error, p.window)
 				p.client.ShowNotification("Text send failed", "An error occurred when sending the text.")
 			} else if res.OK && p.client.Notifications {
 				p.client.ShowNotification("Text send completed", "The text was sent successfully.")
@@ -177,8 +184,8 @@ func (p *SendList) SendText() {
 }
 
 // NewSendList greates a list of progress bars.
-func NewSendList(client *transport.Client) *SendList {
-	p := &SendList{client: client}
+func NewSendList(window fyne.Window, client *transport.Client) *SendList {
+	p := &SendList{client: client, window: window}
 	p.List.Length = p.Length
 	p.List.CreateItem = p.CreateItem
 	p.List.UpdateItem = p.UpdateItem

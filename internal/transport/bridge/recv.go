@@ -23,6 +23,8 @@ type RecvList struct {
 	client *transport.Client
 
 	Items []*RecvItem
+
+	window fyne.Window
 }
 
 // Length returns the length of the data.
@@ -32,7 +34,11 @@ func (p *RecvList) Length() int {
 
 // CreateItem creates a new item in the list.
 func (p *RecvList) CreateItem() fyne.CanvasObject {
-	return container.New(&listLayout{}, widget.NewFileIcon(nil), &widget.Label{Text: "Waiting for filename...", Wrapping: fyne.TextTruncate}, newRecvProgress())
+	return container.New(&listLayout{},
+		widget.NewFileIcon(nil),
+		&widget.Label{Text: "Waiting for filename...", Wrapping: fyne.TextTruncate},
+		newRecvProgress(),
+	)
 }
 
 // UpdateItem updates the data in the list.
@@ -57,7 +63,7 @@ func (p *RecvList) OnSelected(i int) {
 			p.RemoveItem(i)
 			p.Refresh()
 		}
-	}, fyne.CurrentApp().Driver().AllWindows()[0])
+	}, p.window)
 
 	p.Unselect(i)
 }
@@ -87,7 +93,7 @@ func (p *RecvList) NewReceive(code string) {
 		if err := p.client.NewReceive(code, path); err != nil {
 			p.Items[index].Status = "Failed"
 			p.client.ShowNotification("Receive failed", "An error occurred when receiving the data.")
-			dialog.ShowError(err, fyne.CurrentApp().Driver().AllWindows()[0])
+			dialog.ShowError(err, p.window)
 		} else {
 			p.Items[index].Status = "Completed"
 			p.client.ShowNotification("Receive completed", "The data was received successfully.")
@@ -98,8 +104,8 @@ func (p *RecvList) NewReceive(code string) {
 }
 
 // NewRecvList greates a list of progress bars.
-func NewRecvList(client *transport.Client) *RecvList {
-	p := &RecvList{client: client}
+func NewRecvList(window fyne.Window, client *transport.Client) *RecvList {
+	p := &RecvList{client: client, window: window}
 	p.List.Length = p.Length
 	p.List.CreateItem = p.CreateItem
 	p.List.UpdateItem = p.UpdateItem

@@ -29,9 +29,11 @@ func (c *codeDisplay) copyOnPress() {
 	c.button.SetIcon(theme.ContentCopyIcon())
 }
 
-func newCodeDisplay() *fyne.Container {
-	c := &codeDisplay{button: &widget.Button{Icon: theme.ContentCopyIcon(), Importance: widget.LowImportance},
-		clipboard: fyne.CurrentApp().Driver().AllWindows()[0].Clipboard()}
+func newCodeDisplay(window fyne.Window) *fyne.Container {
+	c := &codeDisplay{
+		button:    &widget.Button{Icon: theme.ContentCopyIcon(), Importance: widget.LowImportance},
+		clipboard: window.Clipboard(),
+	}
 	c.ExtendBaseWidget(c)
 
 	c.Text = "Waiting for code..."

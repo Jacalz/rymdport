@@ -56,7 +56,7 @@ func (s *send) buildUI() *fyne.Container {
 	choiceContent := container.NewGridWithColumns(1, s.fileChoice, s.directoryChoice, s.textChoice)
 	s.contentPicker = dialog.NewCustom("Pick a content type", "Cancel", choiceContent, s.window)
 
-	s.sendList = bridge.NewSendList(s.client)
+	s.sendList = bridge.NewSendList(s.window, s.client)
 	s.contentToSend = &widget.Button{Text: "Add content to send", Icon: theme.ContentAddIcon(), OnTapped: s.contentPicker.Show}
 
 	s.fileDialog = dialog.NewFileOpen(s.sendList.OnFileSelect, s.window)

@@ -13,6 +13,8 @@ import (
 type Client struct {
 	wormhole.Client
 
+	app fyne.App
+
 	// Save a reference to the window to avoid creating a new one when sending and receiving text
 	display *textDisplay
 
@@ -29,13 +31,13 @@ type Client struct {
 // ShowNotification sends a notification if c.Notifications is true.
 func (c *Client) ShowNotification(title, content string) {
 	if c.Notifications {
-		fyne.CurrentApp().SendNotification(&fyne.Notification{Title: title, Content: content})
+		c.app.SendNotification(&fyne.Notification{Title: title, Content: content})
 	}
 }
 
 // NewClient returns a new client for sending and receiving using wormhole-william
-func NewClient() *Client {
-	return &Client{display: createTextWindow()}
+func NewClient(app fyne.App) *Client {
+	return &Client{display: createTextWindow(app), app: app}
 }
 
 // UserDownloadsFolder returns the downloads folder corresponding to the current user.

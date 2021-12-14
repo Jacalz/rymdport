@@ -17,13 +17,13 @@ type recv struct {
 
 	recvList *bridge.RecvList
 
-	bridge *transport.Client
+	client *transport.Client
 	window fyne.Window
 	app    fyne.App
 }
 
 func newRecv(a fyne.App, w fyne.Window, c *transport.Client) *recv {
-	return &recv{app: a, window: w, bridge: c}
+	return &recv{app: a, window: w, client: c}
 }
 
 func (r *recv) onRecv() {
@@ -43,7 +43,7 @@ func (r *recv) buildUI() *fyne.Container {
 
 	r.codeButton = &widget.Button{Text: "Download", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
 
-	r.recvList = bridge.NewRecvList(r.bridge)
+	r.recvList = bridge.NewRecvList(r.window, r.client)
 
 	box := container.NewVBox(container.NewGridWithColumns(2, r.codeEntry, r.codeButton), &widget.Label{})
 	return container.NewBorder(box, nil, nil, nil, r.recvList)
