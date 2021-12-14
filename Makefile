@@ -1,5 +1,6 @@
 # Constants for cross compilation and packaging.
 APPID = io.github.jacalz.wormhole_gui
+ICON = internal/assets/icon/icon-512.png
 NAME = wormhole-gui
 
 # Variables for development.
@@ -30,19 +31,19 @@ uninstall:
 	-rm $(DESTDIR)$(PREFIX)/share/metainfo/$(APPID).metainfo.xml
 
 freebsd:
-	$(GOBIN)fyne-cross freebsd -arch amd64,arm64
+	$(GOBIN)fyne-cross freebsd -arch amd64,arm64 -app-id $(APPID) -icon $(ICON)
 
 darwin:
-	$(GOBIN)fyne-cross darwin -arch amd64,arm64 -output $(NAME)
+	$(GOBIN)fyne-cross darwin -arch amd64,arm64 -output $(NAME) -app-id $(APPID) -icon $(ICON)
 
 linux:
-	$(GOBIN)fyne-cross linux -arch amd64,arm64
+	$(GOBIN)fyne-cross linux -arch amd64,arm64 -app-id $(APPID) -icon $(ICON)
 
 windows:
-	$(GOBIN)fyne-cross windows -arch amd64
+	$(GOBIN)fyne-cross windows -arch amd64 -app-id $(APPID) -icon $(ICON)
 
 windows-debug:
-	$(GOBIN)fyne-cross windows -console -arch amd64
+	$(GOBIN)fyne-cross windows -console -arch amd64 -app-id $(APPID) -icon $(ICON)
 
 bundle:
 	# Move Linux package bundles to the root with correct naming.
@@ -63,6 +64,8 @@ bundle:
 	# Move Windows package to the root with correct naming.
 	mv fyne-cross/dist/windows-amd64/wormhole-gui.exe.zip $(NAME)-$(VERSION)-windows-amd64.zip
 
-release: darwin freebsd linux windows bundle
+release_display:
 	# Usage: make release VERSION=v3.x.x
 	# If no version is specified, it will default to "dev" instead.
+
+release: release_display darwin freebsd linux windows bundle
