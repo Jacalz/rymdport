@@ -3,7 +3,7 @@
   <id>io.github.jacalz.wormhole_gui</id>
   
   <name>wormhole-gui</name>
-  <summary>Easy encrypted sharing of files, folders, and text between devices. </summary>
+  <summary>Easy encrypted sharing of files, folders, and text between devices.</summary>
   
   <metadata_license>MIT</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
@@ -26,4 +26,10 @@
       <image>https://raw.githubusercontent.com/Jacalz/wormhole-gui/main/internal/assets/screenshot.png</image>
     </screenshot>
   </screenshots>
+
+  <url type="bugtracker">https://github.com/Jacalz/wormhole-gui/issues</url>
+  <url type="donation">https://github.com/sponsors/Jacalz</url>
+  <url type="homepage">https://github.com/Jacalz/wormhole-gui</url>
+
+  <content_rating type="oars-1.1" />
 </component>
