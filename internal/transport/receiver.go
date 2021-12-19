@@ -34,10 +34,9 @@ func (c *Client) NewReceive(code string, pathname chan string) (err error) {
 
 	if msg.Type == wormhole.TransferText {
 		pathname <- "text"
-		text := &bytes.Buffer{}
 
-		// The size of text is always zero for some reason, see https://github.com/psanford/wormhole-william/issues/56.
-		//text.Grow(int(msg.TransferBytes64))
+		text := &bytes.Buffer{}
+		text.Grow(int(msg.TransferBytes64))
 
 		_, err := io.Copy(text, msg)
 		if err != nil {
