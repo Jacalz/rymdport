@@ -21,7 +21,7 @@ install:
 	install -Dm00644 internal/assets/icon/icon-512.png $(DESTDIR)$(PREFIX)/share/icons/hicolor/512x512/$(APPID).png
 	install -Dm00644 internal/assets/svg/icon.svg $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/$(APPID).svg
 	install -Dm00644 internal/assets/unix/$(APPID).desktop $(DESTDIR)$(PREFIX)/share/applications/$(APPID).desktop
-	install -Dm00644 internal/assets/unix/$(APPID).metainfo.xml $(DESTDIR)$(PREFIX)/share/metainfo/$(APPID).metainfo.xml
+	install -Dm00644 internal/assets/unix/$(APPID).appdata.xml $(DESTDIR)$(PREFIX)/share/metainfo/$(APPID).metainfo.xml
 
 uninstall:
 	-rm $(DESTDIR)$(PREFIX)/bin/$(NAME)
