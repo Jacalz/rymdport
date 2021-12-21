@@ -54,8 +54,21 @@ func (s *settings) onDownloadsPathChanged() {
 }
 
 func (s *settings) onOverwriteFilesChanged(selected string) {
-	s.client.OverwriteExisting = selected == "On"
-	s.preferences.SetBool("OverwriteFiles", s.client.OverwriteExisting)
+	if selected == "Off" {
+		s.client.OverwriteExisting = false
+		s.preferences.SetBool("OverwriteFiles", s.client.OverwriteExisting)
+		return
+	}
+
+	dialog.ShowConfirm("Are you sure?", "Enabling this option might overwrite important files.", func(enable bool) {
+		if !enable {
+			s.overwriteFiles.SetSelected("Off")
+			return
+		}
+
+		s.client.OverwriteExisting = true
+		s.preferences.SetBool("OverwriteFiles", s.client.OverwriteExisting)
+	}, s.window)
 }
 
 func (s *settings) onNotificationsChanged(selected string) {
