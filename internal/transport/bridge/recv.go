@@ -7,13 +7,14 @@ import (
 	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/wormhole-gui/v2/internal/transport"
+	"github.com/Jacalz/wormhole-gui/v2/internal/util"
 )
 
 // RecvItem is the item that is being received
 type RecvItem struct {
-	URI    fyne.URI
-	Status string
-	Name   string
+	URI      fyne.URI
+	Progress *util.ProgressBar
+	Name     string
 }
 
 // RecvList is a list of progress bars that track send progress.
@@ -37,7 +38,7 @@ func (p *RecvList) CreateItem() fyne.CanvasObject {
 	return container.New(&listLayout{},
 		widget.NewFileIcon(nil),
 		&widget.Label{Text: "Waiting for filename...", Wrapping: fyne.TextTruncate},
-		newRecvProgress(),
+		util.NewProgressBar(),
 	)
 }
 
@@ -45,7 +46,7 @@ func (p *RecvList) CreateItem() fyne.CanvasObject {
 func (p *RecvList) UpdateItem(i int, item fyne.CanvasObject) {
 	item.(*fyne.Container).Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
 	item.(*fyne.Container).Objects[1].(*widget.Label).SetText(p.Items[i].Name)
-	item.(*fyne.Container).Objects[2].(*fyne.Container).Objects[0].(*recvProgress).setStatus(p.Items[i].Status)
+	p.Items[i].Progress = item.(*fyne.Container).Objects[2].(*util.ProgressBar)
 }
 
 // RemoveItem removes the item at the specified index.
@@ -90,12 +91,11 @@ func (p *RecvList) NewReceive(code string) {
 	}()
 
 	go func(code string) {
-		if err := p.client.NewReceive(code, path); err != nil {
-			p.Items[index].Status = "Failed"
+		if err := p.client.NewReceive(code, path, p.Items[index].Progress); err != nil {
 			p.client.ShowNotification("Receive failed", "An error occurred when receiving the data.")
+			p.Items[index].Progress.Failed()
 			dialog.ShowError(err, p.window)
 		} else {
-			p.Items[index].Status = "Completed"
 			p.client.ShowNotification("Receive completed", "The data was received successfully.")
 		}
 

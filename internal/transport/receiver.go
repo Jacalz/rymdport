@@ -10,6 +10,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"github.com/Jacalz/wormhole-gui/v2/internal/transport/zip"
+	"github.com/Jacalz/wormhole-gui/v2/internal/util"
 	"github.com/psanford/wormhole-william/wormhole"
 )
 
@@ -24,7 +25,7 @@ func bail(msg *wormhole.IncomingMessage, err error) error {
 }
 
 // NewReceive runs a receive using wormhole-william and handles types accordingly.
-func (c *Client) NewReceive(code string, pathname chan string) (err error) {
+func (c *Client) NewReceive(code string, pathname chan string, progress *util.ProgressBar) (err error) {
 	msg, err := c.Receive(context.Background(), code)
 	if err != nil {
 		pathname <- "fail" // We want to always send a URI, even on fail, in order to not block goroutines.
@@ -32,13 +33,16 @@ func (c *Client) NewReceive(code string, pathname chan string) (err error) {
 		return bail(msg, err)
 	}
 
+	progress.Max = float64(msg.TransferBytes64)
+	contents := io.TeeReader(msg, progress)
+
 	if msg.Type == wormhole.TransferText {
 		pathname <- "text"
 
 		text := &bytes.Buffer{}
 		text.Grow(int(msg.TransferBytes64))
 
-		_, err := io.Copy(text, msg)
+		_, err := io.Copy(text, contents)
 		if err != nil {
 			fyne.LogError("Could not copy the received text", err)
 			return err
@@ -73,7 +77,7 @@ func (c *Client) NewReceive(code string, pathname chan string) (err error) {
 			}
 		}()
 
-		_, err = io.Copy(file, msg)
+		_, err = io.Copy(file, contents)
 		if err != nil {
 			fyne.LogError("Error on copying contents to file", err)
 			return err
@@ -81,6 +85,9 @@ func (c *Client) NewReceive(code string, pathname chan string) (err error) {
 
 		return
 	}
+
+	// We want both the compressed download and the extraction.
+	progress.Max += float64(msg.UncompressedBytes64)
 
 	tmp, err := ioutil.TempFile("", msg.Name+"-*.zip.tmp")
 	if err != nil {
@@ -100,7 +107,7 @@ func (c *Client) NewReceive(code string, pathname chan string) (err error) {
 		}
 	}()
 
-	n, err := io.Copy(tmp, msg)
+	n, err := io.Copy(tmp, contents)
 	if err != nil {
 		fyne.LogError("Error on copying contents to file", err)
 		return err
@@ -111,6 +118,9 @@ func (c *Client) NewReceive(code string, pathname chan string) (err error) {
 		fyne.LogError("Error on unzipping contents", err)
 		return err
 	}
+
+	// TODO: Can we update this as we extract it, instead of all at once?
+	progress.Done()
 
 	return
 }

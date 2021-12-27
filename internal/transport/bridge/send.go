@@ -7,12 +7,13 @@ import (
 	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/wormhole-gui/v2/internal/transport"
+	"github.com/Jacalz/wormhole-gui/v2/internal/util"
 )
 
 // SendItem is the item that is being sent.
 type SendItem struct {
 	URI      fyne.URI
-	Progress *sendProgress
+	Progress *util.ProgressBar
 	Code     string
 	Name     string
 }
@@ -39,7 +40,7 @@ func (p *SendList) CreateItem() fyne.CanvasObject {
 		widget.NewFileIcon(nil),
 		&widget.Label{Text: "Waiting for filename...", Wrapping: fyne.TextTruncate},
 		newCodeDisplay(p.window),
-		newSendProgress(),
+		util.NewProgressBar(),
 	)
 }
 
@@ -48,7 +49,7 @@ func (p *SendList) UpdateItem(i int, item fyne.CanvasObject) {
 	item.(*fyne.Container).Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
 	item.(*fyne.Container).Objects[1].(*widget.Label).SetText(p.Items[i].Name)
 	item.(*fyne.Container).Objects[2].(*fyne.Container).Objects[0].(*codeDisplay).SetText(p.Items[i].Code)
-	p.Items[i].Progress = item.(*fyne.Container).Objects[3].(*sendProgress)
+	p.Items[i].Progress = item.(*fyne.Container).Objects[3].(*util.ProgressBar)
 }
 
 // RemoveItem removes the item at the specified index.
@@ -97,13 +98,15 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 	go func(i int) {
 		defer func() {
 			if err = file.Close(); err != nil {
+				p.Items[i].Progress.Failed()
 				fyne.LogError("Error on closing file", err)
 			}
 		}()
 
-		code, result, err := p.client.NewFileSend(file, p.Items[i].Progress.update)
+		code, result, err := p.client.NewFileSend(file, p.Items[i].Progress.WithProgress())
 		if err != nil {
 			fyne.LogError("Error on sending file", err)
+			p.Items[i].Progress.Failed()
 			dialog.ShowError(err, p.window)
 			return
 		}
@@ -113,6 +116,7 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending file", res.Error)
+			p.Items[i].Progress.Failed()
 			dialog.ShowError(res.Error, p.window)
 			p.client.ShowNotification("File send failed", "An error occurred when sending the file.")
 		} else if res.OK {
@@ -134,9 +138,10 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 	p.NewSendItem(dir.Name(), dir)
 
 	go func(i int) {
-		code, result, err := p.client.NewDirSend(dir, p.Items[i].Progress.update)
+		code, result, err := p.client.NewDirSend(dir, p.Items[i].Progress.WithProgress())
 		if err != nil {
 			fyne.LogError("Error on sending directory", err)
+			p.Items[i].Progress.Failed()
 			dialog.ShowError(err, p.window)
 			return
 		}
@@ -146,6 +151,7 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending directory", res.Error)
+			p.Items[i].Progress.Failed()
 			dialog.ShowError(res.Error, p.window)
 			p.client.ShowNotification("Directory send failed", "An error occurred when sending the directory.")
 		} else if res.OK {
@@ -160,9 +166,10 @@ func (p *SendList) SendText() {
 
 	go func(i int) {
 		if text := <-p.client.ShowTextSendWindow(); text != "" {
-			code, result, err := p.client.NewTextSend(text, p.Items[i].Progress.update)
+			code, result, err := p.client.NewTextSend(text, p.Items[i].Progress.WithProgress())
 			if err != nil {
 				fyne.LogError("Error on sending text", err)
+				p.Items[i].Progress.Failed()
 				dialog.ShowError(err, p.window)
 				return
 			}
@@ -172,6 +179,7 @@ func (p *SendList) SendText() {
 
 			if res := <-result; res.Error != nil {
 				fyne.LogError("Error on sending text", res.Error)
+				p.Items[i].Progress.Failed()
 				dialog.ShowError(res.Error, p.window)
 				p.client.ShowNotification("Text send failed", "An error occurred when sending the text.")
 			} else if res.OK && p.client.Notifications {
