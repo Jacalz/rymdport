@@ -62,7 +62,7 @@ func extractFile(file *zip.File, target string) (err error) {
 			return err
 		}
 
-		return nil
+		return
 	}
 
 	if err := os.MkdirAll(filepath.Dir(path), 0750); err != nil {

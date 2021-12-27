@@ -59,7 +59,8 @@ func (c *Client) NewReceive(code string, pathname chan string) (err error) {
 	}
 
 	if msg.Type == wormhole.TransferFile {
-		file, err := os.Create(path)
+		var file *os.File
+		file, err = os.Create(path)
 		if err != nil {
 			fyne.LogError("Error on creating file", err)
 			return bail(msg, err)
@@ -78,7 +79,7 @@ func (c *Client) NewReceive(code string, pathname chan string) (err error) {
 			return err
 		}
 
-		return nil
+		return
 	}
 
 	tmp, err := ioutil.TempFile("", msg.Name+"-*.zip.tmp")
