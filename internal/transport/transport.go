@@ -2,9 +2,6 @@
 package transport
 
 import (
-	"os"
-	"path/filepath"
-
 	"fyne.io/fyne/v2"
 	"github.com/psanford/wormhole-william/wormhole"
 )
@@ -38,14 +35,4 @@ func (c *Client) ShowNotification(title, content string) {
 // NewClient returns a new client for sending and receiving using wormhole-william
 func NewClient(app fyne.App) *Client {
 	return &Client{display: createTextWindow(app), app: app}
-}
-
-// UserDownloadsFolder returns the downloads folder corresponding to the current user.
-func UserDownloadsFolder() string {
-	dir, err := os.UserHomeDir()
-	if err != nil {
-		fyne.LogError("Could not get home dir", err)
-	}
-
-	return filepath.Join(dir, "Downloads")
 }

@@ -10,6 +10,7 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/wormhole-gui/v2/internal/transport"
+	"github.com/Jacalz/wormhole-gui/v2/internal/util"
 	"github.com/psanford/wormhole-william/wormhole"
 )
 
@@ -49,7 +50,7 @@ func (s *settings) onDownloadsPathChanged() {
 		s.downloadPathButton.SetText(folder.Name())
 	}, s.window)
 
-	folder.Resize(transport.WindowSizeToDialog(s.window.Canvas().Size()))
+	folder.Resize(util.WindowSizeToDialog(s.window.Canvas().Size()))
 	folder.Show()
 }
 
@@ -99,7 +100,7 @@ func (s *settings) onTransitAdressChange(address string) {
 
 // getPreferences is used to set the preferences on startup without saving at the same time.
 func (s *settings) getPreferences() {
-	s.client.DownloadPath = s.preferences.StringWithFallback("DownloadPath", transport.UserDownloadsFolder())
+	s.client.DownloadPath = s.preferences.StringWithFallback("DownloadPath", util.UserDownloadsFolder())
 	s.downloadPathButton.Text = filepath.Base(s.client.DownloadPath)
 
 	s.client.OverwriteExisting = s.preferences.Bool("OverwriteFiles")

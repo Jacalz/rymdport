@@ -9,6 +9,7 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	"github.com/Jacalz/wormhole-gui/v2/internal/util"
 )
 
 type textDisplay struct {
@@ -82,7 +83,7 @@ func (c *Client) showTextReceiveWindow(text *bytes.Buffer) {
 				}
 			}, d.window)
 			save.SetFileName("received.txt")
-			save.Resize(WindowSizeToDialog(d.window.Canvas().Size()))
+			save.Resize(util.WindowSizeToDialog(d.window.Canvas().Size()))
 			save.Show()
 		}()
 	}
@@ -129,10 +130,4 @@ func (c *Client) ShowTextSendWindow() chan string {
 	d.window.Show()
 
 	return text
-}
-
-// WindowSizeToDialog scales the window size to a suitable dialog size.
-// TODO: Let's find a better place for this function.
-func WindowSizeToDialog(s fyne.Size) fyne.Size {
-	return fyne.NewSize(s.Width*0.8, s.Height*0.8)
 }

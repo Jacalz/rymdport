@@ -8,6 +8,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/wormhole-gui/v2/internal/transport"
 	"github.com/Jacalz/wormhole-gui/v2/internal/transport/bridge"
+	"github.com/Jacalz/wormhole-gui/v2/internal/util"
 )
 
 type send struct {
@@ -33,13 +34,13 @@ func newSend(a fyne.App, w fyne.Window, c *transport.Client) *send {
 
 func (s *send) onFileSend() {
 	s.contentPicker.Hide()
-	s.fileDialog.Resize(transport.WindowSizeToDialog(s.window.Canvas().Size()))
+	s.fileDialog.Resize(util.WindowSizeToDialog(s.window.Canvas().Size()))
 	s.fileDialog.Show()
 }
 
 func (s *send) onDirSend() {
 	s.contentPicker.Hide()
-	s.fileDialog.Resize(transport.WindowSizeToDialog(s.window.Canvas().Size()))
+	s.fileDialog.Resize(util.WindowSizeToDialog(s.window.Canvas().Size()))
 	s.directoryDialog.Show()
 }
 
