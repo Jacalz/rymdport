@@ -86,8 +86,8 @@ func (c *Client) NewReceive(code string, pathname chan string, progress *util.Pr
 		return
 	}
 
-	// We want both the compressed download and the extraction.
-	progress.Max += float64(msg.UncompressedBytes64)
+	// We are reading the data twice. First from msg to temp file and then from temp.
+	progress.Max += float64(msg.TransferBytes64)
 
 	tmp, err := ioutil.TempFile("", msg.Name+"-*.zip.tmp")
 	if err != nil {
@@ -113,13 +113,13 @@ func (c *Client) NewReceive(code string, pathname chan string, progress *util.Pr
 		return err
 	}
 
-	err = zip.Extract(tmp, n, path)
+	err = zip.Extract(util.TeeReaderAt(tmp, progress), n, path)
 	if err != nil {
 		fyne.LogError("Error on unzipping contents", err)
 		return err
 	}
 
-	// TODO: Can we update this as we extract it, instead of all at once?
+	// TODO: Progress sometimes stops at 99%. Is it the offset that isn't accounted for?
 	progress.Done()
 
 	return
