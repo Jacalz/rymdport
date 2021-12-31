@@ -34,7 +34,7 @@ func (c *Client) NewReceive(code string, pathname chan string, progress *util.Pr
 	}
 
 	progress.Max = float64(msg.TransferBytes64)
-	contents := io.TeeReader(msg, progress)
+	contents := util.TeeReader(msg, progress)
 
 	if msg.Type == wormhole.TransferText {
 		pathname <- "text"
@@ -119,8 +119,7 @@ func (c *Client) NewReceive(code string, pathname chan string, progress *util.Pr
 		return err
 	}
 
-	// TODO: Progress sometimes stops at 99%. Is it the offset that isn't accounted for?
-	progress.Done()
+	progress.Done() // Workaround for progress sometimes stopping at 99%.
 
 	return
 }
