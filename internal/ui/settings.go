@@ -21,6 +21,7 @@ type settings struct {
 
 	componentSlider     *widget.Slider
 	componentLabel      *widget.Label
+	verifyRadio         *widget.RadioGroup
 	appID               *widget.Entry
 	rendezvousURL       *widget.Entry
 	transitRelayAddress *widget.Entry
@@ -98,6 +99,29 @@ func (s *settings) onTransitAdressChange(address string) {
 	s.preferences.SetString("TransitRelayAddress", address)
 }
 
+func (s *settings) onVerifyChanged(selected string) {
+	enabled := selected == "On"
+	s.app.Preferences().SetBool("Verify", enabled)
+	if enabled {
+		s.client.VerifierOk = s.verify
+	} else {
+		s.client.VerifierOk = nil
+	}
+}
+
+func (s *settings) verify(hash string) bool {
+	verified := make(chan bool)
+	dialog.ShowCustomConfirm("Verify content", "Accept", "Reject",
+		container.NewVBox(
+			newBoldLabel("The hash for your content is:"),
+			&widget.Label{Text: hash, Wrapping: fyne.TextWrapBreak},
+			newBoldLabel("Please verify that the hash is the same on both sides."),
+		), func(accept bool) { verified <- accept }, s.window,
+	)
+
+	return <-verified
+}
+
 // getPreferences is used to set the preferences on startup without saving at the same time.
 func (s *settings) getPreferences() {
 	s.client.DownloadPath = s.preferences.StringWithFallback("DownloadPath", util.UserDownloadsFolder())
@@ -112,6 +136,12 @@ func (s *settings) getPreferences() {
 	s.client.PassPhraseComponentLength = s.preferences.IntWithFallback("ComponentLength", 2)
 	s.componentSlider.Value = float64(s.client.PassPhraseComponentLength)
 	s.componentLabel.Text = string('0' + byte(s.componentSlider.Value))
+
+	verify := s.preferences.Bool("Verify")
+	s.verifyRadio.Selected = onOrOff(verify)
+	if verify {
+		s.client.VerifierOk = s.verify
+	}
 
 	s.client.AppID = s.preferences.String("AppID")
 	s.appID.Text = s.client.AppID
@@ -133,6 +163,8 @@ func (s *settings) buildUI() *container.Scroll {
 	s.notificationRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onNotificationsChanged}
 	s.componentSlider, s.componentLabel = &widget.Slider{Min: 2.0, Max: 6.0, Step: 1, OnChanged: s.onComponentsChange}, &widget.Label{}
 
+	s.verifyRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onVerifyChanged}
+
 	s.appID = &widget.Entry{PlaceHolder: wormhole.WormholeCLIAppID, OnChanged: s.onAppIDChanged}
 
 	s.rendezvousURL = &widget.Entry{PlaceHolder: wormhole.DefaultRendezvousURL, OnChanged: s.onRendezvousURLChange}
@@ -150,7 +182,11 @@ func (s *settings) buildUI() *container.Scroll {
 	)
 
 	wormholeContainer := container.NewVBox(
-		container.NewGridWithColumns(2, newBoldLabel("Passphrase Length"), container.NewBorder(nil, nil, nil, s.componentLabel, s.componentSlider)),
+		container.NewGridWithColumns(2,
+			newBoldLabel("Verify before accepting"), s.verifyRadio,
+			newBoldLabel("Passphrase Length"),
+			container.NewBorder(nil, nil, nil, s.componentLabel, s.componentSlider),
+		),
 		&widget.Accordion{Items: []*widget.AccordionItem{
 			{Title: "Advanced", Detail: container.NewGridWithColumns(2,
 				newBoldLabel("AppID"), s.appID,
