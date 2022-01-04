@@ -21,12 +21,6 @@ func (p *ProgressBar) WithProgress() wormhole.SendOption {
 	})
 }
 
-// Write updates the progress of a write operation.
-func (p *ProgressBar) Write(written []byte) (int, error) {
-	p.SetValue(p.Value + float64(len(written)))
-	return 0, nil
-}
-
 // Done sets the value to max to indicate that it is finished.
 func (p *ProgressBar) Done() {
 	p.SetValue(p.Max)
