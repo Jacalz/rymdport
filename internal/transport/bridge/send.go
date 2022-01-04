@@ -52,10 +52,11 @@ func (p *SendList) UpdateItem(i int, item fyne.CanvasObject) {
 	p.lock.RLock()
 	defer p.lock.RUnlock()
 
-	item.(*fyne.Container).Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
-	item.(*fyne.Container).Objects[1].(*widget.Label).SetText(p.Items[i].Name)
-	item.(*fyne.Container).Objects[2].(*fyne.Container).Objects[0].(*codeDisplay).SetText(p.Items[i].Code)
-	p.Items[i].Progress = item.(*fyne.Container).Objects[3].(*util.ProgressBar)
+	container := item.(*fyne.Container)
+	container.Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
+	container.Objects[1].(*widget.Label).SetText(p.Items[i].Name)
+	container.Objects[2].(*fyne.Container).Objects[0].(*codeDisplay).SetText(p.Items[i].Code)
+	p.Items[i].Progress = container.Objects[3].(*util.ProgressBar)
 }
 
 // RemoveItem removes the item at the specified index.
