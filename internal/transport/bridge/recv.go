@@ -1,6 +1,8 @@
 package bridge
 
 import (
+	"sync"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
@@ -24,6 +26,7 @@ type RecvList struct {
 	client *transport.Client
 
 	Items []*RecvItem
+	lock  sync.RWMutex
 
 	window fyne.Window
 }
@@ -44,6 +47,9 @@ func (p *RecvList) CreateItem() fyne.CanvasObject {
 
 // UpdateItem updates the data in the list.
 func (p *RecvList) UpdateItem(i int, item fyne.CanvasObject) {
+	p.lock.RLock()
+	defer p.lock.RUnlock()
+
 	item.(*fyne.Container).Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
 	item.(*fyne.Container).Objects[1].(*widget.Label).SetText(p.Items[i].Name)
 	p.Items[i].Progress = item.(*fyne.Container).Objects[2].(*util.ProgressBar)
@@ -51,10 +57,12 @@ func (p *RecvList) UpdateItem(i int, item fyne.CanvasObject) {
 
 // RemoveItem removes the item at the specified index.
 func (p *RecvList) RemoveItem(i int) {
+	p.lock.Lock()
+	defer p.lock.Unlock()
+
 	copy(p.Items[i:], p.Items[i+1:])
 	p.Items[p.Length()-1] = nil // Make sure that GC run on removed element
 	p.Items = p.Items[:p.Length()-1]
-	p.Refresh()
 }
 
 // OnSelected handles removing items and stopping send (in the future)
@@ -69,21 +77,30 @@ func (p *RecvList) OnSelected(i int) {
 	p.Unselect(i)
 }
 
+// NewRecvItem creates a new send item and adds it to the items.
+func (p *RecvList) NewRecvItem() *RecvItem {
+	p.lock.Lock()
+	defer p.lock.Unlock()
+
+	item := &RecvItem{Name: "Waiting for filename..."}
+	p.Items = append(p.Items, item)
+	return item
+}
+
 // NewReceive adds data about a new send to the list and then returns the channel to update the code.
 func (p *RecvList) NewReceive(code string) {
-	p.Items = append(p.Items, &RecvItem{Name: "Waiting for filename..."})
+	item := p.NewRecvItem()
 	p.Refresh()
 
 	path := make(chan string)
-	index := p.Length() - 1
 
 	go func() {
 		name := <-path
-		p.Items[index].URI = storage.NewFileURI(name)
+		item.URI = storage.NewFileURI(name)
 		if name != "text" {
-			p.Items[index].Name = p.Items[index].URI.Name()
+			item.Name = item.URI.Name()
 		} else {
-			p.Items[index].Name = "Text Snippet"
+			item.Name = "Text Snippet"
 		}
 
 		close(path)
@@ -91,9 +108,9 @@ func (p *RecvList) NewReceive(code string) {
 	}()
 
 	go func(code string) {
-		if err := p.client.NewReceive(code, path, p.Items[index].Progress); err != nil {
+		if err := p.client.NewReceive(code, path, item.Progress); err != nil {
 			p.client.ShowNotification("Receive failed", "An error occurred when receiving the data.")
-			p.Items[index].Progress.Failed()
+			item.Progress.Failed()
 			dialog.ShowError(err, p.window)
 		} else {
 			p.client.ShowNotification("Receive completed", "The data was received successfully.")
