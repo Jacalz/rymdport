@@ -127,7 +127,7 @@ func NewRecvList(window fyne.Window, client *transport.Client) *RecvList {
 	p.List.Length = p.Length
 	p.List.CreateItem = p.CreateItem
 	p.List.UpdateItem = p.UpdateItem
-	p.List.OnSelected = p.OnSelected
+	//p.List.OnSelected = p.OnSelected
 	p.ExtendBaseWidget(p)
 
 	return p
