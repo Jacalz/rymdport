@@ -28,6 +28,10 @@ Compiling requires a [Go](https://golang.org) compiler (1.14 or later) and the [
 Please visit the [release page](https://github.com/Jacalz/wormhole-gui/releases) for downloading the latest releases.
 Pre-built binaries are available for FreeBSD, Linux, MacOS (`x86-64` and `arm64`) and Windows (`x86-64`).
 
+The following distrubutions also have binary packages avaliable through the respective package managers:
+
+[![Packaging status](https://repology.org/badge/vertical-allrepos/wormhole-gui.svg)](https://repology.org/project/wormhole-gui/versions)
+
 ## Building
 
 Systems with the compile-time requirements satisfied can build the project using `go build` in the project root:
