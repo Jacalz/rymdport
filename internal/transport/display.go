@@ -12,27 +12,21 @@ import (
 	"github.com/Jacalz/wormhole-gui/v2/internal/util"
 )
 
-type textDisplay struct {
-	textEntry               *widget.Entry
-	leftButton, rightButton *widget.Button
-	window                  fyne.Window
+type textRecvWindow struct {
+	textEntry              *widget.Entry
+	copyButton, saveButton *widget.Button
+	window                 fyne.Window
 }
 
-func (d *textDisplay) Refresh() {
-	d.textEntry.Refresh()
-	d.leftButton.Refresh()
-	d.rightButton.Refresh()
-}
-
-func createTextWindow(app fyne.App) *textDisplay {
-	display := &textDisplay{
-		window:      app.NewWindow(""),
-		textEntry:   &widget.Entry{MultiLine: true, Wrapping: fyne.TextWrapWord},
-		leftButton:  &widget.Button{},
-		rightButton: &widget.Button{},
+func createTextRecvWindow(app fyne.App) *textRecvWindow {
+	display := &textRecvWindow{
+		window:     app.NewWindow("Received Text"),
+		textEntry:  &widget.Entry{MultiLine: true, Wrapping: fyne.TextWrapWord},
+		copyButton: &widget.Button{Text: "Copy", Icon: theme.ContentCopyIcon()},
+		saveButton: &widget.Button{Text: "Save", Icon: theme.DocumentSaveIcon()},
 	}
 
-	actionContainer := container.NewGridWithColumns(2, display.leftButton, display.rightButton)
+	actionContainer := container.NewGridWithColumns(2, display.copyButton, display.saveButton)
 	display.window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, display.textEntry))
 	display.window.Resize(fyne.NewSize(400, 300))
 
@@ -41,9 +35,12 @@ func createTextWindow(app fyne.App) *textDisplay {
 
 // showTextReceiveWindow handles the creation of a window for displaying text content.
 func (c *Client) showTextReceiveWindow(text *bytes.Buffer) {
-	d := c.display
+	if c.textRecvWindow == nil {
+		c.textRecvWindow = createTextRecvWindow(c.app)
+	}
 
-	d.window.SetTitle("Received Text")
+	d := c.textRecvWindow
+
 	d.window.SetCloseIntercept(func() {
 		d.window.Hide()
 		// Empty the text on closing...
@@ -51,16 +48,11 @@ func (c *Client) showTextReceiveWindow(text *bytes.Buffer) {
 		d.textEntry.SetText("")
 	})
 
-	d.leftButton.Text = "Copy"
-	d.leftButton.Icon = theme.ContentCopyIcon()
-	d.leftButton.OnTapped = func() {
+	d.copyButton.OnTapped = func() {
 		d.window.Clipboard().SetContent(text.String())
 	}
 
-	d.rightButton.Text = "Save"
-	d.rightButton.Icon = theme.DocumentSaveIcon()
-	d.rightButton.Importance = widget.MediumImportance
-	d.rightButton.OnTapped = func() {
+	d.saveButton.OnTapped = func() {
 		go func() {
 			save := dialog.NewFileSave(func(file fyne.URIWriteCloser, err error) { // TODO: Might want to save this instead of recreating each time
 				if err != nil {
@@ -88,44 +80,58 @@ func (c *Client) showTextReceiveWindow(text *bytes.Buffer) {
 		}()
 	}
 
-	d.textEntry.OnSubmitted = nil
-	d.textEntry.Text = text.String()
-
-	d.Refresh() // Update all contents in the window
+	d.textEntry.SetText(text.String())
+	d.window.Canvas().Focus(d.textEntry)
 	d.window.Show()
+}
+
+type textSendWindow struct {
+	textEntry                *widget.Entry
+	cancelButton, sendButton *widget.Button
+	window                   fyne.Window
+}
+
+func createTextSendWindow(app fyne.App) *textSendWindow {
+	display := &textSendWindow{
+		window:       app.NewWindow("Send Text"),
+		textEntry:    &widget.Entry{MultiLine: true, Wrapping: fyne.TextWrapWord},
+		cancelButton: &widget.Button{Text: "Cancel", Icon: theme.CancelIcon()},
+		sendButton:   &widget.Button{Text: "Send", Icon: theme.MailSendIcon(), Importance: widget.HighImportance},
+	}
+	display.textEntry.OnSubmitted = func(_ string) {
+		display.sendButton.OnTapped()
+	}
+
+	actionContainer := container.NewGridWithColumns(2, display.cancelButton, display.sendButton)
+	display.window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, display.textEntry))
+	display.window.Resize(fyne.NewSize(400, 300))
+
+	return display
 }
 
 // ShowTextSendWindow opens a new window for setting up text to send.
 func (c *Client) ShowTextSendWindow() chan string {
-	text := make(chan string)
-	d := c.display
+	if c.textSendWindow == nil {
+		c.textSendWindow = createTextSendWindow(c.app)
+	}
 
+	d := c.textSendWindow
+
+	text := make(chan string)
 	onClose := func() {
 		text <- ""
 		d.window.Hide()
 		d.textEntry.SetText("")
 	}
 
-	d.window.SetTitle("Send text")
 	d.window.SetCloseIntercept(onClose)
-
-	d.leftButton.Text = "Cancel"
-	d.leftButton.Icon = theme.CancelIcon()
-	d.leftButton.OnTapped = onClose
-
-	d.rightButton.Text = "Send"
-	d.rightButton.Icon = theme.MailSendIcon()
-	d.rightButton.Importance = widget.HighImportance
-	d.rightButton.OnTapped = func() {
+	d.cancelButton.OnTapped = onClose
+	d.sendButton.OnTapped = func() {
 		text <- d.textEntry.Text
 		d.window.Hide()
 		d.textEntry.SetText("")
 	}
 
-	d.textEntry.OnSubmitted = func(_ string) { d.rightButton.OnTapped() }
-	d.textEntry.Text = ""
-
-	d.Refresh() // Update all contents in the window
 	d.window.Canvas().Focus(d.textEntry)
 	d.window.Show()
 

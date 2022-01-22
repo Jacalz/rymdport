@@ -13,7 +13,8 @@ type Client struct {
 	app fyne.App
 
 	// Save a reference to the window to avoid creating a new one when sending and receiving text
-	display *textDisplay
+	textSendWindow *textSendWindow
+	textRecvWindow *textRecvWindow
 
 	// Notification holds the settings value for if we have notifications enabled or not.
 	Notifications bool
@@ -34,5 +35,5 @@ func (c *Client) ShowNotification(title, content string) {
 
 // NewClient returns a new client for sending and receiving using wormhole-william
 func NewClient(app fyne.App) *Client {
-	return &Client{display: createTextWindow(app), app: app}
+	return &Client{app: app}
 }
