@@ -1,3 +1,5 @@
+Website = "https://github.com/Jacalz/wormhole-gui"
+
 [Details]
 Name = "wormhole-gui"
 ID = "io.github.jacalz.wormhole_gui"
