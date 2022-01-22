@@ -64,7 +64,7 @@ func (c *Client) NewReceive(code string, pathname chan string, progress *util.Pr
 
 	if msg.Type == wormhole.TransferFile {
 		var file *os.File
-		file, err = os.Create(path)
+		file, err = os.Create(path) // #nosec Path is cleaned by filepath.Join().
 		if err != nil {
 			fyne.LogError("Error on creating file", err)
 			return bail(msg, err)

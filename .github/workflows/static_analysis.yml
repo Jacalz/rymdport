@@ -27,7 +27,7 @@ jobs:
         go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
         go install github.com/mgechev/revive@71b31e26ab2e4d85e9b3afe7feee67106ebf353e
         go install honnef.co/go/tools/cmd/staticcheck@v0.2.2
-        go install github.com/securego/gosec/v2/cmd/gosec@v2.9.3
+        go install github.com/securego/gosec/v2/cmd/gosec@v2.9.6
 
     - name: Vet
       run: go vet ./...
