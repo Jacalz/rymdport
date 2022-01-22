@@ -1,6 +1,6 @@
 module github.com/Jacalz/wormhole-gui/v2
 
-go 1.14
+go 1.15
 
 require (
 	fyne.io/fyne/v2 v2.1.2
