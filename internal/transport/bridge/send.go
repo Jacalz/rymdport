@@ -59,30 +59,8 @@ func (p *SendList) UpdateItem(i int, item fyne.CanvasObject) {
 	p.Items[i].Progress = container.Objects[3].(*util.ProgressBar)
 }
 
-// RemoveItem removes the item at the specified index.
-func (p *SendList) RemoveItem(i int) {
-	p.lock.Lock()
-	defer p.lock.Unlock()
-
-	copy(p.Items[i:], p.Items[i+1:])
-	p.Items[p.Length()-1] = nil // Make sure that GC run on removed element.
-	p.Items = p.Items[:p.Length()-1]
-}
-
-// OnSelected handles removing items and stopping send (in the future).
+// OnSelected currently just makes sure that we don't persist selection.
 func (p *SendList) OnSelected(i int) {
-	if p.Items[i].Progress.Value != p.Items[i].Progress.Max { // TODO: Stop the send instead.
-		p.Unselect(i)
-		return // We can't stop running sends due to bug in wormhole-gui.
-	}
-
-	dialog.ShowConfirm("Remove from list", "Do you wish to remove the item from the list?", func(remove bool) {
-		if remove {
-			p.RemoveItem(i)
-			p.Refresh()
-		}
-	}, p.window)
-
 	p.Unselect(i)
 }
 
@@ -218,7 +196,7 @@ func NewSendList(window fyne.Window, client *transport.Client) *SendList {
 	p.List.Length = p.Length
 	p.List.CreateItem = p.CreateItem
 	p.List.UpdateItem = p.UpdateItem
-	//p.List.OnSelected = p.OnSelected
+	p.List.OnSelected = p.OnSelected
 	p.ExtendBaseWidget(p)
 
 	return p
