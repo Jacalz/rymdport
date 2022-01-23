@@ -1,6 +1,5 @@
 # Constants for cross compilation and packaging.
 APPID = io.github.jacalz.wormhole_gui
-ICON = internal/assets/icon/icon-512.png
 NAME = wormhole-gui
 
 # Variables for development.
@@ -31,19 +30,19 @@ uninstall:
 	-rm $(DESTDIR)$(PREFIX)/share/appdata/$(APPID).appdata.xml
 
 freebsd:
-	$(GOBIN)fyne-cross freebsd -arch amd64,arm64 -app-id $(APPID) -icon $(ICON)
+	$(GOBIN)fyne-cross freebsd -arch amd64,arm64
 
 darwin:
-	$(GOBIN)fyne-cross darwin -arch amd64,arm64 -output $(NAME) -app-id $(APPID) -icon $(ICON)
+	$(GOBIN)fyne-cross darwin -arch amd64,arm64 -output $(NAME)
 
 linux:
-	$(GOBIN)fyne-cross linux -arch amd64,arm64 -app-id $(APPID) -icon $(ICON)
+	$(GOBIN)fyne-cross linux -arch amd64,arm64
 
 windows:
-	$(GOBIN)fyne-cross windows -arch amd64 -app-id $(APPID) -icon $(ICON)
+	$(GOBIN)fyne-cross windows -arch amd64
 
 windows-debug:
-	$(GOBIN)fyne-cross windows -console -arch amd64 -app-id $(APPID) -icon $(ICON)
+	$(GOBIN)fyne-cross windows -console -arch amd64
 
 bundle:
 	# Move Linux package bundles to the root with correct naming.

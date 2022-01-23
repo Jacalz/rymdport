@@ -1,8 +1,8 @@
 Website = "https://github.com/Jacalz/wormhole-gui"
 
 [Details]
+Icon = "internal/assets/icon/icon-512.png"
 Name = "wormhole-gui"
 ID = "io.github.jacalz.wormhole_gui"
-Icon = "internal/assets/icon/icon-512.png"
-Version = "v3.0.0"
+Version = "3.0.0"
 Build = 14
