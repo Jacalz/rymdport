@@ -24,6 +24,9 @@ type Client struct {
 
 	// DownloadPath holds the download path used for saving received files.
 	DownloadPath string
+
+	// Defines if we should pass a custom code or let wormhole-william generate on for us.
+	CustomCode bool
 }
 
 // ShowNotification sends a notification if c.Notifications is true.

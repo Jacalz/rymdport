@@ -5,7 +5,10 @@ import (
 	"path/filepath"
 
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/data/validation"
 )
+
+var CodeValidator = validation.NewRegexp(`(^\d+(-(\w|\d)+)+$)|(^$)`, "The code string is invalid.")
 
 // UserDownloadsFolder returns the downloads folder corresponding to the current user.
 func UserDownloadsFolder() string {

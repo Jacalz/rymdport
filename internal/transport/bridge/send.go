@@ -96,7 +96,7 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 			}
 		}()
 
-		code, result, err := p.client.NewFileSend(file, item.Progress.WithProgress())
+		code, result, err := p.client.NewFileSend(file, item.Progress.WithProgress(), p.getCustomCode())
 		if err != nil {
 			fyne.LogError("Error on sending file", err)
 			item.Progress.Failed()
@@ -132,7 +132,7 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 	p.Refresh()
 
 	go func() {
-		code, result, err := p.client.NewDirSend(dir, item.Progress.WithProgress())
+		code, result, err := p.client.NewDirSend(dir, item.Progress.WithProgress(), p.getCustomCode())
 		if err != nil {
 			fyne.LogError("Error on sending directory", err)
 			item.Progress.Failed()
@@ -168,7 +168,7 @@ func (p *SendList) SendText() {
 		p.Items = append(p.Items, item)
 		p.Refresh()
 
-		code, result, err := p.client.NewTextSend(text, item.Progress.WithProgress())
+		code, result, err := p.client.NewTextSend(text, item.Progress.WithProgress(), p.getCustomCode())
 		if err != nil {
 			fyne.LogError("Error on sending text", err)
 			item.Progress.Failed()
@@ -188,6 +188,37 @@ func (p *SendList) SendText() {
 			p.client.ShowNotification("Text send completed", "The text was sent successfully.")
 		}
 	}()
+}
+
+// getCustomCode returns "" if the user has custom codes disabled.
+// Otherwise, it will ask the user for a code.
+func (p *SendList) getCustomCode() string {
+	if !p.client.CustomCode {
+		return ""
+	}
+
+	code := make(chan string)
+	codeEntry := &widget.Entry{
+		PlaceHolder: "123-insecure-example-code",
+		Wrapping:    fyne.TextTruncate,
+		Validator:   util.CodeValidator,
+	}
+
+	form := dialog.NewForm("Create custom code", "Confirm", "Cancel", []*widget.FormItem{
+		{Text: "Code", Widget: codeEntry}, // TODO: Add HintText when FormDialog supports it.
+	}, func(submitted bool) {
+		if !submitted {
+			code <- ""
+		} else {
+			code <- codeEntry.Text
+		}
+
+		close(code)
+	}, p.window)
+	form.Resize(fyne.Size{Width: p.window.Canvas().Size().Width * 0.8, Height: 0})
+	form.Show()
+
+	return <-code
 }
 
 // NewSendList greates a list of progress bars.

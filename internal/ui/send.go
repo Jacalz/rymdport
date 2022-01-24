@@ -15,10 +15,12 @@ type send struct {
 	contentPicker dialog.Dialog
 
 	fileChoice      *widget.Button
-	fileDialog      *dialog.FileDialog
 	directoryChoice *widget.Button
-	directoryDialog *dialog.FileDialog
 	textChoice      *widget.Button
+	codeChoice      *widget.Check
+
+	fileDialog      *dialog.FileDialog
+	directoryDialog *dialog.FileDialog
 
 	contentToSend *widget.Button
 	sendList      *bridge.SendList
@@ -49,12 +51,17 @@ func (s *send) onTextSend() {
 	s.sendList.SendText()
 }
 
+func (s *send) onCustomCode(enabled bool) {
+	s.client.CustomCode = enabled
+}
+
 func (s *send) buildUI() *fyne.Container {
 	s.fileChoice = &widget.Button{Text: "File", Icon: theme.FileIcon(), OnTapped: s.onFileSend}
 	s.directoryChoice = &widget.Button{Text: "Directory", Icon: theme.FolderOpenIcon(), OnTapped: s.onDirSend}
 	s.textChoice = &widget.Button{Text: "Text", Icon: theme.DocumentCreateIcon(), OnTapped: s.onTextSend}
+	s.codeChoice = &widget.Check{Text: "Use a custom code", OnChanged: s.onCustomCode}
 
-	choiceContent := container.NewGridWithColumns(1, s.fileChoice, s.directoryChoice, s.textChoice)
+	choiceContent := container.NewGridWithColumns(1, s.fileChoice, s.directoryChoice, s.textChoice, s.codeChoice)
 	s.contentPicker = dialog.NewCustom("Pick a content type", "Cancel", choiceContent, s.window)
 
 	s.sendList = bridge.NewSendList(s.window, s.client)

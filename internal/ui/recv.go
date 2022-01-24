@@ -3,12 +3,12 @@ package ui
 import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/data/validation"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/wormhole-gui/v2/internal/transport"
 	"github.com/Jacalz/wormhole-gui/v2/internal/transport/bridge"
+	"github.com/Jacalz/wormhole-gui/v2/internal/util"
 )
 
 type recv struct {
@@ -38,7 +38,7 @@ func (r *recv) onRecv() {
 
 func (r *recv) buildUI() *fyne.Container {
 	r.codeEntry = &widget.Entry{PlaceHolder: "Enter code", Wrapping: fyne.TextTruncate, OnSubmitted: func(_ string) { r.onRecv() },
-		Validator: validation.NewRegexp(`(^\d+(-(\w|\d)+)+$)|(^$)`, "The code is invalid"),
+		Validator: util.CodeValidator,
 	}
 
 	r.codeButton = &widget.Button{Text: "Download", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
