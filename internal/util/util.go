@@ -8,6 +8,7 @@ import (
 	"fyne.io/fyne/v2/data/validation"
 )
 
+// CodeValidator provides a validator for wormhole codes.
 var CodeValidator = validation.NewRegexp(`(^\d+(-(\w|\d)+)+$)|(^$)`, "The code string is invalid.")
 
 // UserDownloadsFolder returns the downloads folder corresponding to the current user.
