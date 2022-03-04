@@ -8,9 +8,9 @@ It uses the Go implementation of magic-wormhole, called [wormhole-william](https
 </p>
 
 Built using the following Go modules:
-- [fyne](https://github.com/fyne-io/fyne) (version 2.0.4)
-- [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.5)
-- [compress](https://github.com/klauspost/compress) (version 1.13.3)
+- [fyne](https://github.com/fyne-io/fyne) (version 2.1.3)
+- [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.6)
+- [compress](https://github.com/klauspost/compress) (version 1.15.0)
 
 The initial version was built in less than one day to show how quick and easy it is to use [fyne](https://github.com/fyne-io/fyne) for developing applications.
 
@@ -21,7 +21,7 @@ Wormhole-gui an open source project that is provided free of charge and that wil
 ## Requirements
 
 Wormhole-gui compiles into a statically linked binary with no runtime dependencies.
-Compiling requires a [Go](https://golang.org) compiler (1.14 or later) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
+Compiling requires a [Go](https://golang.org) compiler (1.15 or later) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
 
 ## Downloads
 
