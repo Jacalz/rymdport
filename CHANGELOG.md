@@ -1,5 +1,33 @@
 # Changelog
 
+## 3.0.0 - Many new features and improvements
+- Import the Fyne settings application into the settings tab.
+  - UI scaling and primary color can now be changed in the settings.
+- Scale dialogs to window size (fixes #16).
+- Progress is now shown for receives as well (fixes #20).
+- Added support for verifying sends and receives before accepting (fixes #18).
+- Improved application startup time by optimizing how settings are handled on startup.
+- Long codes are now truncated to avoid moving other ui elements.
+- The user now has to confirm before enabling overwriting of files.
+- Fixed and issue where sending with received text open would remove the text.
+- Removed support for removing completed sends and receives (see #32)
+  - This had been broken for a long time. Will be introduced again in a later version.
+- Many improvements to the contents of the appstream metadata.
+- Various minor performance improvements and race condition fixes.
+- Updated `wormhole-william` to [v1.0.6](https://github.com/psanford/wormhole-william/releases/tag/v1.0.6).
+  - Fixes compatability with the [magic-wormhole.rs](https://github.com/magic-wormhole/magic-wormhole.rs) client.
+  - Switched to a faster websocket library.
+- Updated `fyne` to [v2.1.3](https://github.com/fyne-io/fyne/releases/tag/v2.1.3).
+  - Improves performance, fixes a few memory leaks and minor visual refresh among many other improvements.
+- Updated `compress` to [v1.15.0](https://github.com/klauspost/compress/releases/tag/v1.13.6).
+  - Includes various performance improvements that benefit sending and receiving of directories.
+- Release binaries are now built using Go 1.17.
+  - Performance of amd64 binaries should improve by around 5-10%.
+  - Lowest supported macOS release is now 10.13 High Sierra.
+  - Includes various other fixes and improvements.
+- Release binaires for FreeBSD and Linux are now `xz` compressed for smaller sizes.
+- Release binaries on macOS now contain correct version and build number metadata.
+
 ## 2.3.1 - Rebuilt release binaries
 - Updated `compress` to [v1.13.6](https://github.com/klauspost/compress/releases/tag/v1.13.6).
 
