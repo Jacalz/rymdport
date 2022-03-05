@@ -26,7 +26,7 @@ Compiling requires a [Go](https://golang.org) compiler (1.15 or later) and the [
 ## Downloads
 
 Please visit the [release page](https://github.com/Jacalz/wormhole-gui/releases) for downloading the latest releases.
-Pre-built binaries are available for FreeBSD, Linux, MacOS (`x86-64` and `arm64`) and Windows (`x86-64`).
+Pre-built binaries are available for FreeBSD, Linux, macOS (`x86-64` and `arm64`) and Windows (`x86-64`).
 
 The following distrubutions also have binary packages avaliable through the respective package managers:
 
