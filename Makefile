@@ -33,7 +33,8 @@ freebsd:
 	$(GOBIN)fyne-cross freebsd -arch amd64,arm64
 
 darwin:
-	$(GOBIN)fyne-cross darwin -arch amd64,arm64 -output $(NAME)
+	# TODO: Remove "-tags legacy" once we upgrade to Go 1.19 and 10.14 is minimum.
+	$(GOBIN)fyne-cross darwin -arch amd64,arm64 -tags legacy -output $(NAME)
 
 linux:
 	$(GOBIN)fyne-cross linux -arch amd64,arm64
