@@ -1,7 +1,11 @@
 # wormhole-gui
 
+[![Static Analysis](https://github.com/Jacalz/wormhole-gui/actions/workflows/static_analysis.yml/badge.svg?branch=main)](https://github.com/Jacalz/wormhole-gui/actions/workflows/static_analysis.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Jacalz/wormhole-gui/v2)](https://goreportcard.com/report/github.com/Jacalz/wormhole-gui/v2)
+[![version](https://img.shields.io/github/v/tag/Jacalz/wormhole-gui?label=version)](https://github.com/Jacalz/wormhole-gui/releases/latest)
+
 Wormhole-gui is a cross-platform application that lets you easily share files, folders and text between devices.
-It uses the Go implementation of magic-wormhole, called [wormhole-william](https://github.com/psanford/wormhole-william), and compiles statically into a single binary. Wormhole-gui is also compatible with sending to and receiving from other wormhole clients, such as the cli applications from both [wormhole-william](https://github.com/psanford/wormhole-william) and [magic-wormhole](https://github.com/magic-wormhole/magic-wormhole).
+It uses the Go implementation of magic-wormhole, called [wormhole-william](https://github.com/psanford/wormhole-william), and compiles statically into a single binary. Wormhole-gui is also compatible with sending to and receiving from other wormhole clients, such as the cli applications [wormhole-william](https://github.com/psanford/wormhole-william) and [magic-wormhole](https://github.com/magic-wormhole/magic-wormhole).
 
 <p align="center">
   <img src="internal/assets/screenshot.png" />
@@ -40,7 +44,8 @@ go build
 ```
 
 The project is available in the [Fyne Apps Listing](https://apps.fyne.io/apps/wormhole-gui.html) and can be installed either using the `fyne get` command or using the [Fyne Apps Installer](https://apps.fyne.io/apps/io.fyne.apps.html).
-It can also be built and installed using GNU Make (installing is currently only supported on Linux and BSD):
+
+Installation can also be done using GNU Make (installing is currently only supported on Linux and BSD):
 ```bash
 make
 sudo make install
