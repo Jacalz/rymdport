@@ -12,6 +12,7 @@
 - Fixed an issue where sending with received text open would remove the text.
 - Removed support for removing completed sends and receives (see #32)
   - This had been broken for a long time. Will be introduced again in a later version.
+- The filename when saving recieved text now also contains the current time. 
 - Many improvements to the contents of the appstream metadata.
 - Various minor performance improvements and race condition fixes.
 - Updated `wormhole-william` to [v1.0.6](https://github.com/psanford/wormhole-william/releases/tag/v1.0.6).

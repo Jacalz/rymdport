@@ -3,6 +3,7 @@ package transport
 import (
 	"bytes"
 	"io"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -74,7 +75,8 @@ func (c *Client) showTextReceiveWindow(text *bytes.Buffer) {
 					dialog.ShowError(err, d.window)
 				}
 			}, d.window)
-			save.SetFileName("received.txt")
+			now := time.Now().Format("2006-01-02T15:04")
+			save.SetFileName("received-" + now + ".txt")
 			save.Resize(util.WindowSizeToDialog(d.window.Canvas().Size()))
 			save.Show()
 		}()
