@@ -10,7 +10,7 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"github.com/Jacalz/wormhole-gui/v2/internal/util"
+	"github.com/Jacalz/rymdport/v3/internal/util"
 )
 
 type textRecvWindow struct {

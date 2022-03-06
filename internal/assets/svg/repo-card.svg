@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    inkscape:export-ydpi="96"
    inkscape:export-xdpi="96"
-   inkscape:export-filename="/home/jacob/go/src/github.com/Jacalz/wormhole-gui/assets/repo-card.png"
+   inkscape:export-filename="/home/jacob/Git/wormhole-gui/internal/assets/repo-card.png"
    sodipodi:docname="repo-card.svg"
-   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    id="SVGRoot"
    version="1.1"
    viewBox="0 0 1280 640"
    height="640px"
-   width="1280px">
+   width="1280px"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs1414" />
   <sodipodi:namedview
@@ -26,20 +26,21 @@
      inkscape:window-maximized="1"
      inkscape:window-y="0"
      inkscape:window-x="0"
-     inkscape:window-height="1007"
-     inkscape:window-width="1920"
+     inkscape:window-height="1371"
+     inkscape:window-width="2560"
      showgrid="false"
      inkscape:current-layer="layer1"
      inkscape:document-units="px"
-     inkscape:cy="386.97042"
-     inkscape:cx="906.1076"
+     inkscape:cy="387.14286"
+     inkscape:cx="627.85714"
      inkscape:zoom="0.7"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
      bordercolor="#666666"
      pagecolor="#ffffff"
-     id="base">
+     id="base"
+     inkscape:pagecheckerboard="0">
     <sodipodi:guide
        inkscape:locked="false"
        id="guide1981"
@@ -79,34 +80,34 @@
      inkscape:label="Layer 1">
     <text
        id="text2006"
-       y="243.08342"
-       x="555.33527"
+       y="244.51199"
+       x="597.83685"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:93.3333px;line-height:1.25;font-family:Rockwell;-inkscape-font-specification:Rockwell;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.02768"
        xml:space="preserve"><tspan
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:93.3333px;font-family:Rockwell;-inkscape-font-specification:'Rockwell Bold';fill:#000000;stroke-width:1.02768"
-         y="243.08342"
-         x="555.33527"
+         y="244.51199"
+         x="597.83685"
          id="tspan2004"
-         sodipodi:role="line">wormhole-gui</tspan></text>
+         sodipodi:role="line">Rymdport</tspan></text>
     <text
        id="text2010"
        y="349.56387"
-       x="603.49969"
+       x="602.66107"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:66.6667px;line-height:1;font-family:Rockwell;-inkscape-font-specification:Rockwell;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        xml:space="preserve"><tspan
          style="font-size:66.6667px"
          id="tspan2016"
          y="349.56387"
-         x="603.49969"
+         x="602.66107"
          sodipodi:role="line">Graphical user</tspan><tspan
          style="font-size:66.6667px"
          id="tspan872"
          y="416.23059"
-         x="603.49969"
+         x="602.66107"
          sodipodi:role="line">interface for </tspan><tspan
          id="tspan874"
          y="482.89728"
-         x="603.49969"
+         x="602.66107"
          sodipodi:role="line"><tspan
    id="tspan876"
    style="font-size:66.6667px">magic wormhole</tspan> </tspan></text>

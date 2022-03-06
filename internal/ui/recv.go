@@ -6,9 +6,9 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"github.com/Jacalz/wormhole-gui/v2/internal/transport"
-	"github.com/Jacalz/wormhole-gui/v2/internal/transport/bridge"
-	"github.com/Jacalz/wormhole-gui/v2/internal/util"
+	"github.com/Jacalz/rymdport/v3/internal/transport"
+	"github.com/Jacalz/rymdport/v3/internal/transport/bridge"
+	"github.com/Jacalz/rymdport/v3/internal/util"
 )
 
 type recv struct {
@@ -41,7 +41,7 @@ func (r *recv) buildUI() *fyne.Container {
 		Validator: util.CodeValidator,
 	}
 
-	r.codeButton = &widget.Button{Text: "Download", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
+	r.codeButton = &widget.Button{Text: "Receive", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
 
 	r.recvList = bridge.NewRecvList(r.window, r.client)
 

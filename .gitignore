@@ -7,7 +7,7 @@
 *.tar.gz
 *.tar.xz
 *.zip
-wormhole-gui
+rymdport
 
 # Output from fyne-cross when running cross-compilation.
 fyne-cross/

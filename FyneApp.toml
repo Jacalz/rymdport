@@ -1,8 +1,8 @@
-Website = "https://github.com/Jacalz/wormhole-gui"
+Website = "https://github.com/Jacalz/rymdport"
 
 [Details]
   Icon = "internal/assets/icon/icon-512.png"
-  Name = "wormhole-gui"
-  ID = "io.github.jacalz.wormhole_gui"
+  Name = "rymdport"
+  ID = "io.github.jacalz.rymdport"
   Version = "3.0.0"
   Build = 14

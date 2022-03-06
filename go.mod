@@ -1,4 +1,4 @@
-module github.com/Jacalz/wormhole-gui/v2
+module github.com/Jacalz/rymdport/v3
 
 go 1.15
 

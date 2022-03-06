@@ -3,7 +3,7 @@ package ui
 import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
-	"github.com/Jacalz/wormhole-gui/v2/internal/transport"
+	"github.com/Jacalz/rymdport/v3/internal/transport"
 )
 
 // Create will stitch together all ui components

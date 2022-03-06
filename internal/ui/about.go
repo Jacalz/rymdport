@@ -9,15 +9,15 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"github.com/Jacalz/wormhole-gui/v2/internal/assets"
+	"github.com/Jacalz/rymdport/v3/internal/assets"
 )
 
-const version = "v3.0.0-dev"
+const version = "v3.0.0"
 
 var releaseURL = &url.URL{
 	Scheme: "https",
 	Host:   "github.com",
-	Path:   "/Jacalz/wormhole-gui/releases/tag/" + version,
+	Path:   "/jacalz/rymdport/releases/tag/" + version,
 }
 
 type about struct {
@@ -35,7 +35,7 @@ func (a *about) buildUI() *fyne.Container {
 	a.icon = canvas.NewImageFromResource(assets.AppIcon)
 	a.icon.SetMinSize(fyne.NewSize(256, 256))
 
-	a.nameLabel = newBoldLabel("wormhole-gui")
+	a.nameLabel = newBoldLabel("Rymdport")
 	a.spacerLabel = newBoldLabel("-")
 	a.hyperlink = &widget.Hyperlink{Text: version, URL: releaseURL, TextStyle: fyne.TextStyle{Bold: true}}
 
