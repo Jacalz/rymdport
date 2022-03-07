@@ -4,7 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/Jacalz/rymdport/v3)](https://goreportcard.com/report/github.com/Jacalz/rymdport/v3)
 [![version](https://img.shields.io/github/v/tag/Jacalz/rymdport?label=version)](https://github.com/Jacalz/rymdport/releases/latest)
 
-Rymdport (formerly wormhole-gui) is a cross-platform application that lets you easily share files, folders and text between devices.
+Rymdport (formerly wormhole-gui) is a cross-platform application that lets you easily share files, folders, and text between devices.
 It uses the Go implementation of magic-wormhole, called [wormhole-william](https://github.com/psanford/wormhole-william), and compiles statically into a single binary. Rymdport is also compatible with sending to and receiving from other wormhole clients, such as the cli applications [wormhole-william](https://github.com/psanford/wormhole-william) and [magic-wormhole](https://github.com/magic-wormhole/magic-wormhole).
 
 <p align="center">
@@ -20,7 +20,7 @@ The initial version was built in less than one day to show how quick and easy it
 
 ## Sponsoring
 
-Rymdport is an open source project that is provided free of charge and that will continue to be the case forever. If you use this project and appreciate the work being put into it, please consider supporting the development through [GitHub Sponsors](https://github.com/sponsors/Jacalz). This is in no way a requirement, but would be greatly appreciated and would allow for even more improvements to come further down the road.
+Rymdport is an open source project that is provided free of charge, and that will continue to be the case forever. If you use this project and appreciate the work being put into it, please consider supporting its development through [GitHub Sponsors](https://github.com/sponsors/Jacalz). This is in no way a requirement, but would be greatly appreciated and would allow for even more improvements to come further down the road.
 
 ## Requirements
 
@@ -29,10 +29,10 @@ Compiling requires a [Go](https://golang.org) compiler (1.15 or later) and the [
 
 ## Downloads
 
-Please visit the [release page](https://github.com/Jacalz/rymdport/releases) for downloading the latest releases.
+Please visit the [release page](https://github.com/Jacalz/rymdport/releases) to download the latest releases.
 Pre-built binaries are available for FreeBSD, Linux, macOS (`x86-64` and `arm64`) and Windows (`x86-64`).
 
-The following distrubutions also have binary packages avaliable through the respective package managers:
+The following distributions also have binary packages available through the respective package managers:
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/rymdport.svg)](https://repology.org/project/rymdport/versions)
 
