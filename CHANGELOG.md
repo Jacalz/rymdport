@@ -2,17 +2,17 @@
 
 ## 3.0.0 - Rymdport is the new wormhole-gui
 - Added support for sending using custom codes.
-- Ui scaling and primary color can now be changed in the settings tab.
-- Dialogs are not wcaled to window size (fixes #16).
+- UI scaling and primary color can now be changed in the settings tab.
+- Dialogs are not scaled to window size (fixes #16).
 - Progress is now shown for receives as well (fixes #20).
-- Added support for verifying sends and receives before accepting (fixes #18).
+- Added support for verifying sends and receives before accepting them (fixes #18).
 - Improved application startup time by optimizing how settings are handled on startup.
-- Long codes are now truncated to avoid moving other ui elements.
+- Long codes are now truncated to avoid moving other UI elements.
 - The user now has to confirm before enabling overwriting of files.
 - Fixed an issue where sending with received text open would remove the text.
 - Removed support for removing completed sends and receives (see #32)
-  - This had been broken for a long time. Will be introduced again in a later version.
-- The filename when saving recieved text now also contains the current time. 
+  - This has been broken broken a long time. Will be introduced again in a later version.
+- The filename when saving received text now also contains the current time. 
 - Many improvements to the contents of the appstream metadata.
 - Various minor performance improvements and race condition fixes.
 - Updated `wormhole-william` to [v1.0.6](https://github.com/psanford/wormhole-william/releases/tag/v1.0.6).
@@ -27,7 +27,7 @@
   - Lowest supported macOS release is now 10.13 High Sierra.
   - Includes various other fixes and improvements.
 - Release binaires for FreeBSD and Linux are now `xz` compressed to decrease sizes.
-- Release binaries on macOS now contain correct version and build number metadata.
+- Release binaries on macOS now contain the correct version and build number metadata.
 
 ## 2.3.1 - Rebuilt release binaries
 - Updated `compress` to [v1.13.6](https://github.com/klauspost/compress/releases/tag/v1.13.6).
