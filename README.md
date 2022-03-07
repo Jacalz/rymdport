@@ -8,7 +8,7 @@ Rymdport (formerly wormhole-gui) is a cross-platform application that lets you e
 It uses the Go implementation of magic-wormhole, called [wormhole-william](https://github.com/psanford/wormhole-william), and compiles statically into a single binary. Rymdport is also compatible with sending to and receiving from other wormhole clients, such as the cli applications [wormhole-william](https://github.com/psanford/wormhole-william) and [magic-wormhole](https://github.com/magic-wormhole/magic-wormhole).
 
 <p align="center">
-  <img src="internal/assets/screenshot.png" />
+  <img src="internal/assets/screenshot1.png" />
 </p>
 
 Built using the following Go modules:
