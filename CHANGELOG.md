@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.0.0 - Many new features and improvements
+## 3.0.0 - Rymdport is the new wormhole-gui
 - Added support for sending using custom codes.
 - Ui scaling and primary color can now be changed in the settings tab.
 - Dialogs are not wcaled to window size (fixes #16).
