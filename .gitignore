@@ -11,6 +11,7 @@ rymdport
 
 # Output from fyne-cross when running cross-compilation.
 fyne-cross/
+*.syso
 
 # Test binary, built with `go test -c`
 *.test
