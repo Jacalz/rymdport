@@ -1,7 +1,7 @@
 # Rymdport (formerly wormhole-gui)
 
 [![Static Analysis](https://github.com/Jacalz/rymdport/actions/workflows/static_analysis.yml/badge.svg?branch=main)](https://github.com/Jacalz/rymdport/actions/workflows/static_analysis.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/Jacalz/rymdport/v3)](https://goreportcard.com/report/github.com/Jacalz/rymdport/v3)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Jacalz/wormhole-gui/v2)](https://goreportcard.com/report/github.com/Jacalz/wormhole-gui/v2)
 [![version](https://img.shields.io/github/v/tag/Jacalz/rymdport?label=version)](https://github.com/Jacalz/rymdport/releases/latest)
 
 Rymdport (formerly wormhole-gui) is a cross-platform application that lets you easily share files, folders, and text between devices.
@@ -34,7 +34,7 @@ Pre-built binaries are available for FreeBSD, Linux, macOS (`x86-64` and `arm64`
 
 The following distributions also have binary packages available through the respective package managers:
 
-[![Packaging status](https://repology.org/badge/vertical-allrepos/rymdport.svg)](https://repology.org/project/rymdport/versions)
+[![Packaging status](https://repology.org/badge/vertical-allrepos/wormhole-gui.svg)](https://repology.org/project/wormhole-gui/versions)
 
 ## Building
 
