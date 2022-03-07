@@ -33,8 +33,7 @@ freebsd:
 	$(GOBIN)fyne-cross freebsd -arch amd64,arm64
 
 darwin:
-	# TODO: Remove "-tags legacy" once we upgrade to Go 1.19 and 10.14 is minimum.
-	$(GOBIN)fyne-cross darwin -arch amd64,arm64 -tags legacy -output $(NAME)
+	$(GOBIN)fyne-cross darwin -arch amd64,arm64 -output $(NAME)
 
 linux:
 	$(GOBIN)fyne-cross linux -arch amd64,arm64
@@ -58,7 +57,7 @@ bundle:
 	(cd fyne-cross/dist/darwin-amd64/ && zip -r $(NAME)-darwin-amd64.zip $(NAME).app/)
 	mv fyne-cross/dist/darwin-amd64/$(NAME)-darwin-amd64.zip $(NAME)-$(VERSION)-macOS-amd64.zip
 
-	(cd fyne-cross/dist/darwin-arm64/ && zip -r $(NAME)-darwin-arm64.zip$(NAME).app/)
+	(cd fyne-cross/dist/darwin-arm64/ && zip -r $(NAME)-darwin-arm64.zip $(NAME).app/)
 	mv fyne-cross/dist/darwin-arm64/$(NAME)-darwin-arm64.zip $(NAME)-$(VERSION)-macOS-arm64.zip
 
 	# Move Windows package to the root with correct naming.
