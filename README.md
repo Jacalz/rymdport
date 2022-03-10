@@ -1,7 +1,7 @@
 # Rymdport (formerly wormhole-gui)
 
 [![Static Analysis](https://github.com/Jacalz/rymdport/actions/workflows/static_analysis.yml/badge.svg?branch=main)](https://github.com/Jacalz/rymdport/actions/workflows/static_analysis.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/Jacalz/wormhole-gui/v2)](https://goreportcard.com/report/github.com/Jacalz/wormhole-gui/v2)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Jacalz/rymdport/v3)](https://goreportcard.com/report/github.com/Jacalz/rymdport/v3)
 [![version](https://img.shields.io/github/v/tag/Jacalz/rymdport?label=version)](https://github.com/Jacalz/rymdport/releases/latest)
 
 Rymdport (formerly wormhole-gui) is a cross-platform application that lets you easily share files, folders, and text between devices.
