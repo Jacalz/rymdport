@@ -10,7 +10,7 @@
 - Long codes are now truncated to avoid moving other UI elements.
 - The user now has to confirm before enabling overwriting of files.
 - Fixed an issue where sending with received text open would remove the text.
-- Removed support for removing completed sends and receives (see #32)
+- Removed support for removing completed sends and receives (see #32).
   - This has been broken broken a long time. Will be introduced again in a later version.
 - The filename when saving received text now also contains the current time. 
 - Many improvements to the contents of the appstream metadata.
