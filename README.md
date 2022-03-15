@@ -1,11 +1,13 @@
-# Rymdport (formerly wormhole-gui)
+# Rymdport
 
 [![Static Analysis](https://github.com/Jacalz/rymdport/actions/workflows/static_analysis.yml/badge.svg?branch=main)](https://github.com/Jacalz/rymdport/actions/workflows/static_analysis.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Jacalz/rymdport/v3)](https://goreportcard.com/report/github.com/Jacalz/rymdport/v3)
 [![version](https://img.shields.io/github/v/tag/Jacalz/rymdport?label=version)](https://github.com/Jacalz/rymdport/releases/latest)
 
 Rymdport (formerly wormhole-gui) is a cross-platform application that lets you easily share files, folders, and text between devices.
-It uses the Go implementation of magic-wormhole, called [wormhole-william](https://github.com/psanford/wormhole-william), and compiles statically into a single binary. Rymdport is also compatible with sending to and receiving from other wormhole clients, such as the cli applications [wormhole-william](https://github.com/psanford/wormhole-william) and [magic-wormhole](https://github.com/magic-wormhole/magic-wormhole).
+It uses the Go implementation of magic-wormhole, called [wormhole-william](https://github.com/psanford/wormhole-william), and compiles statically into a single binary.
+
+Rymdport is also compatible with sending to and receiving from other wormhole clients, such as the cli applications [wormhole-william](https://github.com/psanford/wormhole-william) and [magic-wormhole](https://github.com/magic-wormhole/magic-wormhole).
 
 <p align="center">
   <img src="internal/assets/screenshot1.png" />
@@ -16,7 +18,7 @@ Built using the following Go modules:
 - [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.6)
 - [compress](https://github.com/klauspost/compress) (version 1.15.0)
 
-The initial version was built in less than one day to show how quick and easy it is to use [fyne](https://github.com/fyne-io/fyne) for developing applications.
+The initial version was built in less than one day to show how quick and easy it is to use [Fyne](https://github.com/fyne-io/fyne) for developing applications.
 
 ## Sponsoring
 
@@ -25,7 +27,7 @@ Rymdport is an open source project that is provided free of charge, and that wil
 ## Requirements
 
 Rymdport compiles into a statically linked binary with no explicit runtime dependencies.
-Compiling requires a [Go](https://golang.org) compiler (1.15 or later) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
+Compiling requires a [Go](https://golang.org) compiler (1.15 or later officially supported, but older versions might work) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
 
 ## Downloads
 
@@ -45,7 +47,7 @@ go build
 
 The project is available in the [Fyne Apps Listing](https://apps.fyne.io/apps/rymdport.html) and can be installed either using the `fyne get` command or using the [Fyne Apps Installer](https://apps.fyne.io/apps/io.fyne.apps.html).
 
-Installation can also be done using GNU Make (installing is currently only supported on Linux and BSD):
+Installation can also be performed using GNU Make (installing is currently only supported on Linux and BSD):
 ```bash
 make
 sudo make install
@@ -54,6 +56,11 @@ sudo make install
 ## Contributing
 
 Contributions are strongly appreciated. Everything from creating bug reports to contributing code will help the project a lot, so please feel free to help in any way, shape or form that you feel comfortable doing.
+
+## Name
+
+The word "rymdport" comes from the Swedish language and means "space gate".
+As a wormhole is a kind of gateway through space, it became the new name after "wormhole-gui".
 
 ## License
 - Rymdport is licensed under `GNU GENERAL PUBLIC LICENSE Version 3`.
