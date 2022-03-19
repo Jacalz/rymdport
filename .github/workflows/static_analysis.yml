@@ -16,33 +16,31 @@ jobs:
         persist-credentials: false
     - uses: WillAbides/setup-go-faster@v1.7.0
       with:
-        go-version: '1.16.x' 
+        go-version: '1.17.x' 
 
     - name: Install build dependencies
-      run: sudo apt-get update && sudo apt-get install gcc libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev libx11-dev xorg-dev
+      run: |
+        sudo apt-get update
+        sudo apt-get install --no-install-recommends clang libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev libx11-dev xorg-dev
         
     - name: Install static analysis tools
       run: |
-        go install golang.org/x/tools/cmd/goimports@latest
-        go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
-        go install github.com/mgechev/revive@v1.1.4
-        go install honnef.co/go/tools/cmd/staticcheck@v0.2.2
         go install github.com/securego/gosec/v2/cmd/gosec@v2.10.0
+        go install github.com/fzipp/gocyclo/cmd/gocyclo@v0.4.0
+        go install honnef.co/go/tools/cmd/staticcheck@v0.2.2
+        go install mvdan.cc/gofumpt@v0.3.0
 
     - name: Vet
       run: go vet ./...
 
-    - name: Goimports
-      run: test -z $(goimports -e -d . | tee /dev/stderr)
+    - name: Gofumpt
+      run: test -z $(goimports -d -e . | tee /dev/stderr)
 
     - name: Gocyclo
       run: gocyclo -over 20 .
 
-    - name: Revive
-      run: revive -set_exit_status ./...
-
     - name: Staticcheck
-      run: staticcheck -go 1.15 ./...
+      run: staticcheck ./...
 
     - name: Gosec
       run: gosec ./...

@@ -11,7 +11,6 @@ var maxMinSizeHeight float32 // Keeping all instances of the list layout consist
 type listLayout struct{}
 
 func (g *listLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
-
 	objects[0].Move(fyne.NewPos(0, theme.Padding()))
 	objects[0].Resize(fyne.NewSize(size.Height-theme.Padding(), size.Height-2*theme.Padding()))
 

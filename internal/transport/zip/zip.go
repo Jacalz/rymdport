@@ -57,7 +57,7 @@ func extractFile(file *zip.File, target string) (err error) {
 	}()
 
 	if file.FileInfo().IsDir() {
-		if err := os.MkdirAll(path, 0750); err != nil {
+		if err := os.MkdirAll(path, 0o750); err != nil {
 			fyne.LogError("Could not create the directory", err)
 			return err
 		}
@@ -65,7 +65,7 @@ func extractFile(file *zip.File, target string) (err error) {
 		return
 	}
 
-	if err := os.MkdirAll(filepath.Dir(path), 0750); err != nil {
+	if err := os.MkdirAll(filepath.Dir(path), 0o750); err != nil {
 		fyne.LogError("Could not create the directory", err)
 		return err
 	}
