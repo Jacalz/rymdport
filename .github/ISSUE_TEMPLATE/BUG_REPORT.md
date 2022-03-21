@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a bug or odd behaviour
+about: Report a bug or odd behaviour.
 title: ''
 labels: 'bug'
 assignees: ''
@@ -23,7 +23,10 @@ assignees: ''
 <!-- If applicable, add screenshots or gifs to help showcase the bug. -->
 
 ### Device (please complete the following information):
- - **OS:** <!-- [e.g. Linux, MacOS or Windows] -->
- - **Version:** <!-- [e.g. 5.10.3, 10.13.2 High Sierra or 10] -->
- - **Go version:** <!-- [e.g. 1.15.6] -->
- - **Wormhole-gui version:** <!-- [e.g. 2.1.0 or git SHA] -->
+- **OS:** <!-- [e.g. Linux, MacOS or Windows] -->
+- **Version:** <!-- [e.g. 5.10.3, 10.13.2 High Sierra or 10] -->
+- **Rymdport version:** <!-- [e.g. 3.0.0 or git SHA] -->
+
+#### Extra information
+<!-- These fields are only relevant if you are compiling locally and can be removed if you are not. -->
+- **Go version:** <!-- [e.g. 1.15.6] -->
