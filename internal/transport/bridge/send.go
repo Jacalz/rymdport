@@ -199,7 +199,7 @@ func (p *SendList) getCustomCode() string {
 
 	code := make(chan string)
 	codeEntry := &widget.Entry{
-		PlaceHolder: "123-insecure-example-code",
+		PlaceHolder: "123-example-code",
 		Wrapping:    fyne.TextTruncate,
 		Validator:   util.CodeValidator,
 	}
@@ -207,7 +207,7 @@ func (p *SendList) getCustomCode() string {
 	form := dialog.NewForm("Create custom code", "Confirm", "Cancel", []*widget.FormItem{
 		{Text: "Code", Widget: codeEntry}, // TODO: Add HintText when FormDialog supports it.
 	}, func(submitted bool) {
-		if !submitted {
+		if !submitted || codeEntry.Text == codeEntry.PlaceHolder {
 			code <- ""
 		} else {
 			code <- codeEntry.Text
