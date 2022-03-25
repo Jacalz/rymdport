@@ -1,8 +1,6 @@
 package transport
 
 import (
-	"bytes"
-	"io"
 	"time"
 
 	"fyne.io/fyne/v2"
@@ -35,22 +33,21 @@ func createTextRecvWindow(app fyne.App) *textRecvWindow {
 }
 
 // showTextReceiveWindow handles the creation of a window for displaying text content.
-func (c *Client) showTextReceiveWindow(text *bytes.Buffer) {
+func (c *Client) showTextReceiveWindow(received []byte) {
 	if c.textRecvWindow == nil {
 		c.textRecvWindow = createTextRecvWindow(c.app)
 	}
 
 	d := c.textRecvWindow
+	text := string(received)
 
 	d.window.SetCloseIntercept(func() {
 		d.window.Hide()
-		// Empty the text on closing...
-		text.Reset()
 		d.textEntry.SetText("")
 	})
 
 	d.copyButton.OnTapped = func() {
-		d.window.Clipboard().SetContent(text.String())
+		d.window.Clipboard().SetContent(text)
 	}
 
 	d.saveButton.OnTapped = func() {
@@ -64,14 +61,13 @@ func (c *Client) showTextReceiveWindow(text *bytes.Buffer) {
 					return
 				}
 
-				_, err = io.Copy(file, text)
-				if err != nil {
+				if _, err := file.Write(received); err != nil {
 					fyne.LogError("Error on writing text to the file", err)
 					dialog.ShowError(err, d.window)
 				}
 
 				if err := file.Close(); err != nil {
-					fyne.LogError("Error on writing data to the file", err)
+					fyne.LogError("Error on closing text file", err)
 					dialog.ShowError(err, d.window)
 				}
 			}, d.window)
@@ -82,7 +78,7 @@ func (c *Client) showTextReceiveWindow(text *bytes.Buffer) {
 		}()
 	}
 
-	d.textEntry.SetText(text.String())
+	d.textEntry.SetText(text)
 	d.window.Canvas().Focus(d.textEntry)
 	d.window.Show()
 }
