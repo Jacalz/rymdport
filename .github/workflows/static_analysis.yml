@@ -27,7 +27,7 @@ jobs:
       run: |
         go install github.com/securego/gosec/v2/cmd/gosec@v2.11.0
         go install github.com/fzipp/gocyclo/cmd/gocyclo@v0.5.0
-        go install honnef.co/go/tools/cmd/staticcheck@v0.2.2
+        go install honnef.co/go/tools/cmd/staticcheck@v0.3.0
         go install mvdan.cc/gofumpt@v0.3.1
 
     - name: Vet
@@ -44,11 +44,3 @@ jobs:
 
     - name: Gosec
       run: gosec ./...
-
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
-      with:
-        languages: 'go'
-
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1
