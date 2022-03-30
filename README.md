@@ -36,7 +36,7 @@ Pre-built binaries are available for FreeBSD, Linux, macOS (`x86-64` and `arm64`
 
 The following distributions also have binary packages available through the respective package managers:
 
-[![Packaging status](https://repology.org/badge/vertical-allrepos/wormhole-gui.svg)](https://repology.org/project/wormhole-gui/versions)
+[![Packaging status](https://repology.org/badge/vertical-allrepos/rymdport.svg)](https://repology.org/project/rymdport/versions)
 
 ## Building
 
