@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.1 - Flatpak support and perfornance improvement
+- Optimized text receives to be faster and use significantly less memory.
+- Fixed Appstream Metadata to display correctly for Flatpak builds.
+
 ## 3.0.0 - Rymdport is the new wormhole-gui
 - Added support for sending using custom codes.
 - UI scaling and primary color can now be changed in the settings tab.
