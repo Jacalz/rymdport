@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.0.1 - Flatpak support and perfornance improvement
+## 3.0.1 - Flatpak support and performance improvement
 - Optimized text receives to be faster and use significantly less memory.
 - Fixed Appstream Metadata to display correctly for Flatpak builds.
 
