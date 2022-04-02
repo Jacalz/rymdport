@@ -35,4 +35,10 @@
   <url type="homepage">https://github.com/Jacalz/rymdport</url>
 
   <content_rating type="oars-1.1" />
+
+  <releases>
+    <release version="3.0.1" date="2022-04-02" type="stable"></release>
+    <release version="3.0.0" date="2022-03-07" type="stable"></release>
+  </releases>
+
 </component>
