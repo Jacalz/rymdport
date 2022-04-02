@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
   <id>io.github.jacalz.rymdport</id>
-  
+
   <name>Rymdport</name>
   <summary>Cross-platform application for easy encrypted file, folder, and text sharing between devices.</summary>
-  
+
   <metadata_license>MIT</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
-  
+
   <supports>
     <control>pointing</control>
     <control>keyboard</control>
     <control>touch</control>
   </supports>
-  
+
   <description>
     <p>
       Rymdport (formerly wormhole-gui) is a cross-platform application that lets you easily share files, folders, and text between devices. It uses the Go implementation of magic-wormhole, called [wormhole-william](https://github.com/psanford/wormhole-william), and compiles statically into a single binary.
     </p>
   </description>
-  
+
   <launchable type="desktop-id">io.github.jacalz.rymdport.desktop</launchable>
   <screenshots>
     <screenshot type="default">
@@ -37,8 +37,12 @@
   <content_rating type="oars-1.1" />
 
   <releases>
-    <release version="3.0.1" date="2022-04-02" type="stable"></release>
-    <release version="3.0.0" date="2022-03-07" type="stable"></release>
+    <release version="3.0.1" date="2022-04-02" type="stable">
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.0.1</url>
+    </release>
+    <release version="3.0.0" date="2022-03-07" type="stable">
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.0.0</url>
+    </release>
   </releases>
 
 </component>
