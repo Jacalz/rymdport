@@ -3,7 +3,7 @@
 ## 3.0.1 - Flatpak support and performance improvement
 - Optimized text receives to be faster and use significantly less memory.
   - This change also means that saving the text to a file will be faster.
-- The Windows release binary no longer opens a terminal on startup (#34).
+- The Windows release binary no longer opens a terminal on start-up (#34).
 - Various improvements and fixes for the Appstream Metadata.
   - These changes should make it possible to create a Flatpak (for #23)
 
