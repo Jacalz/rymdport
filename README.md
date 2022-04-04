@@ -34,6 +34,10 @@ Compiling requires a [Go](https://golang.org) compiler (1.15 or later officially
 Please visit the [release page](https://github.com/Jacalz/rymdport/releases) to download the latest releases.
 Pre-built binaries are available for FreeBSD, Linux, macOS (`x86-64` and `arm64`) and Windows (`x86-64`).
 
+For Linux users, Rymdport is also avaliable as a Flatpak on Flathub:
+
+<a href='https://flathub.org/apps/details/io.github.jacalz.rymdport'><img width='200' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>
+
 The following distributions also have binary packages available through the respective package managers:
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/rymdport.svg)](https://repology.org/project/rymdport/versions)
