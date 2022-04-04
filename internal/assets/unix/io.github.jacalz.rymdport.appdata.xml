@@ -16,7 +16,7 @@
   </supports>
 
   <description>
-    <p>Rymdport (formerly wormhole-gui) is a cross-platform application that lets you easily share files, folders, and text between devices. It uses the Go implementation of magic-wormhole, called [wormhole-william](https://github.com/psanford/wormhole-william), and compiles statically into a single binary.</p>
+    <p>Rymdport (formerly wormhole-gui) is a cross-platform application that lets you easily share files, folders, and text between devices. It uses the Go implementation of magic-wormhole, called wormhole-william, and compiles statically into a single binary.</p>
   </description>
 
   <launchable type="desktop-id">io.github.jacalz.rymdport.desktop</launchable>
