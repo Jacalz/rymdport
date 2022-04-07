@@ -23,12 +23,12 @@
      inkscape:window-maximized="1"
      inkscape:window-y="0"
      inkscape:window-x="0"
-     inkscape:window-height="1371"
-     inkscape:window-width="2560"
+     inkscape:window-height="1011"
+     inkscape:window-width="1920"
      showgrid="false"
      inkscape:current-layer="layer1"
      inkscape:document-units="px"
-     inkscape:cy="387.14286"
+     inkscape:cy="388.57143"
      inkscape:cx="627.85714"
      inkscape:zoom="0.7"
      inkscape:pageshadow="2"
@@ -75,6 +75,14 @@
      id="layer1"
      inkscape:groupmode="layer"
      inkscape:label="Layer 1">
+    <rect
+       style="fill:#ffffff;stroke:none;stroke-width:12.2713;stroke-linejoin:round;stroke-dasharray:24.5426, 12.2713, 6.13563, 12.2713;paint-order:markers fill stroke"
+       id="rect954"
+       width="1280"
+       height="640"
+       x="0"
+       y="0"
+       ry="0" />
     <text
        id="text2006"
        y="244.51199"
