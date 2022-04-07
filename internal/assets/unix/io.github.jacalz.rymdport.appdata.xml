@@ -37,9 +37,11 @@
 
   <releases>
     <release version="3.0.1" date="2022-04-02" type="stable">
+      <description><p>Flatpak support and a performance improvement.</p></description>
       <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.0.1</url>
     </release>
     <release version="3.0.0" date="2022-03-07" type="stable">
+      <description><p>Major update with lots of improvements and fixes.</p></description>
       <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.0.0</url>
     </release>
   </releases>
