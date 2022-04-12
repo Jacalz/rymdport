@@ -4,16 +4,16 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/Jacalz/rymdport/v3)](https://goreportcard.com/report/github.com/Jacalz/rymdport/v3)
 [![version](https://img.shields.io/github/v/tag/Jacalz/rymdport?label=version)](https://github.com/Jacalz/rymdport/releases/latest)
 
-Rymdport (formerly wormhole-gui) is a cross-platform application that lets you easily share files, folders, and text between devices.
-It uses the Go implementation of magic-wormhole, called [wormhole-william](https://github.com/psanford/wormhole-william), and compiles statically into a single binary.
+Rymdport (formerly wormhole-gui) is a cross-platform application that lets you easily and safely share files, folders, and text between devices.
+The data is sent peer-to-peer securely using end-to-end encryption using the same protocol as [magic-wormhole](https://github.com/magic-wormhole/magic-wormhole). This means that Rymdport can talk not only to itself, but also to other wormhole clients.
 
-Rymdport is also compatible with sending to and receiving from other wormhole clients, such as the cli applications [wormhole-william](https://github.com/psanford/wormhole-william) and [magic-wormhole](https://github.com/magic-wormhole/magic-wormhole).
+The transfers are implemented using [wormhole-william](https://github.com/psanford/wormhole-william) as a native [Go](https://go.dev/) implementation of magic-wormhole. As a result, Rymdport compiles into a native binary with no runtime dependencies while also outperforming the reference implementation of magic-wormhole.
 
 <p align="center">
   <img src="internal/assets/screenshot1.png" />
 </p>
 
-Built using the following Go modules:
+#### Rymdport is built using the following Go modules:
 - [fyne](https://github.com/fyne-io/fyne) (version 2.1.3)
 - [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.6)
 - [compress](https://github.com/klauspost/compress) (version 1.15.0)
@@ -27,18 +27,18 @@ Rymdport is an open source project that is provided free of charge, and that wil
 ## Requirements
 
 Rymdport compiles into a statically linked binary with no explicit runtime dependencies.
-Compiling requires a [Go](https://golang.org) compiler (1.15 or later officially supported, but older versions might work) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
+Compiling requires a [Go](https://go.dev) compiler (1.15 or later officially supported, but older versions might work) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
 
 ## Downloads
 
-Please visit the [release page](https://github.com/Jacalz/rymdport/releases) to download the latest releases.
+Please visit the [release page](https://github.com/Jacalz/rymdport/releases) to download the latest release.
 Pre-built binaries are available for FreeBSD, Linux, macOS (`x86-64` and `arm64`) and Windows (`x86-64`).
 
-For Linux users, Rymdport is also avaliable as a Flatpak on Flathub:
+For Linux users, Rymdport is also avaliable as a Flatpak on [Flathub](https://flathub.org/apps/details/io.github.jacalz.rymdport):
 
 <a href='https://flathub.org/apps/details/io.github.jacalz.rymdport'><img width='200' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>
 
-The following distributions also have binary packages available through the respective package managers:
+The following distributions also have binary packages available through their respective package managers:
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/rymdport.svg)](https://repology.org/project/rymdport/versions)
 
@@ -51,7 +51,7 @@ go build
 
 The project is available in the [Fyne Apps Listing](https://apps.fyne.io/apps/rymdport.html) and can be installed either using the `fyne get` command or using the [Fyne Apps Installer](https://apps.fyne.io/apps/io.fyne.apps.html).
 
-Installation can also be performed using GNU Make (installing is currently only supported on Linux and BSD):
+Installation can also be performed using GNU Make (installing this way is currently only supported on Linux and BSD):
 ```bash
 make
 sudo make install
@@ -59,7 +59,7 @@ sudo make install
 
 ## Contributing
 
-Contributions are strongly appreciated. Everything from creating bug reports to contributing code will help the project a lot, so please feel free to help in any way, shape or form that you feel comfortable doing.
+Contributions are strongly appreciated. Everything from creating bug reports to contributing code will help the project a lot, so please feel free to help in any way, shape, or form that you feel comfortable doing.
 
 ## Name
 
