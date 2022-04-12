@@ -16,7 +16,8 @@
   </supports>
 
   <description>
-    <p>Rymdport (formerly wormhole-gui) is a cross-platform application that lets you easily share files, folders, and text between devices. It uses the Go implementation of magic-wormhole, called wormhole-william, and compiles statically into a single binary.</p>
+    <p>Rymdport (formerly wormhole-gui) is a cross-platform application that lets you easily and safely share files, folders, and text between devices. The data is sent securely using end-to-end encryption using the same protocol as magic-wormhole. This means that Rymdport can talk not only to itself, but also to other wormhole clients.</p>
+    <p>The transfers are implemented using wormhole-william as a native Go implementation of magic-wormhole. As a result, Rymdport compiles into a native binary with no runtime dependencies while also outperforming the reference implementation of magic-wormhole.</p>
   </description>
 
   <launchable type="desktop-id">io.github.jacalz.rymdport.desktop</launchable>
@@ -36,6 +37,10 @@
   <content_rating type="oars-1.1" />
 
   <releases>
+    <release version="3.0.2" date="2022-04-15" type="stable">
+      <description><p>Improvements to the AppStream metadata.</p></description>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.0.2</url>
+    </release>
     <release version="3.0.1" date="2022-04-02" type="stable">
       <description><p>Flatpak support and a performance improvement.</p></description>
       <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.0.1</url>
