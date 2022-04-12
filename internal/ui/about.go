@@ -12,7 +12,7 @@ import (
 	"github.com/Jacalz/rymdport/v3/internal/assets"
 )
 
-const version = "v3.0.1"
+const version = "v3.0.2"
 
 var releaseURL = &url.URL{
 	Scheme: "https",
