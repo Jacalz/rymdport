@@ -2,7 +2,7 @@
 
 ## 3.0.2 - Improvements to AppStream Metadata
 - Added release summaries and removed markdown leftovers from AppStream metadata.
-  - This will mostly only benfit the Flatpak package and Linux packages.
+  - This should mostly benfit the Flatpak package and Linux packages.
 
 ## 3.0.1 - Flatpak support and performance improvement
 - Optimized text receives to be faster and use significantly less memory.
