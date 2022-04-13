@@ -1,10 +1,14 @@
 # Changelog
 
+## 3.0.2 - Improvements to AppStream Metadata
+- Added release summaries and removed markdown leftovers from AppStream metadata.
+  - This will mostly only benfit the Flatpak package and Linux packages.
+
 ## 3.0.1 - Flatpak support and performance improvement
 - Optimized text receives to be faster and use significantly less memory.
   - This change also means that saving the text to a file will be faster.
 - The Windows release binary no longer opens a terminal on start-up (#34).
-- Various improvements and fixes for the Appstream Metadata.
+- Various improvements and fixes for the AppStream metadata.
   - These changes should make it possible to create a Flatpak (for #23)
 
 ## 3.0.0 - Rymdport is the new wormhole-gui
