@@ -16,8 +16,8 @@
   </supports>
 
   <description>
-    <p>Rymdport (formerly wormhole-gui) is a cross-platform application that lets you easily and safely share files, folders, and text between devices. The data is sent securely using end-to-end encryption using the same protocol as magic-wormhole. This means that Rymdport can talk not only to itself, but also to other wormhole clients.</p>
-    <p>The transfers are implemented using wormhole-william as a native Go implementation of magic-wormhole. As a result, Rymdport compiles into a native binary with no runtime dependencies while also outperforming the reference implementation of magic-wormhole.</p>
+    <p>Rymdport (formerly wormhole-gui) is a cross-platform application that lets you easily and safely share files, folders, and text between devices. The data is sent securely with end-to-end encryption using the same protocol as magic-wormhole. This means that Rymdport can talk not only to itself, but also to other wormhole clients.</p>
+    <p>The transfers are implemented using wormhole-william, a native Go implementation of magic-wormhole. As a result, Rymdport compiles into a native binary with no runtime dependencies while also outperforming the reference implementation of magic-wormhole.</p>
   </description>
 
   <launchable type="desktop-id">io.github.jacalz.rymdport.desktop</launchable>
