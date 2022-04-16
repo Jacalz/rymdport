@@ -12,7 +12,7 @@ import (
 )
 
 type recv struct {
-	codeEntry  *widget.Entry
+	codeEntry  *completionEntry
 	codeButton *widget.Button
 
 	recvList *bridge.RecvList
@@ -37,10 +37,8 @@ func (r *recv) onRecv() {
 }
 
 func (r *recv) buildUI() *fyne.Container {
-	r.codeEntry = &widget.Entry{
-		PlaceHolder: "Enter code", Wrapping: fyne.TextTruncate, OnSubmitted: func(_ string) { r.onRecv() },
-		Validator: util.CodeValidator,
-	}
+	r.codeEntry = newCompletionEntry(r.client)
+	r.codeEntry.OnSubmitted = func(_ string) { r.onRecv() }
 
 	r.codeButton = &widget.Button{Text: "Receive", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
 
@@ -52,4 +50,57 @@ func (r *recv) buildUI() *fyne.Container {
 
 func (r *recv) tabItem() *container.TabItem {
 	return &container.TabItem{Text: "Receive", Icon: theme.DownloadIcon(), Content: r.buildUI()}
+}
+
+type completionEntry struct {
+	widget.Entry
+	client *transport.Client
+
+	activeCompletion []string
+	currentIndex     int
+}
+
+// AcceptsTab overrides tab handling to allow tabs as input.
+func (c *completionEntry) AcceptsTab() bool {
+	return true
+}
+
+// TypedKey adapts the key inputs to handle tab completion.
+func (c *completionEntry) TypedKey(key *fyne.KeyEvent) {
+	switch key.Name {
+	case fyne.KeyTab:
+		c.next()
+	default:
+		c.reset()
+		c.Entry.TypedKey(key)
+	}
+}
+
+func (c *completionEntry) next() {
+	if c.activeCompletion == nil {
+		c.activeCompletion = c.client.CompleteRecvCode(c.Text)
+		if len(c.activeCompletion) == 0 {
+			return
+		}
+	}
+
+	code := c.activeCompletion[c.currentIndex%len(c.activeCompletion)]
+	c.CursorColumn = len(code)
+	c.currentIndex++
+	c.SetText(code)
+}
+
+func (c *completionEntry) reset() {
+	c.activeCompletion = nil
+	c.currentIndex = 0
+}
+
+func newCompletionEntry(client *transport.Client) *completionEntry {
+	entry := &completionEntry{
+		client: client, Entry: widget.Entry{
+			PlaceHolder: "Enter code", Wrapping: fyne.TextTruncate, Validator: util.CodeValidator,
+		},
+	}
+	entry.ExtendBaseWidget(entry)
+	return entry
 }
