@@ -39,17 +39,18 @@ func (a *about) buildUI() *fyne.Container {
 	a.spacerLabel = newBoldLabel("-")
 	a.hyperlink = &widget.Hyperlink{Text: version, URL: releaseURL, TextStyle: fyne.TextStyle{Bold: true}}
 
+	spacer := &layout.Spacer{}
 	return container.NewVBox(
-		layout.NewSpacer(),
-		container.NewHBox(layout.NewSpacer(), a.icon, layout.NewSpacer()),
+		spacer,
+		container.NewHBox(spacer, a.icon, spacer),
 		container.NewHBox(
-			layout.NewSpacer(),
+			spacer,
 			a.nameLabel,
 			a.spacerLabel,
 			a.hyperlink,
-			layout.NewSpacer(),
+			spacer,
 		),
-		layout.NewSpacer(),
+		spacer,
 	)
 }
 
