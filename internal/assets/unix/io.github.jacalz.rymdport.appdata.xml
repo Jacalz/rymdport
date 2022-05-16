@@ -36,6 +36,12 @@
 
   <content_rating type="oars-1.1" />
 
+  <!-- Override the kudos that aren't automatically added. See https://gitlab.gnome.org/GNOME/gnome-software/blob/main/doc/kudos.md. -->
+  <kudos>
+    <kudo>ModernToolkit</kudo>
+    <kudo>Notifications</kudo>
+  </kudos>
+
   <releases>
     <release version="3.0.2" date="2022-04-15" type="stable">
       <description><p>Improvements to the AppStream metadata.</p></description>
