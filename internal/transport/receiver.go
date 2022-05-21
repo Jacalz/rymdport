@@ -3,7 +3,6 @@ package transport
 import (
 	"context"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -86,7 +85,7 @@ func (c *Client) NewReceive(code string, pathname chan string, progress *util.Pr
 	// We are reading the data twice. First from msg to temp file and then from temp.
 	progress.Max += float64(msg.TransferBytes64)
 
-	tmp, err := ioutil.TempFile("", msg.Name+"-*.zip.tmp")
+	tmp, err := os.CreateTemp("", msg.Name+"-*.zip.tmp")
 	if err != nil {
 		fyne.LogError("Error on creating tempfile", err)
 		return bail(msg, err)
