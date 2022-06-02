@@ -130,7 +130,7 @@ func (s *settings) getPreferences() {
 	s.client.OverwriteExisting = s.preferences.Bool("OverwriteFiles")
 	s.overwriteFiles.Selected = onOrOff(s.client.OverwriteExisting)
 
-	s.client.Notifications = s.preferences.Bool("Notifications")
+	s.client.Notifications = s.preferences.BoolWithFallback("Notifications", true)
 	s.notificationRadio.Selected = onOrOff(s.client.Notifications)
 
 	s.client.PassPhraseComponentLength = s.preferences.IntWithFallback("ComponentLength", 2)
