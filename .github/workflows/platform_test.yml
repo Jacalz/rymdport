@@ -1,11 +1,11 @@
 
-name: Platform Tests
+name: Tests
 on: [push, pull_request]
 permissions:
   contents: read
 
 jobs:
-  platform_tests:
+  tests:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
