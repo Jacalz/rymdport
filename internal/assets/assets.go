@@ -1,3 +1,4 @@
+// Package assets contains bundled static resources.
 package assets
 
 //go:generate fyne bundle -package assets -o bundled.go icon

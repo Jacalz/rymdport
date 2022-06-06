@@ -1,3 +1,4 @@
+// Package zip contains an implementation of a zip extractor.
 package zip
 
 import (

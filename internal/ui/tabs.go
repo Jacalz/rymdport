@@ -1,3 +1,4 @@
+// Package ui handles all logic related to the user interface.
 package ui
 
 import (
@@ -6,7 +7,7 @@ import (
 	"github.com/Jacalz/rymdport/v3/internal/transport"
 )
 
-// Create will stitch together all ui components
+// Create will set up and create the ui components.
 func Create(app fyne.App, window fyne.Window) *container.AppTabs {
 	client := transport.NewClient(app)
 
