@@ -32,7 +32,7 @@ func newAbout() *about {
 }
 
 func (a *about) buildUI() *fyne.Container {
-	a.icon = canvas.NewImageFromResource(assets.AppIcon)
+	a.icon = canvas.NewImageFromResource(assets.Icon)
 	a.icon.SetMinSize(fyne.NewSize(256, 256))
 
 	a.nameLabel = newBoldLabel("Rymdport")

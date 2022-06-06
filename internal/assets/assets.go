@@ -1,8 +1,15 @@
 // Package assets contains bundled static resources.
 package assets
 
-//go:generate fyne bundle -package assets -o bundled.go icon
+import (
+	_ "embed"
 
-// AppIcon contains the main application icon.
-// TODO: Use go:embed for the next big release.
-var AppIcon = resourceIcon512Png
+	"fyne.io/fyne/v2"
+)
+
+//go:embed icon/icon-512.png
+var icon []byte
+
+var Icon = &fyne.StaticResource{
+	StaticContent: icon,
+}
