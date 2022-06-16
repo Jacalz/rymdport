@@ -15,7 +15,7 @@ func (t *TabCompleter) Next(match string) string {
 	}
 
 	if len(t.active) == 0 {
-		return ""
+		return match
 	} else if t.index == len(t.active) {
 		t.index = 0
 	}

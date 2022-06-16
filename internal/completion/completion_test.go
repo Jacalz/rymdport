@@ -41,4 +41,8 @@ func TestTabCompleter(t *testing.T) {
 
 	next = cmpl.Next("")
 	assert.Empty(t, next)
+
+	num = "none"
+	next = cmpl.Next("none")
+	assert.Equal(t, num, next)
 }
