@@ -1,4 +1,4 @@
-name: Static Analysis
+name: Analysis
 on: [push, pull_request]
 permissions:
   security-events: write

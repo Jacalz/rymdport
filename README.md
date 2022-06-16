@@ -1,7 +1,7 @@
 # Rymdport
 
 [![Tests](https://github.com/Jacalz/rymdport/actions/workflows/tests.yml/badge.svg)](https://github.com/Jacalz/rymdport/actions/workflows/tests.yml)
-[![Static Analysis](https://github.com/Jacalz/rymdport/actions/workflows/static_analysis.yml/badge.svg?branch=main)](https://github.com/Jacalz/rymdport/actions/workflows/static_analysis.yml)
+[![Analysis](https://github.com/Jacalz/rymdport/actions/workflows/analysis.yml/badge.svg?branch=main)](https://github.com/Jacalz/rymdport/actions/workflows/analysis.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Jacalz/rymdport/v3)](https://goreportcard.com/report/github.com/Jacalz/rymdport/v3)
 [![version](https://img.shields.io/github/v/tag/Jacalz/rymdport?label=version)](https://github.com/Jacalz/rymdport/releases/latest)
 
