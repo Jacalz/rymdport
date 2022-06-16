@@ -6,6 +6,7 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	"github.com/Jacalz/rymdport/v3/internal/completion"
 	"github.com/Jacalz/rymdport/v3/internal/transport"
 	"github.com/Jacalz/rymdport/v3/internal/transport/bridge"
 	"github.com/Jacalz/rymdport/v3/internal/util"
@@ -54,10 +55,7 @@ func (r *recv) tabItem() *container.TabItem {
 
 type completionEntry struct {
 	widget.Entry
-	client *transport.Client
-
-	activeCompletion []string
-	currentIndex     int
+	complete *completion.TabCompleter
 }
 
 // AcceptsTab overrides tab handling to allow tabs as input.
@@ -71,33 +69,21 @@ func (c *completionEntry) TypedKey(key *fyne.KeyEvent) {
 	case fyne.KeyTab:
 		c.next()
 	default:
-		c.reset()
+		c.complete.Reset()
 		c.Entry.TypedKey(key)
 	}
 }
 
 func (c *completionEntry) next() {
-	if c.activeCompletion == nil {
-		c.activeCompletion = c.client.CompleteRecvCode(c.Text)
-		if len(c.activeCompletion) == 0 {
-			return
-		}
-	}
-
-	code := c.activeCompletion[c.currentIndex%len(c.activeCompletion)]
-	c.CursorColumn = len(code)
-	c.currentIndex++
-	c.SetText(code)
-}
-
-func (c *completionEntry) reset() {
-	c.activeCompletion = nil
-	c.currentIndex = 0
+	next := c.complete.Next(c.Text)
+	c.CursorColumn = len(next)
+	c.SetText(next)
 }
 
 func newCompletionEntry(client *transport.Client) *completionEntry {
 	entry := &completionEntry{
-		client: client, Entry: widget.Entry{
+		complete: &completion.TabCompleter{Generate: client.CompleteRecvCode},
+		Entry: widget.Entry{
 			PlaceHolder: "Enter code", Wrapping: fyne.TextTruncate, Validator: util.CodeValidator,
 		},
 	}
