@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.1.0 - Tab completion and more BSD support
+- Added support for tab completion of receive codes (fixes #35).
+- Initial support for OpenBSD and NetBSD.
+  - Feel free to report any feedback. This support is new and experimental.
+- Notifications on Linux and BSD now show the application icon.
+- The Makefile for Linux and BSD release binaries includes an option to install into the home directory.
+- The list view in the file chooser now displays extensions correctly (fixes #39).
+- Updated `fyne` to [v2.2.1](https://github.com/fyne-io/fyne/releases/tag/v2.2.1).
+  - Better error reporting on Windows when OpenGL is not available.
+  - Many optimizations and widget performance enhancements.
+- Updated `compress` to [v1.15.5](https://github.com/klauspost/compress/releases/tag/v1.15.5).
+  - Includes minor performance improvements that benefit sending and receiving of directories.
+- Go 1.16 is now the oldest supported compiler. Support for older versions has been removed.
+- Various improvements and fixes for the AppStream metadata.
+- Notifications are now enabled by default.
+
 ## 3.0.2 - Improvements to AppStream Metadata
 - Added release summaries and removed markdown leftovers from AppStream metadata.
   - This should mostly benfit the Flatpak package and Linux packages.

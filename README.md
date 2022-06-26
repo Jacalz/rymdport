@@ -17,7 +17,7 @@ The transfers are implemented using [wormhole-william](https://github.com/psanfo
 #### Rymdport is built using the following Go modules:
 - [fyne](https://github.com/fyne-io/fyne) (version 2.2.1)
 - [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.6)
-- [compress](https://github.com/klauspost/compress) (version 1.15.0)
+- [compress](https://github.com/klauspost/compress) (version 1.15.5)
 
 The initial version was built in less than one day to show how quick and easy it is to use [Fyne](https://github.com/fyne-io/fyne) for developing applications.
 
@@ -28,7 +28,7 @@ Rymdport is an open source project that is provided free of charge, and that wil
 ## Requirements
 
 Rymdport compiles into a statically linked binary with no explicit runtime dependencies.
-Compiling requires a [Go](https://go.dev) compiler (1.15 or later officially supported, but older versions might work) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
+Compiling requires a [Go](https://go.dev) compiler (with 1.16 or later officially supported) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
 
 ## Downloads
 
