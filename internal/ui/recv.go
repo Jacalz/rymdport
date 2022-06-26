@@ -38,7 +38,7 @@ func (r *recv) onRecv() {
 }
 
 func (r *recv) buildUI() *fyne.Container {
-	r.codeEntry = newCompletionEntry(r.client)
+	r.codeEntry = newCompletionEntry(r.client, r.window.Canvas())
 	r.codeEntry.OnSubmitted = func(_ string) { r.onRecv() }
 
 	r.codeButton = &widget.Button{Text: "Receive", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
@@ -55,6 +55,7 @@ func (r *recv) tabItem() *container.TabItem {
 
 type completionEntry struct {
 	widget.Entry
+	canvas   fyne.Canvas
 	complete *completion.TabCompleter
 }
 
@@ -68,6 +69,8 @@ func (c *completionEntry) TypedKey(key *fyne.KeyEvent) {
 	switch key.Name {
 	case fyne.KeyTab:
 		c.next()
+	case fyne.KeyEscape:
+		c.canvas.Unfocus()
 	default:
 		c.complete.Reset()
 		c.Entry.TypedKey(key)
@@ -80,9 +83,10 @@ func (c *completionEntry) next() {
 	c.SetText(next)
 }
 
-func newCompletionEntry(client *transport.Client) *completionEntry {
+func newCompletionEntry(client *transport.Client, canvas fyne.Canvas) *completionEntry {
 	entry := &completionEntry{
 		complete: &completion.TabCompleter{Generate: client.CompleteRecvCode},
+		canvas:   canvas,
 		Entry: widget.Entry{
 			PlaceHolder: "Enter code", Wrapping: fyne.TextTruncate, Validator: util.CodeValidator,
 		},
