@@ -31,19 +31,14 @@ func Create(app fyne.App, window fyne.Window) *container.AppTabs {
 	})
 
 	// Set up support for Alt + [1:4] for switching to a specific tab.
-	tabnumber := func(shortcut fyne.Shortcut) {
-		name := shortcut.ShortcutName()
-		tabs.SelectIndex(int(name[len(name)-1]-'0') - 1)
-	}
-
 	alt1 := &desktop.CustomShortcut{KeyName: fyne.Key1, Modifier: fyne.KeyModifierAlt}
-	window.Canvas().AddShortcut(alt1, tabnumber)
+	window.Canvas().AddShortcut(alt1, func(_ fyne.Shortcut) { tabs.SelectIndex(0) })
 	alt2 := &desktop.CustomShortcut{KeyName: fyne.Key2, Modifier: fyne.KeyModifierAlt}
-	window.Canvas().AddShortcut(alt2, tabnumber)
+	window.Canvas().AddShortcut(alt2, func(_ fyne.Shortcut) { tabs.SelectIndex(1) })
 	alt3 := &desktop.CustomShortcut{KeyName: fyne.Key3, Modifier: fyne.KeyModifierAlt}
-	window.Canvas().AddShortcut(alt3, tabnumber)
+	window.Canvas().AddShortcut(alt3, func(_ fyne.Shortcut) { tabs.SelectIndex(2) })
 	alt4 := &desktop.CustomShortcut{KeyName: fyne.Key4, Modifier: fyne.KeyModifierAlt}
-	window.Canvas().AddShortcut(alt4, tabnumber)
+	window.Canvas().AddShortcut(alt4, func(_ fyne.Shortcut) { tabs.SelectIndex(3) })
 
 	return tabs
 }
