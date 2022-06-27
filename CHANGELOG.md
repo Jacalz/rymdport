@@ -1,13 +1,13 @@
 # Changelog
 
 ## 3.1.0 - Tab completion and more BSD support
-- Added support for tab completion of receive codes (fixes #35).
+- Added support for tab completion of receive-codes (fixes #35).
 - Initial support for OpenBSD and NetBSD.
   - Feel free to report any feedback. This support is new and experimental.
 - Notifications on Linux and BSD now show the application icon.
-- The Makefile for Linux and BSD release binaries includes an option to install into the home directory.
-- The list view in the file chooser now displays extensions correctly (fixes #39).
-- The entry for receive codes now unfocuses when pressing escape.
+- The Makefile for Linux and BSD release binaries now includes an option to install into the home directory.
+- The list view in the file chooser now display extensions correctly (fixes #39).
+- The entry for receive-codes now unfocuses when pressing escape.
 - Updated `fyne` to [v2.2.1](https://github.com/fyne-io/fyne/releases/tag/v2.2.1).
   - Better error reporting on Windows when OpenGL is not available.
   - Many optimizations and widget performance enhancements.
