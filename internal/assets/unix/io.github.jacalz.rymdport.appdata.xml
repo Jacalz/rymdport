@@ -45,6 +45,20 @@
   </kudos>
 
   <releases>
+    <release version="3.1.0" date="2022-06-27" type="stable">
+      <description>
+        <p>Summary of changes in this release:</p>
+        <ul>
+          <li>Added support for tab completion of receive-codes.</li>
+          <li>Notifications now show the application icon.</li>
+          <li>The list view in the file chooser now display extensions correctly.</li>
+          <li>The entry for receive-codes now unfocuses when pressing escape.</li>
+          <li>Various improvements and fixes for the AppStream metadata.</li>
+          <li>Notifications are now enabled by default.</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.1.0</url>
+    </release>
     <release version="3.0.2" date="2022-04-15" type="stable">
       <description><p>Improvements to the AppStream metadata.</p></description>
       <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.0.2</url>
