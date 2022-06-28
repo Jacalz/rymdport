@@ -50,6 +50,7 @@ func (c *Client) showTextReceiveWindow(received []byte) {
 		d.window.Clipboard().SetContent(text)
 	}
 
+	canvas := d.window.Canvas()
 	d.saveButton.OnTapped = func() {
 		go func() {
 			save := dialog.NewFileSave(func(file fyne.URIWriteCloser, err error) { // TODO: Might want to save this instead of recreating each time
@@ -73,14 +74,15 @@ func (c *Client) showTextReceiveWindow(received []byte) {
 			}, d.window)
 			now := time.Now().Format("2006-01-02T15:04")
 			save.SetFileName("received-" + now + ".txt")
-			save.Resize(util.WindowSizeToDialog(d.window.Canvas().Size()))
+			save.Resize(util.WindowSizeToDialog(canvas.Size()))
 			save.Show()
 		}()
 	}
 
 	d.textEntry.SetText(text)
-	d.window.Canvas().Focus(d.textEntry)
 	d.window.Show()
+	d.window.RequestFocus()
+	canvas.Focus(d.textEntry)
 }
 
 type textSendWindow struct {
@@ -130,8 +132,9 @@ func (c *Client) ShowTextSendWindow() chan string {
 		d.textEntry.SetText("")
 	}
 
-	d.window.Canvas().Focus(d.textEntry)
 	d.window.Show()
+	d.window.RequestFocus()
+	d.window.Canvas().Focus(d.textEntry)
 
 	return text
 }
