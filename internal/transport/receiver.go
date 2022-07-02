@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 
 	"fyne.io/fyne/v2"
-	"github.com/Jacalz/rymdport/v3/internal/transport/zip"
 	"github.com/Jacalz/rymdport/v3/internal/util"
+	"github.com/Jacalz/rymdport/v3/zip"
 	"github.com/psanford/wormhole-william/wormhole"
 )
 

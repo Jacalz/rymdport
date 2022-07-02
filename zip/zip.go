@@ -12,7 +12,8 @@ import (
 	"github.com/klauspost/compress/zip"
 )
 
-var errorDangerousFilename = errors.New("dangerous filename detected")
+// ErrorDangerousFilename indicates that a dangerous filename was found.
+var ErrorDangerousFilename = errors.New("dangerous filename detected")
 
 // Extract takes a reader and the length and then extracts it to the target.
 // The target should be the path to a folder where the extracted files can be placed.
@@ -40,8 +41,8 @@ func extractFile(file *zip.File, target string) (err error) {
 	}
 
 	if !strings.HasPrefix(path, target) {
-		fyne.LogError("Dangerous filename detected", errorDangerousFilename)
-		return errorDangerousFilename
+		fyne.LogError("Dangerous filename detected", ErrorDangerousFilename)
+		return ErrorDangerousFilename
 	}
 
 	fileReader, err := file.Open()

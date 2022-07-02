@@ -7,7 +7,7 @@ import (
 	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"github.com/Jacalz/rymdport/v3/internal/completion"
+	"github.com/Jacalz/rymdport/v3/completion"
 	"github.com/Jacalz/rymdport/v3/internal/transport"
 	"github.com/Jacalz/rymdport/v3/internal/transport/bridge"
 	"github.com/Jacalz/rymdport/v3/internal/util"
