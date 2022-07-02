@@ -4,6 +4,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/rymdport/v3/internal/completion"
@@ -55,8 +56,9 @@ func (r *recv) tabItem() *container.TabItem {
 
 type completionEntry struct {
 	widget.Entry
-	canvas   fyne.Canvas
-	complete *completion.TabCompleter
+	canvas    fyne.Canvas
+	backwards bool
+	complete  *completion.TabCompleter
 }
 
 // AcceptsTab overrides tab handling to allow tabs as input.
@@ -67,7 +69,13 @@ func (c *completionEntry) AcceptsTab() bool {
 // TypedKey adapts the key inputs to handle tab completion.
 func (c *completionEntry) TypedKey(key *fyne.KeyEvent) {
 	switch key.Name {
+	case desktop.KeyShiftLeft, desktop.KeyShiftRight:
 	case fyne.KeyTab:
+		if c.backwards {
+			c.previous()
+			return
+		}
+
 		c.next()
 	case fyne.KeyEscape:
 		c.canvas.Unfocus()
@@ -75,6 +83,30 @@ func (c *completionEntry) TypedKey(key *fyne.KeyEvent) {
 		c.complete.Reset()
 		c.Entry.TypedKey(key)
 	}
+}
+
+// KeyDown handles pressing of shift for going backwards in completion.
+func (c *completionEntry) KeyDown(key *fyne.KeyEvent) {
+	if key.Name == desktop.KeyShiftLeft || key.Name == desktop.KeyShiftRight {
+		c.backwards = true
+	}
+
+	c.Entry.KeyDown(key)
+}
+
+// KeyUp handles releasing of shift for going backwards in completion.
+func (c *completionEntry) KeyUp(key *fyne.KeyEvent) {
+	if key.Name == desktop.KeyShiftLeft || key.Name == desktop.KeyShiftRight {
+		c.backwards = false
+	}
+
+	c.Entry.KeyDown(key)
+}
+
+func (c *completionEntry) previous() {
+	previous := c.complete.Previous(c.Text)
+	c.CursorColumn = len(previous)
+	c.SetText(previous)
 }
 
 func (c *completionEntry) next() {
