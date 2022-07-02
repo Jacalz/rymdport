@@ -30,6 +30,7 @@ type SendList struct {
 	lock  sync.RWMutex
 
 	window fyne.Window
+	canvas fyne.Canvas
 }
 
 // Length returns the length of the data.
@@ -215,7 +216,7 @@ func (p *SendList) getCustomCode() string {
 
 		close(code)
 	}, p.window)
-	form.Resize(fyne.Size{Width: p.window.Canvas().Size().Width * 0.8, Height: 0})
+	form.Resize(fyne.Size{Width: p.canvas.Size().Width * 0.8})
 	form.Show()
 
 	return <-code
@@ -223,7 +224,7 @@ func (p *SendList) getCustomCode() string {
 
 // NewSendList greates a list of progress bars.
 func NewSendList(window fyne.Window, client *transport.Client) *SendList {
-	p := &SendList{client: client, window: window}
+	p := &SendList{client: client, window: window, canvas: window.Canvas()}
 	p.List.Length = p.Length
 	p.List.CreateItem = p.CreateItem
 	p.List.UpdateItem = p.UpdateItem

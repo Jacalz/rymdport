@@ -46,8 +46,9 @@ func (c *Client) showTextReceiveWindow(received []byte) {
 		d.textEntry.SetText("")
 	})
 
+	clipboard := d.window.Clipboard()
 	d.copyButton.OnTapped = func() {
-		d.window.Clipboard().SetContent(text)
+		clipboard.SetContent(text)
 	}
 
 	canvas := d.window.Canvas()

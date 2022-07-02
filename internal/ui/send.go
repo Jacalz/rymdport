@@ -27,22 +27,23 @@ type send struct {
 
 	client *transport.Client
 	window fyne.Window
+	canvas fyne.Canvas
 	app    fyne.App
 }
 
 func newSend(a fyne.App, w fyne.Window, c *transport.Client) *send {
-	return &send{app: a, window: w, client: c}
+	return &send{app: a, window: w, client: c, canvas: w.Canvas()}
 }
 
 func (s *send) onFileSend() {
 	s.contentPicker.Hide()
-	s.fileDialog.Resize(util.WindowSizeToDialog(s.window.Canvas().Size()))
+	s.fileDialog.Resize(util.WindowSizeToDialog(s.canvas.Size()))
 	s.fileDialog.Show()
 }
 
 func (s *send) onDirSend() {
 	s.contentPicker.Hide()
-	s.fileDialog.Resize(util.WindowSizeToDialog(s.window.Canvas().Size()))
+	s.fileDialog.Resize(util.WindowSizeToDialog(s.canvas.Size()))
 	s.directoryDialog.Show()
 }
 
