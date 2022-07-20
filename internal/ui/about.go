@@ -72,7 +72,10 @@ type clickableIcon struct {
 }
 
 func (c *clickableIcon) Tapped(_ *fyne.PointEvent) {
-	c.app.OpenURL(c.url)
+	err := c.app.OpenURL(c.url)
+	if err != nil {
+		fyne.LogError("Failed to open repository: ", err)
+	}
 }
 
 func (c *clickableIcon) Cursor() desktop.Cursor {
