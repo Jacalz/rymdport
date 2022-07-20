@@ -15,6 +15,6 @@ func Create(app fyne.App, window fyne.Window) *container.AppTabs {
 		newSend(app, window, client).tabItem(),
 		newRecv(app, window, client).tabItem(),
 		newSettings(app, window, client).tabItem(),
-		newAbout().tabItem(),
+		newAbout(app).tabItem(),
 	}}
 }
