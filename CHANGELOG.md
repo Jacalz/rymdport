@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.2.0 - Work in progress
+- Work around send and receive windows not being focused correctly.
+- Go backwards in tab completion using Shift + Tab.
+- Update `compress` to [v1.15.8](https://github.com/klauspost/compress/releases/tag/v1.15.8) to fix CVE-2022-30631.
+- Clicking the icon on the about page now opens the repository in a browser.
+- The `zip` and `completion` packages are now considered stable and are now avaliable for anyone to import.
+- Updated `fyne` to [v2.2.3](https://github.com/fyne-io/fyne/releases/tag/v2.2.3) for minor bug fixes.
+- Minor performance improvements.
+
 ## 3.1.0 - Tab completion and more BSD support
 - Added support for tab completion of receive-codes (fixes #35).
 - Initial support for OpenBSD and NetBSD.

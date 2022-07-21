@@ -17,7 +17,7 @@ The transfers are implemented using [wormhole-william](https://github.com/psanfo
 #### Rymdport is built using the following Go modules:
 - [fyne](https://github.com/fyne-io/fyne) (version 2.2.1)
 - [wormhole-william](https://github.com/psanford/wormhole-william) (version 1.0.6)
-- [compress](https://github.com/klauspost/compress) (version 1.15.5)
+- [compress](https://github.com/klauspost/compress) (version 1.15.8)
 
 The initial version was built in less than one day to show how quick and easy it is to use [Fyne](https://github.com/fyne-io/fyne) for developing applications.
 
