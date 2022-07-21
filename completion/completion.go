@@ -12,34 +12,43 @@ type TabCompleter struct {
 func (t *TabCompleter) Next(match string) string {
 	if t.active == nil && t.Generate != nil {
 		t.active = t.Generate(match)
+		if len(t.active) > 0 {
+			return t.active[0]
+		}
 	}
 
 	if len(t.active) == 0 {
 		return match
-	} else if t.index == len(t.active) {
+	}
+
+	t.index++
+	if t.index == len(t.active) {
 		t.index = 0
 	}
 
-	suggestion := t.active[t.index]
-	t.index++
-	return suggestion
+	return t.active[t.index]
 }
 
 // Previous steps back into the previous completion match and wraps around if necessary.
 func (t *TabCompleter) Previous(match string) string {
 	if t.active == nil && t.Generate != nil {
 		t.active = t.Generate(match)
+		if len(t.active) > 0 {
+			t.index = len(t.active) - 1
+			return t.active[t.index]
+		}
 	}
 
 	if len(t.active) == 0 {
 		return match
-	} else if t.index == 0 {
-		t.index = len(t.active)
 	}
 
 	t.index--
-	suggestion := t.active[t.index]
-	return suggestion
+	if t.index < 0 {
+		t.index = len(t.active) - 1
+	}
+
+	return t.active[t.index]
 }
 
 // Reset resets the completion to generate a new on the next call to Next().

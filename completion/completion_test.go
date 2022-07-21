@@ -95,6 +95,7 @@ func TestTabCompleter_Bidirectional(t *testing.T) {
 	next = cmpl.Next(num)
 	assert.Equal(t, next, num)
 
+	num = "0"
 	next = cmpl.Previous(num)
 	assert.Equal(t, next, num)
 }
