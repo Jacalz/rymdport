@@ -1,7 +1,7 @@
 # Changelog
 
 ## 3.2.0 - Improvements and bug fixes
-- Work around send and receive windows not being focused correctly.
+- Work around send and receive windows not being focused correctly sometimes.
 - Go backwards in tab completion using Shift + Tab.
 - Update `compress` to [v1.15.8](https://github.com/klauspost/compress/releases/tag/v1.15.8) for CVE-2022-30631 fix.
 - Clicking the icon on the about page now opens the repository in a browser.
