@@ -8,6 +8,7 @@
 - The `zip` and `completion` packages are now exported and considered stable.
 - Updated `fyne` to [v2.2.3](https://github.com/fyne-io/fyne/releases/tag/v2.2.3) for minor bug fixes.
 - Minor performance improvements.
+- The `Makefile` for Linux and BSD release binaries now includes an option to install into the home directory.
 - Release binaries are now built using Go 1.18.
   - Performance of arm64 binaries should improve by around 10-20%.
   - Various security fixes and other improvements.
