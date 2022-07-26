@@ -1,0 +1,1 @@
+compile_go_fuzzer github.com/Jacalz/rymdport/v3/internal/util FuzzCodeValidator fuzz_code_validator
