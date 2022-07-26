@@ -3,11 +3,14 @@
 ## 3.2.0 - Work in progress
 - Work around send and receive windows not being focused correctly.
 - Go backwards in tab completion using Shift + Tab.
-- Update `compress` to [v1.15.8](https://github.com/klauspost/compress/releases/tag/v1.15.8) to fix CVE-2022-30631.
+- Update `compress` to [v1.15.8](https://github.com/klauspost/compress/releases/tag/v1.15.8) for CVE-2022-30631 fix.
 - Clicking the icon on the about page now opens the repository in a browser.
-- The `zip` and `completion` packages are now considered stable and are now avaliable for anyone to import.
+- The `zip` and `completion` packages are now exported and considered stable.
 - Updated `fyne` to [v2.2.3](https://github.com/fyne-io/fyne/releases/tag/v2.2.3) for minor bug fixes.
 - Minor performance improvements.
+- Release binaries are now built using Go 1.18.
+  - Performance of arm64 binaries should improve by around 10-20%.
+  - Various security fixes and other improvements.
 
 ## 3.1.0 - Tab completion and more BSD support
 - Added support for tab completion of receive-codes (fixes #35).
