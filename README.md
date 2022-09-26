@@ -28,7 +28,7 @@ Rymdport is an open source project that is provided free of charge, and that wil
 ## Requirements
 
 Rymdport compiles into a statically linked binary with no explicit runtime dependencies.
-Compiling requires a [Go](https://go.dev) compiler (with 1.17 or later officially supported) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
+Compiling requires a [Go](https://go.dev) compiler (with 1.16 or later officially supported) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
 
 ## Downloads
 
