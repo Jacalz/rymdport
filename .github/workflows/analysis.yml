@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         persist-credentials: false
     - uses: WillAbides/setup-go-faster@v1.7.0
@@ -25,8 +25,8 @@ jobs:
         
     - name: Install static analysis tools
       run: |
-        go install github.com/securego/gosec/v2/cmd/gosec@v2.13.0
-        go install github.com/fzipp/gocyclo/cmd/gocyclo@v0.5.1
+        go install github.com/securego/gosec/v2/cmd/gosec@v2.13.1
+        go install github.com/fzipp/gocyclo/cmd/gocyclo@v0.6.0
         go install honnef.co/go/tools/cmd/staticcheck@v0.3.3
         go install mvdan.cc/gofumpt@v0.3.1
 
