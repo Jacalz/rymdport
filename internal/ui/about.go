@@ -40,7 +40,8 @@ func (a *about) buildUI() *fyne.Container {
 	a.nameLabel = newBoldLabel("Rymdport")
 	a.spacerLabel = newBoldLabel("-")
 
-	releaseURL := &url.URL{Scheme: https, Host: github,
+	releaseURL := &url.URL{
+		Scheme: https, Host: github,
 		Path: "/jacalz/rymdport/releases/tag/" + version,
 	}
 	a.hyperlink = &widget.Hyperlink{Text: version, URL: releaseURL, TextStyle: fyne.TextStyle{Bold: true}}
