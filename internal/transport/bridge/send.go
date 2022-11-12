@@ -206,7 +206,9 @@ func (p *SendList) getCustomCode() string {
 	}
 
 	form := dialog.NewForm("Create custom code", "Confirm", "Cancel", []*widget.FormItem{
-		{Text: "Code", Widget: codeEntry}, // TODO: Add HintText when FormDialog supports it.
+		{Text: "Code", Widget: codeEntry,
+			HintText: "A code beginning with a number, followed by groups of letters separated with \"-\".",
+		}, // TODO: Add HintText when FormDialog supports it.
 	}, func(submitted bool) {
 		if !submitted || codeEntry.Text == codeEntry.PlaceHolder {
 			code <- ""
