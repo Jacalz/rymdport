@@ -15,6 +15,7 @@ import (
 )
 
 type settings struct {
+	downloadPathLabel  *widget.Label
 	downloadPathButton *widget.Button
 	overwriteFiles     *widget.RadioGroup
 	notificationRadio  *widget.RadioGroup
@@ -48,7 +49,7 @@ func (s *settings) onDownloadsPathChanged() {
 
 		s.client.DownloadPath = folder.Path()
 		s.preferences.SetString("DownloadPath", s.client.DownloadPath)
-		s.downloadPathButton.SetText(folder.Name())
+		s.downloadPathLabel.SetText(folder.Name())
 	}, s.window)
 
 	folder.Resize(util.WindowSizeToDialog(s.window.Canvas().Size()))
@@ -125,7 +126,7 @@ func (s *settings) verify(hash string) bool {
 // getPreferences is used to set the preferences on startup without saving at the same time.
 func (s *settings) getPreferences() {
 	s.client.DownloadPath = s.preferences.StringWithFallback("DownloadPath", util.UserDownloadsFolder())
-	s.downloadPathButton.Text = filepath.Base(s.client.DownloadPath)
+	s.downloadPathLabel.Text = filepath.Base(s.client.DownloadPath)
 
 	s.client.OverwriteExisting = s.preferences.Bool("OverwriteFiles")
 	s.overwriteFiles.Selected = onOrOff(s.client.OverwriteExisting)
@@ -156,7 +157,8 @@ func (s *settings) getPreferences() {
 func (s *settings) buildUI() *container.Scroll {
 	onOffOptions := []string{"On", "Off"}
 
-	s.downloadPathButton = &widget.Button{Icon: theme.FolderOpenIcon(), OnTapped: s.onDownloadsPathChanged}
+	s.downloadPathLabel = &widget.Label{Wrapping: fyne.TextTruncate}
+	s.downloadPathButton = &widget.Button{Icon: theme.FolderOpenIcon(), Importance: widget.LowImportance, OnTapped: s.onDownloadsPathChanged}
 
 	s.overwriteFiles = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onOverwriteFilesChanged}
 
@@ -176,15 +178,15 @@ func (s *settings) buildUI() *container.Scroll {
 	interfaceContainer := appearance.NewSettings().LoadAppearanceScreen(s.window)
 
 	dataContainer := container.NewGridWithColumns(2,
-		newBoldLabel("Downloads Path"), s.downloadPathButton,
-		newBoldLabel("Overwrite Files"), s.overwriteFiles,
+		newBoldLabel("Save files to"), container.NewBorder(nil, nil, nil, s.downloadPathButton, s.downloadPathLabel),
+		newBoldLabel("Overwrite files"), s.overwriteFiles,
 		newBoldLabel("Notifications"), s.notificationRadio,
 	)
 
 	wormholeContainer := container.NewVBox(
 		container.NewGridWithColumns(2,
 			newBoldLabel("Verify before accepting"), s.verifyRadio,
-			newBoldLabel("Passphrase Length"),
+			newBoldLabel("Passphrase length"),
 			container.NewBorder(nil, nil, nil, s.componentLabel, s.componentSlider),
 		),
 		&widget.Accordion{Items: []*widget.AccordionItem{
