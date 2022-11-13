@@ -96,8 +96,10 @@ func (p *RecvList) NewReceive(code string) {
 			p.client.ShowNotification("Receive failed", "An error occurred when receiving the data.")
 			item.Progress.Failed()
 			dialog.ShowError(err, p.window)
+		} else if item.Name != "Text Snippet" {
+			p.client.ShowNotification("Receive completed", "The contents were saved to "+item.URI.Path()+".")
 		} else {
-			p.client.ShowNotification("Receive completed", "The data was received successfully.")
+			p.client.ShowNotification("Receive completed", "The text was received successfully.")
 		}
 
 		p.Refresh()
