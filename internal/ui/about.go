@@ -13,7 +13,7 @@ import (
 	"github.com/Jacalz/rymdport/v3/internal/assets"
 )
 
-const version = "v3.2.0"
+const version = "v3.3.0"
 
 type about struct {
 	icon        *clickableIcon
