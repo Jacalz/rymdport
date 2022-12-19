@@ -221,6 +221,7 @@ func (p *SendList) getCustomCode() string {
 	}, p.window)
 	form.Resize(fyne.Size{Width: p.canvas.Size().Width * 0.8})
 	form.Show()
+	p.canvas.Focus(codeEntry)
 
 	return <-code
 }
