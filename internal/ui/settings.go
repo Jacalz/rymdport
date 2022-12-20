@@ -63,7 +63,7 @@ func (s *settings) onOverwriteFilesChanged(selected string) {
 		return
 	}
 
-	dialog.ShowConfirm("Are you sure?", "Enabling this option might overwrite important files.", func(enable bool) {
+	dialog.ShowConfirm("Are you sure?", "Enabling this option risks potentially overwriting important files.", func(enable bool) {
 		if !enable {
 			s.overwriteFiles.SetSelected("Off")
 			return
