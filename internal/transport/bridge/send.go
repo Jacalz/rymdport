@@ -209,7 +209,7 @@ func (p *SendList) getCustomCode() string {
 		{
 			Text: "Code", Widget: codeEntry,
 			HintText: "A code beginning with a number, followed by groups of letters separated with \"-\".",
-		}, // TODO: Add HintText when FormDialog supports it.
+		},
 	}, func(submitted bool) {
 		if !submitted || codeEntry.Text == codeEntry.PlaceHolder {
 			code <- ""
