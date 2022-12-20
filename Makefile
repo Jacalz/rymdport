@@ -13,7 +13,10 @@ LOCAL ?= $(shell test -d $(DESTDIR)/usr/local && echo "/local" || echo "")
 PREFIX ?= /usr$(LOCAL)
 
 build:
-	go build -ldflags="$(LDFLAGS)" -o $(NAME)
+	go build -ldflags="-s -w" -o $(NAME)
+
+debug:
+	go build -o $(NAME)
 
 install:
 	install -Dm00755 $(NAME) $(DESTDIR)$(PREFIX)/bin/$(NAME)
