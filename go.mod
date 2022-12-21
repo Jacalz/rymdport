@@ -3,11 +3,7 @@ module github.com/Jacalz/rymdport/v3
 go 1.17
 
 require (
-<<<<<<< HEAD
-	fyne.io/fyne/v2 v2.3.0-rc2
-=======
 	fyne.io/fyne/v2 v2.3.0-rc3
->>>>>>> 7f90629 (deps: Update to Fyne v2.3.0-rc3 for regression fixes)
 	github.com/klauspost/compress v1.15.11
 	github.com/psanford/wormhole-william v1.0.6
 	github.com/stretchr/testify v1.8.1
