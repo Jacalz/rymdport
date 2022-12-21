@@ -9,14 +9,14 @@ import (
 	"github.com/fynelabs/selfupdate"
 )
 
-// setupAutomaticUpdates turns on automatic updates.
-func setupAutomaticUpdates(a fyne.App, w fyne.Window) {
+// manageUpdates turns on automatic updates.
+func manageUpdates(a fyne.App, w fyne.Window) {
 	publicKey := ed25519.PublicKey{165, 235, 49, 149, 238, 5, 192, 143, 38, 96, 124, 12, 235, 116, 94, 72, 244, 97, 230, 44, 60, 135, 85, 202, 98, 103, 233, 119, 63, 57, 83, 106}
 
 	// The public key above matches the signature of the below file served by our CDN
 	httpSource := selfupdate.NewHTTPSource(nil, "https://geoffrey-artefacts.fynelabs.com/self-update/22/22a3af17-e614-4b44-bce2-8b32ab7463ac/{{.OS}}-{{.Arch}}/{{.Executable}}{{.Ext}}")
 
-	config := fyneselfupdate.NewConfigWithTimeout(a, w, time.Minute, httpSource, selfupdate.Schedule{FetchOnStart: true, Interval: time.Hour * 12}, publicKey)
+	config := fyneselfupdate.NewConfigWithTimeout(a, w, time.Minute, httpSource, selfupdate.Schedule{FetchOnStart: true}, publicKey)
 
 	_, err := selfupdate.Manage(config)
 	if err != nil {
