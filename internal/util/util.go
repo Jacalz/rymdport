@@ -2,15 +2,30 @@
 package util
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
+	"regexp"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/data/validation"
 )
 
+//lint:ignore ST1005 The error is not printed to a terminal as usual but displayed to the user in the ui.
+var errInvalidCode = errors.New("Invalid code. Must begin with a number followed by groups of letters, separated with \"-\".")
+var codeRegexp = regexp.MustCompile(`^\d+(-(\w|\d)+)+$`)
+
 // CodeValidator provides a validator for wormhole codes.
-var CodeValidator = validation.NewRegexp(`(^\d+(-(\w|\d)+)+$)|(^$)`, "Invalid code. Must begin with a number followed by groups of letters, separated with \"-\".")
+func CodeValidator(input string) error {
+	if input == "" {
+		return nil // We don't want empty entry to report an error.
+	}
+
+	if !codeRegexp.MatchString(input) {
+		return errInvalidCode
+	}
+
+	return nil
+}
 
 // UserDownloadsFolder returns the downloads folder corresponding to the current user.
 func UserDownloadsFolder() string {
