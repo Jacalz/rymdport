@@ -11,7 +11,7 @@ import (
 
 func main() {
 	a := app.NewWithID("io.github.jacalz.rymdport")
-	a.SetIcon(assets.Icon)
+	assets.SetIcon(a)
 	w := a.NewWindow("Rymdport")
 
 	w.SetContent(ui.Create(a, w))

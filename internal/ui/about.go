@@ -10,7 +10,6 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"github.com/Jacalz/rymdport/v3/internal/assets"
 )
 
 const version = "v3.3.0"
@@ -35,7 +34,7 @@ func (a *about) buildUI() *fyne.Container {
 	)
 
 	repoURL := &url.URL{Scheme: https, Host: github, Path: "/jacalz/rymdport"}
-	a.icon = newClickableIcon(assets.Icon, repoURL, a.app)
+	a.icon = newClickableIcon(a.app.Icon(), repoURL, a.app)
 
 	a.nameLabel = newBoldLabel("Rymdport")
 	a.spacerLabel = newBoldLabel("-")
