@@ -11,21 +11,23 @@ var maxMinSizeHeight float32 // Keeping all instances of the list layout consist
 type listLayout struct{}
 
 func (g *listLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
-	objects[0].Move(fyne.NewPos(0, theme.Padding()))
-	objects[0].Resize(fyne.NewSize(size.Height-theme.Padding(), size.Height-2*theme.Padding()))
+	doublePadding := 2 * theme.InnerPadding()
 
-	cellSize := (size.Width - size.Height - theme.Padding()) / (float32(len(objects) - 1))
-	start, end := size.Height, size.Height+cellSize-theme.Padding()
+	objects[0].Move(fyne.NewPos(0, theme.InnerPadding()))
+	objects[0].Resize(fyne.NewSize(size.Height-theme.Padding(), size.Height-doublePadding))
+
+	cellSize := (size.Width - size.Height - doublePadding) / (float32(len(objects) - 1))
+	start, end := size.Height, size.Height+cellSize-theme.InnerPadding()
 	for _, child := range objects[1:] {
 		if _, label := child.(*widget.Label); label {
 			child.Move(fyne.NewPos(start, (size.Height-child.MinSize().Height)/2))
 		} else {
-			child.Move(fyne.NewPos(start, theme.Padding()))
+			child.Move(fyne.NewPos(start, theme.InnerPadding()))
 		}
 
-		child.Resize(fyne.NewSize(end-start, size.Height-2*theme.Padding()))
+		child.Resize(fyne.NewSize(end-start, size.Height-doublePadding))
 
-		start = end + theme.Padding()
+		start = end + theme.InnerPadding()
 		end = start + cellSize
 	}
 }
@@ -36,10 +38,11 @@ func (g *listLayout) MinSize(objects []fyne.CanvasObject) fyne.Size {
 	maxMinSizeWidth := float32(0)
 	for _, child := range objects {
 		if child.Visible() {
-			maxMinSizeWidth += child.MinSize().Width
-			maxMinSizeHeight = fyne.Max(child.MinSize().Height, maxMinSizeHeight)
+			min := child.MinSize()
+			maxMinSizeWidth += min.Width
+			maxMinSizeHeight = fyne.Max(min.Height, maxMinSizeHeight)
 		}
 	}
 
-	return fyne.NewSize(maxMinSizeWidth, maxMinSizeHeight+2*theme.Padding())
+	return fyne.NewSize(maxMinSizeWidth, maxMinSizeHeight+2*theme.InnerPadding())
 }
