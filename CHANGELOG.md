@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.3.0 - New theme and improved usability
+- The application can now automatically update itself.
+- Notifications for received files now mentiones where the file was saved to.
+- The dialog for custom codes now better helps the user to write valid codes.
+- The dialog for custom codes now focuses the entry automatically.
+- The selection of the download path has been reworked to be more useful.
+- Minor wording improvements inside the settings tab.
+- Updated `fyne` to [v2.3.0](https://github.com/fyne-io/fyne/releases/tag/v2.3.0).
+  - This brings in an entirely new theme and lots of other improvements.
+- Update `compress` to [v1.15.11](https://github.com/klauspost/compress/releases/tag/v1.15.8).
+  - Includes minor performance improvements that benefit sending and receiving of directories.
+- Fixed application icon being bundled twice.
+- Minimal supported Go compiler version is now Go 1.17.
+
 ## 3.2.0 - Improvements and bug fixes
 - Work around send and receive windows not being focused correctly sometimes.
 - Go backwards in tab completion using Shift + Tab.

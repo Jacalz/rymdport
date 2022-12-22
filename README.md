@@ -30,7 +30,7 @@ The following distributions also have binary packages available through their re
 ## Requirements
 
 Rymdport compiles into a statically linked binary with no explicit runtime dependencies.
-Compiling requires a [Go](https://go.dev) compiler (with 1.16 or later officially supported) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
+Compiling requires a [Go](https://go.dev) compiler (version 1.17 or later are supported) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
 
 ## Building
 
