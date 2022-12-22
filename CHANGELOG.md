@@ -6,6 +6,7 @@
 - The dialog for custom codes now better helps the user to write valid codes.
 - The dialog for custom codes now focuses the entry automatically.
 - The selection of the download path has been reworked to be more useful.
+- Minor redesign of the send and receive tabs.
 - Minor wording improvements inside the settings tab.
 - Updated `fyne` to [v2.3.0](https://github.com/fyne-io/fyne/releases/tag/v2.3.0).
   - This brings in an entirely new theme and lots of other improvements.
