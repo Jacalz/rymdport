@@ -71,7 +71,7 @@ func (s *send) buildUI() *fyne.Container {
 	s.fileDialog = dialog.NewFileOpen(s.sendList.OnFileSelect, s.window)
 	s.directoryDialog = dialog.NewFolderOpen(s.sendList.OnDirSelect, s.window)
 
-	box := container.NewVBox(s.contentToSend, &widget.Label{})
+	box := container.NewVBox(s.contentToSend, &widget.Separator{})
 	return container.NewBorder(box, nil, nil, nil, s.sendList)
 }
 

@@ -46,7 +46,7 @@ func (r *recv) buildUI() *fyne.Container {
 
 	r.recvList = bridge.NewRecvList(r.window, r.client)
 
-	box := container.NewVBox(container.NewGridWithColumns(2, r.codeEntry, r.codeButton), &widget.Label{})
+	box := container.NewVBox(container.NewGridWithColumns(2, r.codeEntry, r.codeButton), &widget.Separator{})
 	return container.NewBorder(box, nil, nil, nil, r.recvList)
 }
 
