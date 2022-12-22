@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"errors"
+	"os"
 	"path/filepath"
 
 	"fyne.io/fyne/v2"
@@ -15,10 +17,9 @@ import (
 )
 
 type settings struct {
-	downloadPathLabel  *widget.Label
-	downloadPathButton *widget.Button
-	overwriteFiles     *widget.RadioGroup
-	notificationRadio  *widget.RadioGroup
+	downloadPathEntry *widget.Entry
+	overwriteFiles    *widget.RadioGroup
+	notificationRadio *widget.RadioGroup
 
 	componentSlider     *widget.Slider
 	componentLabel      *widget.Label
@@ -37,7 +38,27 @@ func newSettings(a fyne.App, w fyne.Window, c *transport.Client) *settings {
 	return &settings{app: a, window: w, client: c, preferences: a.Preferences()}
 }
 
-func (s *settings) onDownloadsPathChanged() {
+func (s *settings) onDownloadsPathSubmitted(path string) {
+	path = filepath.Clean(path)
+	info, err := os.Stat(path)
+	if errors.Is(err, os.ErrNotExist) {
+		dialog.ShowInformation("Does not exist", "Please select a valid directory.", s.window)
+		return
+	} else if err != nil {
+		fyne.LogError("Error when trying to verify directory", err)
+		dialog.ShowError(err, s.window)
+		return
+	} else if !info.IsDir() {
+		dialog.ShowInformation("Not a directory", "Please select a valid directory.", s.window)
+		return
+	}
+
+	s.client.DownloadPath = path
+	s.preferences.SetString("DownloadPath", s.client.DownloadPath)
+	s.downloadPathEntry.SetText(s.client.DownloadPath)
+}
+
+func (s *settings) onDownloadsPathSelected() {
 	folder := dialog.NewFolderOpen(func(folder fyne.ListableURI, err error) {
 		if err != nil {
 			fyne.LogError("Error on selecting folder", err)
@@ -49,7 +70,7 @@ func (s *settings) onDownloadsPathChanged() {
 
 		s.client.DownloadPath = folder.Path()
 		s.preferences.SetString("DownloadPath", s.client.DownloadPath)
-		s.downloadPathLabel.SetText(folder.Name())
+		s.downloadPathEntry.SetText(s.client.DownloadPath)
 	}, s.window)
 
 	folder.Resize(util.WindowSizeToDialog(s.window.Canvas().Size()))
@@ -126,7 +147,7 @@ func (s *settings) verify(hash string) bool {
 // getPreferences is used to set the preferences on startup without saving at the same time.
 func (s *settings) getPreferences() {
 	s.client.DownloadPath = s.preferences.StringWithFallback("DownloadPath", util.UserDownloadsFolder())
-	s.downloadPathLabel.Text = filepath.Base(s.client.DownloadPath)
+	s.downloadPathEntry.Text = s.client.DownloadPath
 
 	s.client.OverwriteExisting = s.preferences.Bool("OverwriteFiles")
 	s.overwriteFiles.Selected = onOrOff(s.client.OverwriteExisting)
@@ -157,8 +178,8 @@ func (s *settings) getPreferences() {
 func (s *settings) buildUI() *container.Scroll {
 	onOffOptions := []string{"On", "Off"}
 
-	s.downloadPathLabel = &widget.Label{Wrapping: fyne.TextTruncate}
-	s.downloadPathButton = &widget.Button{Icon: theme.FolderOpenIcon(), Importance: widget.LowImportance, OnTapped: s.onDownloadsPathChanged}
+	pathSelector := &widget.Button{Icon: theme.FolderOpenIcon(), Importance: widget.LowImportance, OnTapped: s.onDownloadsPathSelected}
+	s.downloadPathEntry = &widget.Entry{Wrapping: fyne.TextTruncate, OnSubmitted: s.onDownloadsPathSubmitted, ActionItem: pathSelector}
 
 	s.overwriteFiles = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onOverwriteFilesChanged}
 
@@ -178,7 +199,7 @@ func (s *settings) buildUI() *container.Scroll {
 	interfaceContainer := appearance.NewSettings().LoadAppearanceScreen(s.window)
 
 	dataContainer := container.NewGridWithColumns(2,
-		newBoldLabel("Save files to"), container.NewBorder(nil, nil, nil, s.downloadPathButton, s.downloadPathLabel),
+		newBoldLabel("Save files to"), s.downloadPathEntry,
 		newBoldLabel("Overwrite files"), s.overwriteFiles,
 		newBoldLabel("Notifications"), s.notificationRadio,
 	)
