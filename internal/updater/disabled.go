@@ -1,3 +1,5 @@
+//go:build !release
+
 package updater
 
 import "fyne.io/fyne/v2"
