@@ -21,12 +21,22 @@ func Create(app fyne.App, window fyne.Window) *container.AppTabs {
 
 	canvas := window.Canvas()
 
-	// Set up support for cycling through the tabs.
+	// Set up support for switching between the tabs.
 	ctrlTab := &desktop.CustomShortcut{KeyName: fyne.KeyTab, Modifier: fyne.KeyModifierControl}
 	canvas.AddShortcut(ctrlTab, func(_ fyne.Shortcut) {
 		next := tabs.SelectedIndex() + 1
 		if next >= len(tabs.Items) {
 			next = 0
+		}
+
+		tabs.SelectIndex(next)
+	})
+
+	ctrlShiftTab := &desktop.CustomShortcut{KeyName: fyne.KeyTab, Modifier: fyne.KeyModifierControl | fyne.KeyModifierShift}
+	canvas.AddShortcut(ctrlShiftTab, func(_ fyne.Shortcut) {
+		next := tabs.SelectedIndex() - 1
+		if next < 0 {
+			next += len(tabs.Items)
 		}
 
 		tabs.SelectIndex(next)
