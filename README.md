@@ -57,7 +57,7 @@ Contributions are strongly appreciated. Everything from creating bug reports to 
 
 ## Name
 
-The word "rymdport" comes from the Swedish language and means "space gate".
+The word "rymdport" (pronounced `[rym:dpor‿t:]`) comes from the Swedish language and means "space gate".
 As a wormhole is a kind of gateway through space, it became the new name after "wormhole-gui".
 
 ## License
