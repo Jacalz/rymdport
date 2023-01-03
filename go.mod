@@ -6,7 +6,7 @@ require (
 	fyne.io/fyne/v2 v2.3.0
 	github.com/fynelabs/fyneselfupdate v0.1.0
 	github.com/fynelabs/selfupdate v0.1.0
-	github.com/klauspost/compress v1.15.11
+	github.com/klauspost/compress v1.15.14
 	github.com/psanford/wormhole-william v1.0.6
 	github.com/stretchr/testify v1.8.1
 )
