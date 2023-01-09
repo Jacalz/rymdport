@@ -13,14 +13,9 @@
   - The application will now follow the FreeDesktop Dark Style Preference on Linux/BSD.
   - Added an option to create a new folder within the folder selection dialog.
   - Lots of other improvements and fixes.
-<<<<<<< HEAD
 - Update `compress` to [v1.15.14](https://github.com/klauspost/compress/releases/tag/v1.15.14).
   - Includes performance improvements that benefit sending and receiving of directories.
 - Fixed application icon being bundled twice.
-=======
-- Update `compress` to [v1.15.11](https://github.com/klauspost/compress/releases/tag/v1.15.11).
-  - Includes minor performance improvements that benefit sending and receiving of directories.
->>>>>>> ddedb75 (changelog: Remove notice of reverted change)
 - Minimal supported Go compiler version is now Go 1.17.
 
 ## 3.2.0 - Improvements and bug fixes
