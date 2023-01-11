@@ -12,7 +12,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-const version = "v3.3.0"
+const version = "v3.3.0-rc1"
 
 type about struct {
 	icon        *clickableIcon
