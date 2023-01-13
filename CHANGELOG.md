@@ -15,8 +15,9 @@
   - Lots of other improvements and fixes.
 - Update `compress` to [v1.15.14](https://github.com/klauspost/compress/releases/tag/v1.15.14).
   - Includes performance improvements that benefit sending and receiving of directories.
-- Fixed application icon being bundled twice.
 - Minimal supported Go compiler version is now Go 1.17.
+- Release binaries are now built using Go 1.19.
+  - Various performance improvements, security fixes and other improvements.
 
 ## 3.2.0 - Improvements and bug fixes
 - Work around send and receive windows not being focused correctly sometimes.
