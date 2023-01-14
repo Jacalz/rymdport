@@ -12,8 +12,6 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-const version = "v3.3.0-rc2"
-
 type about struct {
 	icon        *clickableIcon
 	nameLabel   *widget.Label
@@ -29,8 +27,9 @@ func newAbout(app fyne.App) *about {
 
 func (a *about) buildUI() *fyne.Container {
 	const (
-		https  = "https"
-		github = "github.com"
+		https   = "https"
+		github  = "github.com"
+		version = "v3.3.0"
 	)
 
 	repoURL := &url.URL{Scheme: https, Host: github, Path: "/jacalz/rymdport"}
