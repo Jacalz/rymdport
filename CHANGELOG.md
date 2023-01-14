@@ -1,5 +1,24 @@
 # Changelog
 
+## 3.3.0 - New theme and improved usability
+- The application can now automatically update itself.
+- Notifications for received files now mentions where the file was saved to.
+- Present more useful information about how to write custom codes.
+- The dialog for custom codes now focuses the text entry automatically.
+- The selection of the download path has been reworked to be more useful.
+- Minor redesign of the send and receive tabs.
+- Minor wording improvements inside the settings tab.
+- Updated `fyne` to [v2.3.0](https://github.com/fyne-io/fyne/releases/tag/v2.3.0).
+  - An entirely new theme with improved visuals.
+  - The application will now follow the FreeDesktop Dark Style Preference on Linux/BSD.
+  - Added an option to create a new folder within the folder selection dialog.
+  - Lots of other improvements and fixes.
+- Update `compress` to [v1.15.14](https://github.com/klauspost/compress/releases/tag/v1.15.14).
+  - Includes performance improvements that benefit sending and receiving of directories.
+- Minimal supported Go compiler version is now Go 1.17.
+- Release binaries are now built using Go 1.19.
+  - Various performance improvements, security fixes and other improvements.
+
 ## 3.2.0 - Improvements and bug fixes
 - Work around send and receive windows not being focused correctly sometimes.
 - Go backwards in tab completion using Shift + Tab.

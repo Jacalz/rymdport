@@ -45,6 +45,24 @@
   </kudos>
 
   <releases>
+    <release version="3.3.0" date="2023-01-14" type="stable">
+        <description>
+          <p>Summary of changes in this release:</p>
+          <ul>
+            <li>Notifications for received files now mentions where the file was saved to.</li>
+            <li>Present more useful information about how to write custom codes.</li>
+            <li>The dialog for custom codes now focuses the text entry automatically.</li>
+            <li>The selection of the download path has been reworked to be more useful.</li>
+            <li>Minor redesign of the send and receive tabs.</li>
+            <li>Minor wording improvements inside the settings tab.</li>
+            <li>The application now uses an entirely new theme with improved visuals.</li>
+            <li>The FreeDesktop Dark Style Preference is now respected.</li>
+            <li>There is now an option to create a new folder within the folder selection dialog.</li>
+            <li>Minor performance improvements for sending and receiving of directories.</li>
+          </ul>
+        </description>
+        <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.0</url>
+    </release>
   	<release version="3.2.0" date="2022-07-26" type="stable">
         <description>
           <p>Summary of changes in this release:</p>
