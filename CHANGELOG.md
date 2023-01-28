@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.3.1 - Fix Windows builds not starting
+- Fixes a cross-compilation issue that caused the Windows binary to not work correctly.
+
 ## 3.3.0 - New theme and improved usability
 - The application can now automatically update itself.
 - Notifications for received files now mentions where the file was saved to.
