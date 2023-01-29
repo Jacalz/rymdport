@@ -27,6 +27,15 @@ The following distributions also have binary packages available through their re
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/rymdport.svg)](https://repology.org/project/rymdport/versions)
 
+### Running on macOS arm64 (M1/M2)
+
+Binaries that are not signed with an official Apple certificate and downloaded from the web are put into quarantine by macOS (Apple computers with Intel CPUs do not exhibit this behavior). To solve this, you need to remove the quarantine attribute from the application (replacing `<path to .app>` with the application path):
+```
+xattr -r -d com.apple.quarantine <path to .app>
+```
+
+If this does not work, the `amd64` binaries work fine through Rosetta.
+
 ## Requirements
 
 Rymdport compiles into a statically linked binary with no explicit runtime dependencies.
