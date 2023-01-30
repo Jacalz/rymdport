@@ -1,8 +1,6 @@
 package bridge
 
 import (
-	"sync"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
@@ -42,7 +40,6 @@ type SendList struct {
 	client *transport.Client
 
 	Items []*SendItem
-	lock  sync.RWMutex
 
 	window fyne.Window
 	canvas fyne.Canvas
@@ -65,9 +62,6 @@ func (p *SendList) CreateItem() fyne.CanvasObject {
 
 // UpdateItem updates the data in the list.
 func (p *SendList) UpdateItem(i int, item fyne.CanvasObject) {
-	p.lock.RLock()
-	defer p.lock.RUnlock()
-
 	container := item.(*fyne.Container)
 
 	container.Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
@@ -83,9 +77,6 @@ func (p *SendList) UpdateItem(i int, item fyne.CanvasObject) {
 
 // NewSend adds data about a new send to the list and then returns the item.
 func (p *SendList) NewSend(uri fyne.URI) *SendItem {
-	p.lock.Lock()
-	defer p.lock.Unlock()
-
 	item := &SendItem{Code: "Waiting for code...", URI: uri, list: p, Max: 1}
 	p.Items = append(p.Items, item)
 	return item
