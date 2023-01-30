@@ -56,7 +56,7 @@ func (p *RecvList) Length() int {
 // CreateItem creates a new item in the list.
 func (p *RecvList) CreateItem() fyne.CanvasObject {
 	return container.New(&listLayout{},
-		&widget.FileIcon{URI: nil},
+		&widget.FileIcon{},
 		&widget.Label{Text: "Waiting for filename...", Wrapping: fyne.TextTruncate},
 		&widget.ProgressBar{},
 	)
@@ -90,14 +90,8 @@ func (p *RecvList) NewReceive(code string) {
 	path := make(chan string)
 
 	go func() {
-		name := <-path
-		item.URI = storage.NewFileURI(name)
-		if name != "text" {
-			item.Name = item.URI.Name()
-		} else {
-			item.Name = "Text Snippet"
-		}
-
+		item.URI = storage.NewFileURI(<-path)
+		item.Name = item.URI.Name()
 		close(path)
 		p.Refresh()
 	}()
