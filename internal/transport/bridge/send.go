@@ -57,7 +57,7 @@ func (p *SendList) Length() int {
 // CreateItem creates a new item in the list.
 func (p *SendList) CreateItem() fyne.CanvasObject {
 	return container.New(&listLayout{},
-		&widget.FileIcon{URI: nil},
+		&widget.FileIcon{},
 		&widget.Label{Text: "Waiting for filename...", Wrapping: fyne.TextTruncate},
 		newCodeDisplay(p.window),
 		&widget.ProgressBar{},
@@ -83,11 +83,11 @@ func (p *SendList) UpdateItem(i int, item fyne.CanvasObject) {
 }
 
 // NewSendItem adds data about a new send to the list and then returns the item.
-func (p *SendList) NewSendItem(name string, uri fyne.URI) *SendItem {
+func (p *SendList) NewSend(uri fyne.URI) *SendItem {
 	p.lock.Lock()
 	defer p.lock.Unlock()
 
-	item := &SendItem{Name: name, Code: "Waiting for code...", URI: uri, list: p}
+	item := &SendItem{Name: uri.Name(), Code: "Waiting for code...", URI: uri, list: p, Max: 1}
 	p.Items = append(p.Items, item)
 	return item
 }
@@ -102,7 +102,7 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 		return
 	}
 
-	item := p.NewSendItem(file.URI().Name(), file.URI())
+	item := p.NewSend(file.URI())
 	p.Refresh()
 
 	go func() {
@@ -146,7 +146,7 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 		return
 	}
 
-	item := p.NewSendItem(dir.Name(), dir)
+	item := p.NewSend(dir)
 	p.Refresh()
 
 	go func() {
@@ -174,16 +174,13 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 
 // SendText sends new text.
 func (p *SendList) SendText() {
-	// The file URI is a hack to get the correct icon.
-	item := &SendItem{Name: "Text Snippet", Code: "Waiting for code...", URI: storage.NewFileURI("text")}
-
 	go func() {
 		text := <-p.client.ShowTextSendWindow()
 		if text == "" {
 			return
 		}
 
-		p.Items = append(p.Items, item)
+		item := p.NewSend(storage.NewFileURI("Text Snippet"))
 		p.Refresh()
 
 		code, result, err := p.client.NewTextSend(text, wormhole.WithProgress(item.update), p.getCustomCode())
