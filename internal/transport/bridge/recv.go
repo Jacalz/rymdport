@@ -9,14 +9,34 @@ import (
 	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/rymdport/v3/internal/transport"
-	"github.com/Jacalz/rymdport/v3/internal/util"
 )
 
 // RecvItem is the item that is being received
 type RecvItem struct {
-	URI      fyne.URI
-	Progress *util.ProgressBar
-	Name     string
+	URI  fyne.URI
+	Name string
+
+	Value  int64
+	Max    int64
+	Status func() string
+
+	list *RecvList
+}
+
+func (r *RecvItem) update(delta, total int64) {
+	r.Value += delta
+	r.Max = total
+	r.list.Refresh()
+}
+
+func (r *RecvItem) done() {
+	r.Value = r.Max
+	r.list.Refresh()
+}
+
+func (r *RecvItem) failed() {
+	r.Status = func() string { return "Failed" }
+	r.list.Refresh()
 }
 
 // RecvList is a list of progress bars that track send progress.
@@ -41,7 +61,7 @@ func (p *RecvList) CreateItem() fyne.CanvasObject {
 	return container.New(&listLayout{},
 		&widget.FileIcon{URI: nil},
 		&widget.Label{Text: "Waiting for filename...", Wrapping: fyne.TextTruncate},
-		util.NewProgressBar(),
+		&widget.ProgressBar{},
 	)
 }
 
@@ -53,22 +73,27 @@ func (p *RecvList) UpdateItem(i int, item fyne.CanvasObject) {
 	container := item.(*fyne.Container)
 	container.Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
 	container.Objects[1].(*widget.Label).SetText(p.Items[i].Name)
-	p.Items[i].Progress = container.Objects[2].(*util.ProgressBar)
+
+	progress := container.Objects[2].(*widget.ProgressBar)
+	progress.Max = float64(p.Items[i].Max)
+	progress.Value = float64(p.Items[i].Value)
+	progress.TextFormatter = p.Items[i].Status
+	progress.Refresh()
 }
 
 // NewRecvItem creates a new send item and adds it to the items.
-func (p *RecvList) NewRecvItem() *RecvItem {
+func (p *RecvList) NewRecv() *RecvItem {
 	p.lock.Lock()
 	defer p.lock.Unlock()
 
-	item := &RecvItem{Name: "Waiting for filename..."}
+	item := &RecvItem{Name: "Waiting for filename...", Max: 1, list: p}
 	p.Items = append(p.Items, item)
 	return item
 }
 
 // NewReceive adds data about a new send to the list and then returns the channel to update the code.
 func (p *RecvList) NewReceive(code string) {
-	item := p.NewRecvItem()
+	item := p.NewRecv()
 	p.Refresh()
 
 	path := make(chan string)
@@ -87,17 +112,17 @@ func (p *RecvList) NewReceive(code string) {
 	}()
 
 	go func(code string) {
-		if err := p.client.NewReceive(code, path, item.Progress); err != nil {
+		if err := p.client.NewReceive(code, path, item.update); err != nil {
 			p.client.ShowNotification("Receive failed", "An error occurred when receiving the data.")
-			item.Progress.Failed()
+			item.failed()
 			dialog.ShowError(err, p.window)
 		} else if item.Name != "Text Snippet" {
 			p.client.ShowNotification("Receive completed", "The contents were saved to "+item.URI.Path()+".")
+			item.done()
 		} else {
 			p.client.ShowNotification("Receive completed", "The text was received successfully.")
+			item.done()
 		}
-
-		p.Refresh()
 	}(code)
 }
 
