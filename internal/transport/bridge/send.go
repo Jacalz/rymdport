@@ -15,7 +15,6 @@ import (
 type SendItem struct {
 	URI  fyne.URI
 	Code string
-	Name string
 
 	Value  int64
 	Max    int64
@@ -66,7 +65,7 @@ func (p *SendList) UpdateItem(i int, item fyne.CanvasObject) {
 	container := item.(*fyne.Container)
 
 	container.Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
-	container.Objects[1].(*widget.Label).SetText(p.Items[i].Name)
+	container.Objects[1].(*widget.Label).SetText(p.Items[i].URI.Name())
 	container.Objects[2].(*fyne.Container).Objects[0].(*codeDisplay).SetText(p.Items[i].Code)
 
 	progress := container.Objects[3].(*widget.ProgressBar)
@@ -76,9 +75,9 @@ func (p *SendList) UpdateItem(i int, item fyne.CanvasObject) {
 	progress.Refresh()
 }
 
-// NewSendItem adds data about a new send to the list and then returns the item.
+// NewSend adds data about a new send to the list and then returns the item.
 func (p *SendList) NewSend(uri fyne.URI) *SendItem {
-	item := &SendItem{Name: uri.Name(), Code: "Waiting for code...", URI: uri, list: p, Max: 1}
+	item := &SendItem{Code: "Waiting for code...", URI: uri, list: p, Max: 1}
 	p.Items = append(p.Items, item)
 	return item
 }
