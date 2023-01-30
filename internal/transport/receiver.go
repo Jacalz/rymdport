@@ -23,7 +23,7 @@ func bail(msg *wormhole.IncomingMessage, err error) error {
 }
 
 // NewReceive runs a receive using wormhole-william and handles types accordingly.
-func (c *Client) NewReceive(code string, pathname chan string, progress *util.ProgressBar) (err error) {
+func (c *Client) NewReceive(code string, pathname chan string, progress func(int64, int64)) (err error) {
 	msg, err := c.Receive(context.Background(), code)
 	if err != nil {
 		pathname <- "fail" // We want to always send a URI, even on fail, in order to not block goroutines.
@@ -31,8 +31,7 @@ func (c *Client) NewReceive(code string, pathname chan string, progress *util.Pr
 		return bail(msg, err)
 	}
 
-	progress.Max = float64(msg.TransferBytes64)
-	contents := util.TeeReader(msg, progress)
+	contents := util.NewTeeReader(msg, progress, msg.TransferBytes64)
 
 	if msg.Type == wormhole.TransferText {
 		pathname <- "text"
@@ -82,8 +81,8 @@ func (c *Client) NewReceive(code string, pathname chan string, progress *util.Pr
 		return
 	}
 
-	// We are reading the data twice. First from msg to temp file and then from temp.
-	progress.Max += float64(msg.TransferBytes64)
+	// We are reading the transfered bytes twice. First from msg to temp file and then from temp.
+	contents.Max *= 2
 
 	tmp, err := os.CreateTemp("", msg.Name+"-*.zip.tmp")
 	if err != nil {
@@ -109,13 +108,13 @@ func (c *Client) NewReceive(code string, pathname chan string, progress *util.Pr
 		return err
 	}
 
-	err = zip.Extract(util.TeeReaderAt(tmp, progress), n, path)
+	err = zip.Extract(util.TeeReaderAt(tmp, progress, contents.Max), n, path)
 	if err != nil {
 		fyne.LogError("Error on unzipping contents", err)
 		return err
 	}
 
-	progress.Done() // Workaround for progress sometimes stopping at 99%.
+	progress(0, 1) // Workaround for progress sometimes stopping at 99%.
 
 	return
 }
