@@ -1,8 +1,6 @@
 package bridge
 
 import (
-	"sync"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
@@ -26,7 +24,6 @@ type RecvList struct {
 	client *transport.Client
 
 	Items []*RecvItem
-	lock  sync.RWMutex
 
 	window fyne.Window
 }
@@ -47,9 +44,6 @@ func (p *RecvList) CreateItem() fyne.CanvasObject {
 
 // UpdateItem updates the data in the list.
 func (p *RecvList) UpdateItem(i int, item fyne.CanvasObject) {
-	p.lock.RLock()
-	defer p.lock.RUnlock()
-
 	container := item.(*fyne.Container)
 	container.Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
 	container.Objects[1].(*widget.Label).SetText(p.Items[i].Name)
@@ -58,9 +52,6 @@ func (p *RecvList) UpdateItem(i int, item fyne.CanvasObject) {
 
 // NewRecvItem creates a new send item and adds it to the items.
 func (p *RecvList) NewRecvItem() *RecvItem {
-	p.lock.Lock()
-	defer p.lock.Unlock()
-
 	item := &RecvItem{Name: "Waiting for filename..."}
 	p.Items = append(p.Items, item)
 	return item
