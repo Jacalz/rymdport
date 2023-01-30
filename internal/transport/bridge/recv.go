@@ -56,11 +56,6 @@ func (p *RecvList) UpdateItem(i int, item fyne.CanvasObject) {
 	p.Items[i].Progress = container.Objects[2].(*util.ProgressBar)
 }
 
-// OnSelected currently just makes sure that we don't persist selection.
-func (p *RecvList) OnSelected(i int) {
-	p.Unselect(i)
-}
-
 // NewRecvItem creates a new send item and adds it to the items.
 func (p *RecvList) NewRecvItem() *RecvItem {
 	p.lock.Lock()
@@ -112,7 +107,7 @@ func NewRecvList(window fyne.Window, client *transport.Client) *RecvList {
 	p.List.Length = p.Length
 	p.List.CreateItem = p.CreateItem
 	p.List.UpdateItem = p.UpdateItem
-	p.List.OnSelected = p.OnSelected
+	p.List.OnSelected = p.Unselect
 	p.ExtendBaseWidget(p)
 
 	return p

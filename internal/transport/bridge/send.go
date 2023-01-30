@@ -60,11 +60,6 @@ func (p *SendList) UpdateItem(i int, item fyne.CanvasObject) {
 	p.Items[i].Progress = container.Objects[3].(*util.ProgressBar)
 }
 
-// OnSelected currently just makes sure that we don't persist selection.
-func (p *SendList) OnSelected(i int) {
-	p.Unselect(i)
-}
-
 // NewSendItem adds data about a new send to the list and then returns the item.
 func (p *SendList) NewSendItem(name string, uri fyne.URI) *SendItem {
 	p.lock.Lock()
@@ -232,7 +227,7 @@ func NewSendList(window fyne.Window, client *transport.Client) *SendList {
 	p.List.Length = p.Length
 	p.List.CreateItem = p.CreateItem
 	p.List.UpdateItem = p.UpdateItem
-	p.List.OnSelected = p.OnSelected
+	p.List.OnSelected = p.Unselect
 	p.ExtendBaseWidget(p)
 
 	return p
