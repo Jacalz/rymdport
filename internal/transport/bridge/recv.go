@@ -43,14 +43,14 @@ type RecvList struct {
 
 	client *transport.Client
 
-	Items []*RecvItem
+	items []*RecvItem
 
 	window fyne.Window
 }
 
 // Length returns the length of the data.
 func (p *RecvList) Length() int {
-	return len(p.Items)
+	return len(p.items)
 }
 
 // CreateItem creates a new item in the list.
@@ -65,20 +65,39 @@ func (p *RecvList) CreateItem() fyne.CanvasObject {
 // UpdateItem updates the data in the list.
 func (p *RecvList) UpdateItem(i int, item fyne.CanvasObject) {
 	container := item.(*fyne.Container)
-	container.Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
-	container.Objects[1].(*widget.Label).SetText(p.Items[i].Name)
+	container.Objects[0].(*widget.FileIcon).SetURI(p.items[i].URI)
+	container.Objects[1].(*widget.Label).SetText(p.items[i].Name)
 
 	progress := container.Objects[2].(*widget.ProgressBar)
-	progress.Max = float64(p.Items[i].Max)
-	progress.Value = float64(p.Items[i].Value)
-	progress.TextFormatter = p.Items[i].Status
+	progress.Max = float64(p.items[i].Max)
+	progress.Value = float64(p.items[i].Value)
+	progress.TextFormatter = p.items[i].Status
 	progress.Refresh()
+}
+
+// OnSelected currently just makes sure that we don't persist selection.
+func (p *RecvList) OnSelected(i int) {
+	p.Unselect(i)
+
+	// Only allow failed or completed items to be removed.
+	if p.items[i].Value < p.items[i].Max && p.items[i].Status == nil {
+		return
+	}
+
+	if i < len(p.items)-1 {
+		copy(p.items[i:], p.items[i+1:])
+	}
+
+	p.items[len(p.items)-1] = nil // Allow the GC to reclaim memory.
+	p.items = p.items[:len(p.items)-1]
+
+	p.Refresh()
 }
 
 // NewRecvItem creates a new send item and adds it to the items.
 func (p *RecvList) NewRecv() *RecvItem {
 	item := &RecvItem{Name: "Waiting for filename...", Max: 1, list: p}
-	p.Items = append(p.Items, item)
+	p.items = append(p.items, item)
 	return item
 }
 
@@ -117,7 +136,7 @@ func NewRecvList(window fyne.Window, client *transport.Client) *RecvList {
 	p.List.Length = p.Length
 	p.List.CreateItem = p.CreateItem
 	p.List.UpdateItem = p.UpdateItem
-	p.List.OnSelected = p.Unselect
+	p.List.OnSelected = p.OnSelected
 	p.ExtendBaseWidget(p)
 
 	return p
