@@ -1,8 +1,6 @@
 package bridge
 
 import (
-	"sync"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
@@ -10,14 +8,29 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/rymdport/v3/internal/transport"
 	"github.com/Jacalz/rymdport/v3/internal/util"
+	"github.com/psanford/wormhole-william/wormhole"
 )
 
 // SendItem is the item that is being sent.
 type SendItem struct {
-	URI      fyne.URI
-	Progress *util.ProgressBar
-	Code     string
-	Name     string
+	URI  fyne.URI
+	Code string
+
+	Value  int64
+	Max    int64
+	Status func() string
+
+	list *SendList
+}
+
+func (s *SendItem) update(sent, total int64) {
+	s.Value = sent
+	s.Max = total
+	s.list.Refresh()
+}
+
+func (s *SendItem) failed() {
+	s.Status = func() string { return "Failed" }
 }
 
 // SendList is a list of progress bars that track send progress.
@@ -27,7 +40,6 @@ type SendList struct {
 	client *transport.Client
 
 	Items []*SendItem
-	lock  sync.RWMutex
 
 	window fyne.Window
 	canvas fyne.Canvas
@@ -41,31 +53,31 @@ func (p *SendList) Length() int {
 // CreateItem creates a new item in the list.
 func (p *SendList) CreateItem() fyne.CanvasObject {
 	return container.New(&listLayout{},
-		&widget.FileIcon{URI: nil},
+		&widget.FileIcon{},
 		&widget.Label{Text: "Waiting for filename...", Wrapping: fyne.TextTruncate},
 		newCodeDisplay(p.window),
-		util.NewProgressBar(),
+		&widget.ProgressBar{},
 	)
 }
 
 // UpdateItem updates the data in the list.
 func (p *SendList) UpdateItem(i int, item fyne.CanvasObject) {
-	p.lock.RLock()
-	defer p.lock.RUnlock()
-
 	container := item.(*fyne.Container)
+
 	container.Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
-	container.Objects[1].(*widget.Label).SetText(p.Items[i].Name)
+	container.Objects[1].(*widget.Label).SetText(p.Items[i].URI.Name())
 	container.Objects[2].(*fyne.Container).Objects[0].(*codeDisplay).SetText(p.Items[i].Code)
-	p.Items[i].Progress = container.Objects[3].(*util.ProgressBar)
+
+	progress := container.Objects[3].(*widget.ProgressBar)
+	progress.Max = float64(p.Items[i].Max)
+	progress.Value = float64(p.Items[i].Value)
+	progress.TextFormatter = p.Items[i].Status
+	progress.Refresh()
 }
 
-// NewSendItem adds data about a new send to the list and then returns the item.
-func (p *SendList) NewSendItem(name string, uri fyne.URI) *SendItem {
-	p.lock.Lock()
-	defer p.lock.Unlock()
-
-	item := &SendItem{Name: name, Code: "Waiting for code...", URI: uri}
+// NewSend adds data about a new send to the list and then returns the item.
+func (p *SendList) NewSend(uri fyne.URI) *SendItem {
+	item := &SendItem{Code: "Waiting for code...", URI: uri, list: p, Max: 1}
 	p.Items = append(p.Items, item)
 	return item
 }
@@ -80,22 +92,22 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 		return
 	}
 
-	item := p.NewSendItem(file.URI().Name(), file.URI())
+	item := p.NewSend(file.URI())
 	p.Refresh()
 
 	go func() {
 		// We want to catch close errors for security reasons.
 		defer func() {
 			if err = file.Close(); err != nil {
-				item.Progress.Failed()
+				item.failed()
 				fyne.LogError("Error on closing file", err)
 			}
 		}()
 
-		code, result, err := p.client.NewFileSend(file, item.Progress.WithProgress(), p.getCustomCode())
+		code, result, err := p.client.NewFileSend(file, wormhole.WithProgress(item.update), p.getCustomCode())
 		if err != nil {
 			fyne.LogError("Error on sending file", err)
-			item.Progress.Failed()
+			item.failed()
 			dialog.ShowError(err, p.window)
 			return
 		}
@@ -105,7 +117,7 @@ func (p *SendList) OnFileSelect(file fyne.URIReadCloser, err error) {
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending file", res.Error)
-			item.Progress.Failed()
+			item.failed()
 			dialog.ShowError(res.Error, p.window)
 			p.client.ShowNotification("File send failed", "An error occurred when sending the file.")
 		} else if res.OK {
@@ -124,14 +136,14 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 		return
 	}
 
-	item := p.NewSendItem(dir.Name(), dir)
+	item := p.NewSend(dir)
 	p.Refresh()
 
 	go func() {
-		code, result, err := p.client.NewDirSend(dir, item.Progress.WithProgress(), p.getCustomCode())
+		code, result, err := p.client.NewDirSend(dir, wormhole.WithProgress(item.update), p.getCustomCode())
 		if err != nil {
 			fyne.LogError("Error on sending directory", err)
-			item.Progress.Failed()
+			item.failed()
 			dialog.ShowError(err, p.window)
 			return
 		}
@@ -141,7 +153,7 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending directory", res.Error)
-			item.Progress.Failed()
+			item.failed()
 			dialog.ShowError(res.Error, p.window)
 			p.client.ShowNotification("Directory send failed", "An error occurred when sending the directory.")
 		} else if res.OK {
@@ -152,22 +164,19 @@ func (p *SendList) OnDirSelect(dir fyne.ListableURI, err error) {
 
 // SendText sends new text.
 func (p *SendList) SendText() {
-	// The file URI is a hack to get the correct icon.
-	item := &SendItem{Name: "Text Snippet", Code: "Waiting for code...", URI: storage.NewFileURI("text")}
-
 	go func() {
 		text := <-p.client.ShowTextSendWindow()
 		if text == "" {
 			return
 		}
 
-		p.Items = append(p.Items, item)
+		item := p.NewSend(storage.NewFileURI("Text Snippet"))
 		p.Refresh()
 
-		code, result, err := p.client.NewTextSend(text, item.Progress.WithProgress(), p.getCustomCode())
+		code, result, err := p.client.NewTextSend(text, wormhole.WithProgress(item.update), p.getCustomCode())
 		if err != nil {
 			fyne.LogError("Error on sending text", err)
-			item.Progress.Failed()
+			item.failed()
 			dialog.ShowError(err, p.window)
 			return
 		}
@@ -177,7 +186,7 @@ func (p *SendList) SendText() {
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending text", res.Error)
-			item.Progress.Failed()
+			item.failed()
 			dialog.ShowError(res.Error, p.window)
 			p.client.ShowNotification("Text send failed", "An error occurred when sending the text.")
 		} else if res.OK && p.client.Notifications {
