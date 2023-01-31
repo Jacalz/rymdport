@@ -31,7 +31,7 @@ func (c *Client) NewReceive(code string, pathname chan string, progress func(int
 		return bail(msg, err)
 	}
 
-	contents := util.NewTeeReader(msg, progress, msg.TransferBytes64)
+	contents := util.NewProgressReader(msg, progress, msg.TransferBytes64)
 
 	if msg.Type == wormhole.TransferText {
 		pathname <- "Text Snippet"
@@ -108,7 +108,7 @@ func (c *Client) NewReceive(code string, pathname chan string, progress func(int
 		return err
 	}
 
-	err = zip.Extract(util.TeeReaderAt(tmp, progress, contents.Max), n, path)
+	err = zip.Extract(util.NewProgressReaderAt(tmp, progress, contents.Max), n, path)
 	if err != nil {
 		fyne.LogError("Error on unzipping contents", err)
 		return err
