@@ -39,7 +39,7 @@ type SendList struct {
 
 	client *transport.Client
 
-	Items []*SendItem
+	items []*SendItem
 
 	window fyne.Window
 	canvas fyne.Canvas
@@ -47,7 +47,7 @@ type SendList struct {
 
 // Length returns the length of the data.
 func (p *SendList) Length() int {
-	return len(p.Items)
+	return len(p.items)
 }
 
 // CreateItem creates a new item in the list.
@@ -64,21 +64,40 @@ func (p *SendList) CreateItem() fyne.CanvasObject {
 func (p *SendList) UpdateItem(i int, item fyne.CanvasObject) {
 	container := item.(*fyne.Container)
 
-	container.Objects[0].(*widget.FileIcon).SetURI(p.Items[i].URI)
-	container.Objects[1].(*widget.Label).SetText(p.Items[i].URI.Name())
-	container.Objects[2].(*fyne.Container).Objects[0].(*codeDisplay).SetText(p.Items[i].Code)
+	container.Objects[0].(*widget.FileIcon).SetURI(p.items[i].URI)
+	container.Objects[1].(*widget.Label).SetText(p.items[i].URI.Name())
+	container.Objects[2].(*fyne.Container).Objects[0].(*codeDisplay).SetText(p.items[i].Code)
 
 	progress := container.Objects[3].(*widget.ProgressBar)
-	progress.Max = float64(p.Items[i].Max)
-	progress.Value = float64(p.Items[i].Value)
-	progress.TextFormatter = p.Items[i].Status
+	progress.Max = float64(p.items[i].Max)
+	progress.Value = float64(p.items[i].Value)
+	progress.TextFormatter = p.items[i].Status
 	progress.Refresh()
+}
+
+// OnSelected currently just makes sure that we don't persist selection.
+func (p *SendList) OnSelected(i int) {
+	p.Unselect(i)
+
+	// Only allow failed or completed items to be removed.
+	if p.items[i].Value < p.items[i].Max && p.items[i].Status == nil {
+		return
+	}
+
+	if i < len(p.items)-1 {
+		copy(p.items[i:], p.items[i+1:])
+	}
+
+	p.items[len(p.items)-1] = nil // Allow the GC to reclaim memory.
+	p.items = p.items[:len(p.items)-1]
+
+	p.Refresh()
 }
 
 // NewSend adds data about a new send to the list and then returns the item.
 func (p *SendList) NewSend(uri fyne.URI) *SendItem {
 	item := &SendItem{Code: "Waiting for code...", URI: uri, list: p, Max: 1}
-	p.Items = append(p.Items, item)
+	p.items = append(p.items, item)
 	return item
 }
 
@@ -236,7 +255,7 @@ func NewSendList(window fyne.Window, client *transport.Client) *SendList {
 	p.List.Length = p.Length
 	p.List.CreateItem = p.CreateItem
 	p.List.UpdateItem = p.UpdateItem
-	p.List.OnSelected = p.Unselect
+	p.List.OnSelected = p.OnSelected
 	p.ExtendBaseWidget(p)
 
 	return p
