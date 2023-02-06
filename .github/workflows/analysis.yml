@@ -25,9 +25,9 @@ jobs:
         
     - name: Install static analysis tools
       run: |
-        go install github.com/securego/gosec/v2/cmd/gosec@v2.14.0
+        go install github.com/securego/gosec/v2/cmd/gosec@v2.15.0
         go install github.com/fzipp/gocyclo/cmd/gocyclo@v0.6.0
-        go install honnef.co/go/tools/cmd/staticcheck@v0.3.3
+        go install honnef.co/go/tools/cmd/staticcheck@v0.4.0
         go install mvdan.cc/gofumpt@v0.4.0
 
     - name: Vet
