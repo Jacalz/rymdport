@@ -84,14 +84,20 @@ func (p *SendList) OnSelected(i int) {
 		return
 	}
 
-	if i < len(p.items)-1 {
-		copy(p.items[i:], p.items[i+1:])
-	}
+	dialog.ShowConfirm("Remove from list", "Do you wish to remove the item from the list?", func(remove bool) {
+		if !remove {
+			return
+		}
 
-	p.items[len(p.items)-1] = nil // Allow the GC to reclaim memory.
-	p.items = p.items[:len(p.items)-1]
+		if i < len(p.items)-1 {
+			copy(p.items[i:], p.items[i+1:])
+		}
 
-	p.Refresh()
+		p.items[len(p.items)-1] = nil // Allow the GC to reclaim memory.
+		p.items = p.items[:len(p.items)-1]
+
+		p.Refresh()
+	}, p.window)
 }
 
 // NewSend adds data about a new send to the list and then returns the item.
