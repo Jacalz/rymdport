@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.3.2 - Performance improvements and bug fixes
+- Minor performance improvements to the list of sent/received items.
+- Updated `fyne` to [v2.3.1](https://github.com/fyne-io/fyne/releases/tag/v2.3.1).
+  - Fixes for various potential crashes (most importantly when minimizing on Windows sometimes).
+  - Support being displayed over VNC on RaspbianOS (for Raspberry Pi computers).
+  - Fixes an issue with list items sometimes appearing hovered when scrolling.
+
 ## 3.3.1 - Fix Windows builds not starting
 - Fixes a cross-compilation issue that caused the Windows binary to not work correctly.
 

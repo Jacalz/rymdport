@@ -45,37 +45,53 @@
   </kudos>
 
   <releases>
+    <release version="3.3.2" date="2023-02-16" type="stable">
+      <description>
+        <p>Summary of changes in this release:</p>
+        <ul>
+          <li>Minor performance improvements to the list of sent/received items.</li>
+          <li>Updated fyne to v2.2.3 for various bug fixes and improvements.</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.0</url>
+    </release>
+    <release version="3.3.1" date="2023-01-28" type="stable">
+      <description>
+        <p>Minor release to fix Windows binaries not starting. No relevant code changes for Flatpak package.</p>
+      </description>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.1</url>
+    </release>
     <release version="3.3.0" date="2023-01-14" type="stable">
-        <description>
-          <p>Summary of changes in this release:</p>
-          <ul>
-            <li>Notifications for received files now mentions where the file was saved to.</li>
-            <li>Present more useful information about how to write custom codes.</li>
-            <li>The dialog for custom codes now focuses the text entry automatically.</li>
-            <li>The selection of the download path has been reworked to be more useful.</li>
-            <li>Minor redesign of the send and receive tabs.</li>
-            <li>Minor wording improvements inside the settings tab.</li>
-            <li>The application now uses an entirely new theme with improved visuals.</li>
-            <li>The FreeDesktop Dark Style Preference is now respected.</li>
-            <li>There is now an option to create a new folder within the folder selection dialog.</li>
-            <li>Minor performance improvements for sending and receiving of directories.</li>
-          </ul>
-        </description>
-        <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.0</url>
+      <description>
+        <p>Summary of changes in this release:</p>
+        <ul>
+          <li>Notifications for received files now mentions where the file was saved to.</li>
+          <li>Present more useful information about how to write custom codes.</li>
+          <li>The dialog for custom codes now focuses the text entry automatically.</li>
+          <li>The selection of the download path has been reworked to be more useful.</li>
+          <li>Minor redesign of the send and receive tabs.</li>
+          <li>Minor wording improvements inside the settings tab.</li>
+          <li>The application now uses an entirely new theme with improved visuals.</li>
+          <li>The FreeDesktop Dark Style Preference is now respected.</li>
+          <li>There is now an option to create a new folder within the folder selection dialog.</li>
+          <li>Minor performance improvements for sending and receiving of directories.</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.0</url>
     </release>
   	<release version="3.2.0" date="2022-07-26" type="stable">
-        <description>
-          <p>Summary of changes in this release:</p>
-          <ul>
-            <li>Work around send and receive windows not being focused correctly.</li>
-            <li>Go backwards in tab completion using Shift + Tab.</li>
-            <li>Update klauspost/compress to v1.15.8 for CVE-2022-30631 fix.</li>
-            <li>The zip and completion packages are now exported and considered stable.</li>
-            <li>Updated fyne to v2.2.3 for minor bug fixes.</li>
-            <li>Minor performance improvements.</li>
-          </ul>
-        </description>
-        <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.2.0</url>
+      <description>
+        <p>Summary of changes in this release:</p>
+        <ul>
+          <li>Work around send and receive windows not being focused correctly.</li>
+          <li>Go backwards in tab completion using Shift + Tab.</li>
+          <li>Update klauspost/compress to v1.15.8 for CVE-2022-30631 fix.</li>
+          <li>The zip and completion packages are now exported and considered stable.</li>
+          <li>Updated fyne to v2.2.3 for minor bug fixes.</li>
+          <li>Minor performance improvements.</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.2.0</url>
     </release>
     <release version="3.1.0" date="2022-06-27" type="stable">
       <description>
