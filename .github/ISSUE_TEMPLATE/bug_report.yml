@@ -1,0 +1,76 @@
+name: Bug Report
+description: Report a bug or other odd behaviour.
+labels: bug
+body:
+- type: checkboxes
+  attributes:
+    label: Checklist
+    description: Please make sure you have read the following.
+    options:
+      - label: I have searched the [issue tracker](https://github.com/Jacalz/rymdport/issues) for open issues that relate to the same problem, before opening a new one.
+        required: true
+      - label: This issue only relates to a single bug. I will open new issues for any other problems.
+        required: true        
+- type: textarea
+  attributes:
+    label: Description
+    description: Provide a clear and concise description of the bug. Please include the stack trace if the application crashed.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Steps to Reproduce
+    description: A clear description of how to reproduce the problem.
+    placeholder: |
+      1.
+      2.
+      3.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Screenshots
+    description: If applicable, add screenshots or gifs to help showcase the bug.
+  validations:
+    required: false
+- type: input
+  attributes:
+    label: Rymdport version
+    description: The version of Rymdport that experiences this bug.
+    placeholder: "e.g. 3.3.1 or a git SHA."
+  validations:
+    required: true
+- type: dropdown
+  attributes:
+    label: Operating System
+    description: What operating system is experiencing this bug?
+    options:
+      - FreeBSD
+      - Linux
+      - macOS
+      - NetBSD
+      - OpenBSD
+      - Windows
+      - Other (specify below)
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: Operating System Version
+    description: Clarify the version of the operating system you are using.
+    placeholder: "e.g. Windows 10, macOS 10.15 Catalina or Ubuntu 22.04."
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: Go Compiler Version
+    description: If you are compiling Rymdport locally, please provide the version of the Go compiler.
+    placeholder: "e.g. 1.17.8 or 1.20.0. Run `go version` if you are unsure."
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Additional Information
+    description: If your problem needs further explanation, please add more information here.
+  validations:
+    required: false
