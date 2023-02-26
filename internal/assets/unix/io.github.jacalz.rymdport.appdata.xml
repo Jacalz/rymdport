@@ -50,7 +50,7 @@
         <p>Summary of changes in this release:</p>
         <ul>
           <li>Minor performance improvements to the list of sent/received items.</li>
-          <li>Updated fyne to v2.2.3 for various bug fixes and improvements.</li>
+          <li>Updated fyne to v2.3.1 for various bug fixes and improvements.</li>
         </ul>
       </description>
       <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.2</url>
