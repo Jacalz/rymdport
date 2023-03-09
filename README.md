@@ -58,21 +58,21 @@ sudo make install
 
 ## Our Sponsors
 
-We are grateful for the support received by the following organizations:
+We are grateful for the support received by the following organizations:  
 
-<a href='https://tutanota.com/'>
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://tutanota.com/resources/images/press/tutanota-red-gray-font-logo.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://tutanota.com/resources/images/press/tutanota-red-black-font-logo.svg">
-    <img alt="Sponsored by Tutanota" width='300' src="https://tutanota.com/resources/images/press/tutanota-red-gray-font-logo.svg">
-  </picture>
-</a>
-<br /><br />
 <a href='https://fynelabs.com/'>
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://i0.wp.com/fynelabs.com/wp-content/uploads/2022/01/logo_light.png">
     <source media="(prefers-color-scheme: light)" srcset="https://i0.wp.com/fynelabs.com/wp-content/uploads/2022/01/logo_dark.png">
     <img alt="Sponsored by Fyne Labs" width='200' src="https://i0.wp.com/fynelabs.com/wp-content/uploads/2022/01/logo_light.png">
+  </picture>
+</a>
+<br /><br />
+<a href='https://tutanota.com/'>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://tutanota.com/resources/images/press/tutanota-red-gray-font-logo.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://tutanota.com/resources/images/press/tutanota-red-black-font-logo.svg">
+    <img alt="Sponsored by Tutanota" width='300' src="https://tutanota.com/resources/images/press/tutanota-red-gray-font-logo.svg">
   </picture>
 </a>
 
