@@ -1,8 +1,8 @@
-Website = "https://github.com/Jacalz/rymdport"
+Website = "https://rymdport.github.io/"
 
 [Details]
   Icon = "internal/assets/icon/icon-512.png"
   Name = "rymdport"
   ID = "io.github.jacalz.rymdport"
-  Version = "3.3.2"
-  Build = 20
+  Version = "3.3.3"
+  Build = 21
