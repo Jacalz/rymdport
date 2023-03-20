@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.3.3 - Better Apple M2 support and improved rendering 
+- Updated `fyne` to [v2.3.2](https://github.com/fyne-io/fyne/releases/tag/v2.3.2). 
+  - Many improvements when running on Apple M2 devices.
+  - Performance and memory improvements for text rendering.
+  - Faster performance when resizing the window on Linux/BSD.
+  - Fixed letters being cropped in some cases.
+  - Other minor fixes and improvements.
+
 ## 3.3.2 - Performance improvements and bug fixes
 - Minor performance improvements to the list of sent/received items.
 - Updated `fyne` to [v2.3.1](https://github.com/fyne-io/fyne/releases/tag/v2.3.1).
