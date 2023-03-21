@@ -19,6 +19,9 @@ type Client struct {
 	// Notification holds the settings value for if we have notifications enabled or not.
 	Notifications bool
 
+	// CheckUpdatesOnStartup holds the setting values for if we should check updates on startup.
+	CheckUpdatesOnStartup bool
+
 	// OverwriteExisting holds the settings value for if we should overwrite already existing files.
 	OverwriteExisting bool
 

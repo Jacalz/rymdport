@@ -3,10 +3,10 @@ package main
 import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"github.com/Jacalz/rymdport/v3/internal/updater"
 
 	"github.com/Jacalz/rymdport/v3/internal/assets"
 	"github.com/Jacalz/rymdport/v3/internal/ui"
-	"github.com/Jacalz/rymdport/v3/internal/updater"
 )
 
 func main() {
@@ -18,6 +18,10 @@ func main() {
 	w.Resize(fyne.NewSize(700, 400))
 	w.SetMaster()
 
-	updater.Enable(a, w)
+	checkForUpdates := a.Preferences().BoolWithFallback("CheckUpdatesOnStartup", true)
+	if checkForUpdates {
+		updater.Enable(a, w)
+	}
+
 	w.ShowAndRun()
 }

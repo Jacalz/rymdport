@@ -26,3 +26,4 @@ func Enable(a fyne.App, w fyne.Window) {
 		return
 	}
 }
+
