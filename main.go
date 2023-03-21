@@ -3,6 +3,7 @@ package main
 import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"github.com/Jacalz/rymdport/v3/internal/updater"
 
 	"github.com/Jacalz/rymdport/v3/internal/assets"
 	"github.com/Jacalz/rymdport/v3/internal/ui"
@@ -17,6 +18,6 @@ func main() {
 	w.Resize(fyne.NewSize(700, 400))
 	w.SetMaster()
 
-	//updater.Enable(a, w)
+	updater.Enable(a, w)
 	w.ShowAndRun()
 }
