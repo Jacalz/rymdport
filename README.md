@@ -48,13 +48,26 @@ Systems with the compile-time requirements satisfied can build the project using
 go build
 ```
 
-The project is available in the [Fyne Apps Listing](https://apps.fyne.io/apps/rymdport.html) and can be installed either using the `fyne get` command or using the [Fyne Apps Installer](https://apps.fyne.io/apps/io.fyne.apps.html).
-
-Installation can also be performed using GNU Make (installing this way is currently only supported on Linux and BSD):
+Installation can also be performed using GNU Make (installing this way is only supported on Linux and BSD):
 ```bash
 make
 sudo make install
 ```
+
+### With metadata
+
+To build binaries that include application metadata (not required on Linux or BSD), you need to install the `fyne` command and use it to build Rymdport:
+```
+go install fyne.io/fyne/v2/cmd/fyne@latest
+fyne build
+```
+
+To build a release binary (with update checking enabled and smaller binary size) you pass the `-release` flag:
+```
+fyne build -release
+```
+
+The project is also available in the [Fyne Apps Listing](https://apps.fyne.io/apps/rymdport.html) and can be installed either using the `fyne get` command or using the [Fyne Apps Installer](https://apps.fyne.io/apps/io.fyne.apps.html).
 
 ## Our Sponsors
 
