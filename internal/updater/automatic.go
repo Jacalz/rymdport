@@ -27,7 +27,7 @@ func Enable(a fyne.App, w fyne.Window) {
 	}
 }
 
-// Disable turns off automatic application updates.
-func Disable() {
-
-}
+// TODO: Disable turns off automatic application updates.
+//func Disable() {
+//
+//}
