@@ -101,8 +101,8 @@ func (s *settings) onNotificationsChanged(selected string) {
 	s.preferences.SetBool("Notifications", s.client.Notifications)
 }
 func (s *settings) onUpdateRadioChanged(selected string) {
-	s.client.UpdateRadio = selected == "On"
-	s.preferences.SetBool("CheckForUpdates", s.client.UpdateRadio)
+	s.client.CheckUpdatesOnStartup = selected == "On"
+	s.preferences.SetBool("CheckUpdatesOnStartup", s.client.CheckUpdatesOnStartup)
 }
 
 func (s *settings) onComponentsChange(value float64) {
@@ -159,7 +159,7 @@ func (s *settings) getPreferences() {
 
 	s.client.Notifications = s.preferences.BoolWithFallback("Notifications", true)
 	s.notificationRadio.Selected = onOrOff(s.client.Notifications)
-	s.updateRadio.Selected = onOrOff(s.client.UpdateRadio)
+	s.updateRadio.Selected = onOrOff(s.client.CheckUpdatesOnStartup)
 
 	s.client.PassPhraseComponentLength = s.preferences.IntWithFallback("ComponentLength", 2)
 	s.componentSlider.Value = float64(s.client.PassPhraseComponentLength)

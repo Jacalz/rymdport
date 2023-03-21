@@ -18,6 +18,10 @@ func main() {
 	w.Resize(fyne.NewSize(700, 400))
 	w.SetMaster()
 
-	updater.Enable(a, w)
+	checkForUpdates := a.Preferences().BoolWithFallback("CheckUpdatesOnStartup", true)
+	if checkForUpdates {
+		updater.Enable(a, w)
+	}
+
 	w.ShowAndRun()
 }
