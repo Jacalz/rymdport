@@ -209,7 +209,7 @@ func (s *settings) buildUI() *container.Scroll {
 		newBoldLabel("Save files to"), s.downloadPathEntry,
 		newBoldLabel("Overwrite files"), s.overwriteFiles,
 		newBoldLabel("Notifications"), s.notificationRadio,
-		newBoldLabel("Update on startup"), s.updateRadio,
+		newBoldLabel("Check for updates on startup"), s.updateRadio,
 	)
 
 	wormholeContainer := container.NewVBox(
