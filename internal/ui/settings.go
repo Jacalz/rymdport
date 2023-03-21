@@ -102,7 +102,7 @@ func (s *settings) onNotificationsChanged(selected string) {
 }
 func (s *settings) onUpdateRadioChanged(selected string) {
 	s.client.UpdateRadio = selected == "On"
-	s.preferences.SetBool("UpdateRadio", s.client.UpdateRadio)
+	s.preferences.SetBool("CheckForUpdates", s.client.UpdateRadio)
 }
 
 func (s *settings) onComponentsChange(value float64) {
