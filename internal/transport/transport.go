@@ -19,6 +19,9 @@ type Client struct {
 	// Notification holds the settings value for if we have notifications enabled or not.
 	Notifications bool
 
+	// Update Radio set automatic updates or not
+	UpdateRadio bool
+
 	// OverwriteExisting holds the settings value for if we should overwrite already existing files.
 	OverwriteExisting bool
 

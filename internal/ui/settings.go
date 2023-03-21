@@ -20,6 +20,7 @@ type settings struct {
 	downloadPathEntry *widget.Entry
 	overwriteFiles    *widget.RadioGroup
 	notificationRadio *widget.RadioGroup
+	updateRadio       *widget.RadioGroup
 
 	componentSlider     *widget.Slider
 	componentLabel      *widget.Label
@@ -99,6 +100,10 @@ func (s *settings) onNotificationsChanged(selected string) {
 	s.client.Notifications = selected == "On"
 	s.preferences.SetBool("Notifications", s.client.Notifications)
 }
+func (s *settings) onUpdateRadioChanged(selected string) {
+	s.client.UpdateRadio = selected == "On"
+	s.preferences.SetBool("UpdateRadio", s.client.UpdateRadio)
+}
 
 func (s *settings) onComponentsChange(value float64) {
 	s.client.PassPhraseComponentLength = int(value)
@@ -154,6 +159,7 @@ func (s *settings) getPreferences() {
 
 	s.client.Notifications = s.preferences.BoolWithFallback("Notifications", true)
 	s.notificationRadio.Selected = onOrOff(s.client.Notifications)
+	s.updateRadio.Selected = onOrOff(s.client.UpdateRadio)
 
 	s.client.PassPhraseComponentLength = s.preferences.IntWithFallback("ComponentLength", 2)
 	s.componentSlider.Value = float64(s.client.PassPhraseComponentLength)
@@ -184,6 +190,7 @@ func (s *settings) buildUI() *container.Scroll {
 	s.overwriteFiles = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onOverwriteFilesChanged}
 
 	s.notificationRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onNotificationsChanged}
+	s.updateRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onUpdateRadioChanged}
 	s.componentSlider, s.componentLabel = &widget.Slider{Min: 2.0, Max: 6.0, Step: 1, OnChanged: s.onComponentsChange}, &widget.Label{}
 
 	s.verifyRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onVerifyChanged}
@@ -202,6 +209,7 @@ func (s *settings) buildUI() *container.Scroll {
 		newBoldLabel("Save files to"), s.downloadPathEntry,
 		newBoldLabel("Overwrite files"), s.overwriteFiles,
 		newBoldLabel("Notifications"), s.notificationRadio,
+		newBoldLabel("Update on startup"), s.updateRadio,
 	)
 
 	wormholeContainer := container.NewVBox(
