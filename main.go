@@ -17,6 +17,6 @@ func main() {
 	w.Resize(fyne.NewSize(700, 400))
 	w.SetMaster()
 
-	//updater.Enable(a, w)
+	updater.Enable(a, w)
 	w.ShowAndRun()
 }
