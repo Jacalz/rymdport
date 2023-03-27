@@ -117,8 +117,8 @@ github.com/fyne-io/image v0.0.0-20220602074514-4956b0afb3d2/go.mod h1:eO7W361vml
 github.com/fynelabs/fyneselfupdate v0.1.0 h1:IAHSozfCu4AEtYd5NPvJ72fnchxSBBCGoqlID9YyhKw=
 github.com/fynelabs/fyneselfupdate v0.1.0/go.mod h1:GSgx/qDj7Zv0wHZDH9ki+l/kpWasJjdPS/x075GQSBs=
 github.com/fynelabs/selfupdate v0.0.0-20220603194016-1a68b05d3b4a/go.mod h1:n0XqnuiHUlOE3CuS1l1uVXvSlADxxleYWtqPwRYv5sI=
-github.com/fynelabs/selfupdate v0.1.0 h1:6tLKOCtrwDX383/6bwnsn8hoBy57NANkO2VMTKdNKqo=
-github.com/fynelabs/selfupdate v0.1.0/go.mod h1:rCdliRnLw+koUanA+lrqub9wWlNc2wPDTsyRC6A+vfc=
+github.com/fynelabs/selfupdate v0.2.0 h1:IDqwgV7BYj4lCcoD8hHvIapVGmS5ifWrc0sQTWh1eFw=
+github.com/fynelabs/selfupdate v0.2.0/go.mod h1:rCdliRnLw+koUanA+lrqub9wWlNc2wPDTsyRC6A+vfc=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/gin-contrib/sse v0.1.0 h1:Y/yl/+YNO8GZSjAhjMsSuLt29uWRFHdHYUb5lYOV9qE=
 github.com/gin-contrib/sse v0.1.0/go.mod h1:RHrZQHXnP2xjPF+u1gW/2HnVO7nvIa9PG3Gm+fLHvGI=
