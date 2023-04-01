@@ -45,9 +45,14 @@
   </kudos>
 
   <releases>
+    <release version="3.3.4" date="2023-04-02" type="stable">
+      <description>
+        <p>Fixed the AppStream metadata not containing the v3.3.3 release information.</p>
+      </description>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.4</url>
+    </release>
     <release version="3.3.3" date="2023-03-27" type="stable">
       <description>
-        <p>Summary of changes in this release:</p>
         <ul>
           <li>Performance and memory improvements for text rendering.</li>
           <li>Improved performance when resizing the window.</li>
@@ -59,7 +64,6 @@
     </release>
     <release version="3.3.2" date="2023-02-23" type="stable">
       <description>
-        <p>Summary of changes in this release:</p>
         <ul>
           <li>Minor performance improvements to the list of sent/received items.</li>
           <li>Updated fyne to v2.3.1 for various bug fixes and improvements.</li>
@@ -75,7 +79,6 @@
     </release>
     <release version="3.3.0" date="2023-01-14" type="stable">
       <description>
-        <p>Summary of changes in this release:</p>
         <ul>
           <li>Notifications for received files now mentions where the file was saved to.</li>
           <li>Present more useful information about how to write custom codes.</li>
@@ -93,7 +96,6 @@
     </release>
   	<release version="3.2.0" date="2022-07-26" type="stable">
       <description>
-        <p>Summary of changes in this release:</p>
         <ul>
           <li>Work around send and receive windows not being focused correctly.</li>
           <li>Go backwards in tab completion using Shift + Tab.</li>
@@ -107,7 +109,6 @@
     </release>
     <release version="3.1.0" date="2022-06-27" type="stable">
       <description>
-        <p>Summary of changes in this release:</p>
         <ul>
           <li>Added support for tab completion of receive-codes.</li>
           <li>Notifications now show the application icon.</li>

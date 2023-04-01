@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.3.4 - Add missing AppData entry for v3.3.3
+- Fixed the AppStream metadata not containing the v3.3.3 release information.
+
 ## 3.3.3 - Better Apple M2 support and improved rendering 
 - Updated `selfupdate` to [v0.2.0](https://github.com/fynelabs/selfupdate/releases/tag/v0.2.0).
   - This fixes update notifications showing when there were no new releases (issue #76). 
