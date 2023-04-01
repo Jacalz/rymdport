@@ -12,6 +12,7 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/rymdport/v3/internal/transport"
+	"github.com/Jacalz/rymdport/v3/internal/updater"
 	"github.com/Jacalz/rymdport/v3/internal/util"
 	"github.com/psanford/wormhole-william/wormhole"
 )
@@ -20,6 +21,7 @@ type settings struct {
 	downloadPathEntry *widget.Entry
 	overwriteFiles    *widget.RadioGroup
 	notificationRadio *widget.RadioGroup
+	checkUpdatesRadio *widget.RadioGroup
 
 	componentSlider     *widget.Slider
 	componentLabel      *widget.Label
@@ -100,6 +102,10 @@ func (s *settings) onNotificationsChanged(selected string) {
 	s.preferences.SetBool("Notifications", s.client.Notifications)
 }
 
+func (s *settings) onCheckUpdatesChanged(selected string) {
+	s.preferences.SetBool("CheckUpdates", selected == "On")
+}
+
 func (s *settings) onComponentsChange(value float64) {
 	s.client.PassPhraseComponentLength = int(value)
 	s.preferences.SetInt("ComponentLength", s.client.PassPhraseComponentLength)
@@ -155,15 +161,23 @@ func (s *settings) getPreferences() {
 	s.client.Notifications = s.preferences.BoolWithFallback("Notifications", true)
 	s.notificationRadio.Selected = onOrOff(s.client.Notifications)
 
-	s.client.PassPhraseComponentLength = s.preferences.IntWithFallback("ComponentLength", 2)
-	s.componentSlider.Value = float64(s.client.PassPhraseComponentLength)
-	s.componentLabel.Text = string('0' + byte(s.componentSlider.Value))
+	checkUpdates := s.preferences.BoolWithFallback("CheckUpdates", true)
+	if !updater.Enabled {
+		checkUpdates = false
+		s.checkUpdatesRadio.Disable()
+	}
+	s.checkUpdatesRadio.Selected = onOrOff(checkUpdates)
+	updater.Enable(s.app, s.window)
 
 	verify := s.preferences.Bool("Verify")
 	s.verifyRadio.Selected = onOrOff(verify)
 	if verify {
 		s.client.VerifierOk = s.verify
 	}
+
+	s.client.PassPhraseComponentLength = s.preferences.IntWithFallback("ComponentLength", 2)
+	s.componentSlider.Value = float64(s.client.PassPhraseComponentLength)
+	s.componentLabel.Text = string('0' + byte(s.componentSlider.Value))
 
 	s.client.AppID = s.preferences.String("AppID")
 	s.appID.Text = s.client.AppID
@@ -184,9 +198,12 @@ func (s *settings) buildUI() *container.Scroll {
 	s.overwriteFiles = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onOverwriteFilesChanged}
 
 	s.notificationRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onNotificationsChanged}
-	s.componentSlider, s.componentLabel = &widget.Slider{Min: 2.0, Max: 6.0, Step: 1, OnChanged: s.onComponentsChange}, &widget.Label{}
+
+	s.checkUpdatesRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onCheckUpdatesChanged}
 
 	s.verifyRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onVerifyChanged}
+
+	s.componentSlider, s.componentLabel = &widget.Slider{Min: 2.0, Max: 6.0, Step: 1, OnChanged: s.onComponentsChange}, &widget.Label{}
 
 	s.appID = &widget.Entry{PlaceHolder: wormhole.WormholeCLIAppID, OnChanged: s.onAppIDChanged}
 
@@ -202,6 +219,7 @@ func (s *settings) buildUI() *container.Scroll {
 		newBoldLabel("Save files to"), s.downloadPathEntry,
 		newBoldLabel("Overwrite files"), s.overwriteFiles,
 		newBoldLabel("Notifications"), s.notificationRadio,
+		newBoldLabel("Check for updates"), s.checkUpdatesRadio,
 	)
 
 	wormholeContainer := container.NewVBox(

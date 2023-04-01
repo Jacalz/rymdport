@@ -11,6 +11,9 @@ import (
 	"github.com/fynelabs/selfupdate"
 )
 
+// Enabled specifies if the binary is built with update checking enabled.
+const Enabled = true
+
 // Enable turns on automatic application updates.
 func Enable(a fyne.App, w fyne.Window) {
 	publicKey := ed25519.PublicKey{165, 235, 49, 149, 238, 5, 192, 143, 38, 96, 124, 12, 235, 116, 94, 72, 244, 97, 230, 44, 60, 135, 85, 202, 98, 103, 233, 119, 63, 57, 83, 106}
