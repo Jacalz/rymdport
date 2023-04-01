@@ -45,6 +45,18 @@
   </kudos>
 
   <releases>
+    <release version="3.3.3" date="2023-03-27" type="stable">
+      <description>
+        <p>Summary of changes in this release:</p>
+        <ul>
+          <li>Performance and memory improvements for text rendering.</li>
+          <li>Improved performance when resizing the window.</li>
+          <li>Fixed letters being cropped in some cases.</li>
+          <li>Updated indirect dependencies for some minor security fixes.</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.3</url>
+    </release>
     <release version="3.3.2" date="2023-02-23" type="stable">
       <description>
         <p>Summary of changes in this release:</p>
