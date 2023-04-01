@@ -1,3 +1,5 @@
+//go:build !release && !debug
+
 // Package assets contains bundled static resources.
 package assets
 

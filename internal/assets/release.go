@@ -1,4 +1,4 @@
-//go:build ignore && (release || debug)
+//go:build release || debug
 
 package assets
 
