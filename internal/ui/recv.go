@@ -14,10 +14,8 @@ import (
 )
 
 type recv struct {
-	codeEntry  *completionEntry
-	codeButton *widget.Button
-
-	recvList *bridge.RecvList
+	codeEntry *completionEntry
+	recvList  *bridge.RecvList
 
 	client *transport.Client
 	window fyne.Window
@@ -42,11 +40,11 @@ func (r *recv) buildUI() *fyne.Container {
 	r.codeEntry = newCompletionEntry(r.client, r.window.Canvas())
 	r.codeEntry.OnSubmitted = func(_ string) { r.onRecv() }
 
-	r.codeButton = &widget.Button{Text: "Receive", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
+	codeButton := &widget.Button{Text: "Receive", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
 
 	r.recvList = bridge.NewRecvList(r.window, r.client)
 
-	box := container.NewVBox(&widget.Separator{}, container.NewGridWithColumns(2, r.codeEntry, r.codeButton), &widget.Separator{})
+	box := container.NewVBox(&widget.Separator{}, container.NewGridWithColumns(2, r.codeEntry, codeButton), &widget.Separator{})
 	return container.NewBorder(box, nil, nil, nil, r.recvList)
 }
 

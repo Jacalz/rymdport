@@ -13,11 +13,6 @@ import (
 )
 
 type about struct {
-	icon        *clickableIcon
-	nameLabel   *widget.Label
-	spacerLabel *widget.Label
-	hyperlink   *widget.Hyperlink
-
 	app fyne.App
 }
 
@@ -33,26 +28,26 @@ func (a *about) buildUI() *fyne.Container {
 	)
 
 	repoURL := &url.URL{Scheme: https, Host: github, Path: "/jacalz/rymdport"}
-	a.icon = newClickableIcon(a.app.Icon(), repoURL, a.app)
+	icon := newClickableIcon(a.app.Icon(), repoURL, a.app)
 
-	a.nameLabel = newBoldLabel("Rymdport")
-	a.spacerLabel = newBoldLabel("-")
+	nameLabel := newBoldLabel("Rymdport")
+	spacerLabel := newBoldLabel("-")
 
 	releaseURL := &url.URL{
 		Scheme: https, Host: github,
 		Path: "/jacalz/rymdport/releases/tag/" + version,
 	}
-	a.hyperlink = &widget.Hyperlink{Text: version, URL: releaseURL, TextStyle: fyne.TextStyle{Bold: true}}
+	hyperlink := &widget.Hyperlink{Text: version, URL: releaseURL, TextStyle: fyne.TextStyle{Bold: true}}
 
 	spacer := &layout.Spacer{}
 	return container.NewVBox(
 		spacer,
-		container.NewHBox(spacer, a.icon, spacer),
+		container.NewHBox(spacer, icon, spacer),
 		container.NewHBox(
 			spacer,
-			a.nameLabel,
-			a.spacerLabel,
-			a.hyperlink,
+			nameLabel,
+			spacerLabel,
+			hyperlink,
 			spacer,
 		),
 		spacer,

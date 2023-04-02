@@ -14,16 +14,10 @@ import (
 type send struct {
 	contentPicker dialog.Dialog
 
-	fileChoice      *widget.Button
-	directoryChoice *widget.Button
-	textChoice      *widget.Button
-	codeChoice      *widget.Check
-
 	fileDialog      *dialog.FileDialog
 	directoryDialog *dialog.FileDialog
 
-	contentToSend *widget.Button
-	sendList      *bridge.SendList
+	sendList *bridge.SendList
 
 	client *transport.Client
 	window fyne.Window
@@ -57,21 +51,21 @@ func (s *send) onCustomCode(enabled bool) {
 }
 
 func (s *send) buildUI() *fyne.Container {
-	s.fileChoice = &widget.Button{Text: "File", Icon: theme.FileIcon(), OnTapped: s.onFileSend}
-	s.directoryChoice = &widget.Button{Text: "Directory", Icon: theme.FolderOpenIcon(), OnTapped: s.onDirSend}
-	s.textChoice = &widget.Button{Text: "Text", Icon: theme.DocumentCreateIcon(), OnTapped: s.onTextSend}
-	s.codeChoice = &widget.Check{Text: "Use a custom code", OnChanged: s.onCustomCode}
+	fileChoice := &widget.Button{Text: "File", Icon: theme.FileIcon(), OnTapped: s.onFileSend}
+	directoryChoice := &widget.Button{Text: "Directory", Icon: theme.FolderOpenIcon(), OnTapped: s.onDirSend}
+	textChoice := &widget.Button{Text: "Text", Icon: theme.DocumentCreateIcon(), OnTapped: s.onTextSend}
+	codeChoice := &widget.Check{Text: "Use a custom code", OnChanged: s.onCustomCode}
 
-	choiceContent := container.NewGridWithColumns(1, s.fileChoice, s.directoryChoice, s.textChoice, s.codeChoice)
+	choiceContent := container.NewGridWithColumns(1, fileChoice, directoryChoice, textChoice, codeChoice)
 	s.contentPicker = dialog.NewCustom("Pick a content type", "Cancel", choiceContent, s.window)
 
 	s.sendList = bridge.NewSendList(s.window, s.client)
-	s.contentToSend = &widget.Button{Text: "Add content to send", Icon: theme.ContentAddIcon(), OnTapped: s.contentPicker.Show}
+	contentToSend := &widget.Button{Text: "Add content to send", Icon: theme.ContentAddIcon(), OnTapped: s.contentPicker.Show}
 
 	s.fileDialog = dialog.NewFileOpen(s.sendList.OnFileSelect, s.window)
 	s.directoryDialog = dialog.NewFolderOpen(s.sendList.OnDirSelect, s.window)
 
-	box := container.NewVBox(&widget.Separator{}, s.contentToSend, &widget.Separator{})
+	box := container.NewVBox(&widget.Separator{}, contentToSend, &widget.Separator{})
 	return container.NewBorder(box, nil, nil, nil, s.sendList)
 }
 
