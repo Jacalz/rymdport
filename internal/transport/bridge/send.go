@@ -66,7 +66,7 @@ func (p *SendList) UpdateItem(i int, item fyne.CanvasObject) {
 
 	container.Objects[0].(*widget.FileIcon).SetURI(p.items[i].URI)
 	container.Objects[1].(*widget.Label).SetText(p.items[i].URI.Name())
-	container.Objects[2].(*fyne.Container).Objects[0].(*codeDisplay).SetText(p.items[i].Code)
+	container.Objects[2].(*fyne.Container).Objects[0].(*widget.Label).SetText(p.items[i].Code)
 
 	progress := container.Objects[3].(*widget.ProgressBar)
 	progress.Max = float64(p.items[i].Max)
