@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.3.4 - Add missing AppData entry for v3.3.3
+## 3.3.4 - Add missing AppStream metadata for v3.3.3
 - Fixed the AppStream metadata not containing the v3.3.3 release information.
 
 ## 3.3.3 - Better Apple M2 support and improved rendering 
