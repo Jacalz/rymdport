@@ -8,6 +8,7 @@ require (
 	github.com/fynelabs/selfupdate v0.2.0
 	github.com/klauspost/compress v1.15.14
 	github.com/psanford/wormhole-william v1.0.6
+	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.8.1
 )
 

@@ -2,13 +2,16 @@ package bridge
 
 import (
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/storage"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/rymdport/v3/internal/transport"
 	"github.com/Jacalz/rymdport/v3/internal/util"
 	"github.com/psanford/wormhole-william/wormhole"
+	"github.com/skip2/go-qrcode"
 )
 
 // SendItem is the item that is being sent.
@@ -76,6 +79,25 @@ func (d *SendData) UpdateItem(i int, item fyne.CanvasObject) {
 // OnSelected currently just makes sure that we don't persist selection.
 func (d *SendData) OnSelected(i int) {
 	d.list.Unselect(i)
+
+	code, err := qrcode.New("wormhole-transfer:"+p.items[i].Code, qrcode.High)
+	if err != nil {
+		fyne.LogError("Failed to encode qr code", err)
+		return
+	}
+
+	code.BackgroundColor = theme.OverlayBackgroundColor()
+	code.ForegroundColor = theme.ForegroundColor()
+
+	qrcode := canvas.NewImageFromImage(code.Image(256))
+	qrcode.SetMinSize(fyne.NewSize(200, 200))
+
+	dialog.ShowCustom("QR Code", "Close", qrcode, p.window)
+
+	// Until we have a better way to show it.
+	if true {
+		return
+	}
 
 	// Only allow failed or completed items to be removed.
 	if d.items[i].Value < d.items[i].Max && d.items[i].Status == nil {
