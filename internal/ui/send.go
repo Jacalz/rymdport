@@ -22,11 +22,10 @@ type send struct {
 	client *transport.Client
 	window fyne.Window
 	canvas fyne.Canvas
-	app    fyne.App
 }
 
-func newSend(a fyne.App, w fyne.Window, c *transport.Client) *send {
-	return &send{app: a, window: w, client: c, canvas: w.Canvas()}
+func newSend(w fyne.Window, c *transport.Client) *send {
+	return &send{window: w, client: c, canvas: w.Canvas()}
 }
 
 func (s *send) onFileSend() {

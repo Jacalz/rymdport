@@ -129,7 +129,7 @@ func (s *settings) onTransitAdressChange(address string) {
 
 func (s *settings) onVerifyChanged(selected string) {
 	enabled := selected == "On"
-	s.app.Preferences().SetBool("Verify", enabled)
+	s.preferences.SetBool("Verify", enabled)
 	if enabled {
 		s.client.VerifierOk = s.verify
 	} else {

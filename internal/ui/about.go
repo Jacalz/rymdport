@@ -12,15 +12,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-type about struct {
-	app fyne.App
-}
-
-func newAbout(app fyne.App) *about {
-	return &about{app: app}
-}
-
-func (a *about) buildUI() *fyne.Container {
+func newAboutTab(app fyne.App) *container.TabItem {
 	const (
 		https   = "https"
 		github  = "github.com"
@@ -28,7 +20,7 @@ func (a *about) buildUI() *fyne.Container {
 	)
 
 	repoURL := &url.URL{Scheme: https, Host: github, Path: "/jacalz/rymdport"}
-	icon := newClickableIcon(a.app.Icon(), repoURL, a.app)
+	icon := newClickableIcon(app.Icon(), repoURL, app)
 
 	nameLabel := newBoldLabel("Rymdport")
 	spacerLabel := newBoldLabel("-")
@@ -40,22 +32,20 @@ func (a *about) buildUI() *fyne.Container {
 	hyperlink := &widget.Hyperlink{Text: version, URL: releaseURL, TextStyle: fyne.TextStyle{Bold: true}}
 
 	spacer := &layout.Spacer{}
-	return container.NewVBox(
-		spacer,
-		container.NewHBox(spacer, icon, spacer),
-		container.NewHBox(
+	return &container.TabItem{Text: "About", Icon: theme.InfoIcon(),
+		Content: container.NewVBox(
 			spacer,
-			nameLabel,
-			spacerLabel,
-			hyperlink,
+			container.NewHBox(spacer, icon, spacer),
+			container.NewHBox(
+				spacer,
+				nameLabel,
+				spacerLabel,
+				hyperlink,
+				spacer,
+			),
 			spacer,
 		),
-		spacer,
-	)
-}
-
-func (a *about) tabItem() *container.TabItem {
-	return &container.TabItem{Text: "About", Icon: theme.InfoIcon(), Content: a.buildUI()}
+	}
 }
 
 type clickableIcon struct {

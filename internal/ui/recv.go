@@ -19,11 +19,10 @@ type recv struct {
 
 	client *transport.Client
 	window fyne.Window
-	app    fyne.App
 }
 
-func newRecv(a fyne.App, w fyne.Window, c *transport.Client) *recv {
-	return &recv{app: a, window: w, client: c}
+func newRecv(w fyne.Window, c *transport.Client) *recv {
+	return &recv{window: w, client: c}
 }
 
 func (r *recv) onRecv() {
