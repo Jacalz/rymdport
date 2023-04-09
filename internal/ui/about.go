@@ -32,7 +32,8 @@ func newAboutTab(app fyne.App) *container.TabItem {
 	hyperlink := &widget.Hyperlink{Text: version, URL: releaseURL, TextStyle: fyne.TextStyle{Bold: true}}
 
 	spacer := &layout.Spacer{}
-	return &container.TabItem{Text: "About", Icon: theme.InfoIcon(),
+	return &container.TabItem{
+		Text: "About", Icon: theme.InfoIcon(),
 		Content: container.NewVBox(
 			spacer,
 			container.NewHBox(spacer, icon, spacer),
