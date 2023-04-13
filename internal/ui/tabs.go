@@ -13,9 +13,9 @@ func Create(app fyne.App, window fyne.Window) *container.AppTabs {
 	client := transport.NewClient(app)
 
 	tabs := &container.AppTabs{Items: []*container.TabItem{
-		newSend(window, client).tabItem(),
-		newRecv(window, client).tabItem(),
-		newSettings(app, window, client).tabItem(),
+		newSendTab(window, client),
+		newRecvTab(window, client),
+		newSettingsTab(app, window, client),
 		newAboutTab(app),
 	}}
 

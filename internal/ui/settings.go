@@ -36,8 +36,14 @@ type settings struct {
 	app         fyne.App
 }
 
-func newSettings(a fyne.App, w fyne.Window, c *transport.Client) *settings {
-	return &settings{app: a, window: w, client: c, preferences: a.Preferences()}
+func newSettingsTab(a fyne.App, w fyne.Window, c *transport.Client) *container.TabItem {
+	settings := &settings{app: a, window: w, client: c, preferences: a.Preferences()}
+
+	return &container.TabItem{
+		Text:    "Settings",
+		Icon:    theme.SettingsIcon(),
+		Content: settings.buildUI(),
+	}
 }
 
 func (s *settings) onDownloadsPathSubmitted(path string) {
@@ -242,10 +248,6 @@ func (s *settings) buildUI() *container.Scroll {
 		&widget.Card{Title: "Data Handling", Content: dataContainer},
 		&widget.Card{Title: "Wormhole Options", Content: wormholeContainer},
 	))
-}
-
-func (s *settings) tabItem() *container.TabItem {
-	return &container.TabItem{Text: "Settings", Icon: theme.SettingsIcon(), Content: s.buildUI()}
 }
 
 func newBoldLabel(text string) *widget.Label {

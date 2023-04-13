@@ -21,8 +21,14 @@ type recv struct {
 	window fyne.Window
 }
 
-func newRecv(w fyne.Window, c *transport.Client) *recv {
-	return &recv{window: w, client: c}
+func newRecvTab(w fyne.Window, c *transport.Client) *container.TabItem {
+	recv := &recv{window: w, client: c}
+
+	return &container.TabItem{
+		Text:    "Receive",
+		Icon:    theme.DownloadIcon(),
+		Content: recv.buildUI(),
+	}
 }
 
 func (r *recv) onRecv() {
@@ -45,10 +51,6 @@ func (r *recv) buildUI() *fyne.Container {
 
 	box := container.NewVBox(&widget.Separator{}, container.NewGridWithColumns(2, r.codeEntry, codeButton), &widget.Separator{})
 	return container.NewBorder(box, nil, nil, nil, bridge.NewRecvList(r.data))
-}
-
-func (r *recv) tabItem() *container.TabItem {
-	return &container.TabItem{Text: "Receive", Icon: theme.DownloadIcon(), Content: r.buildUI()}
 }
 
 type completionEntry struct {

@@ -24,8 +24,14 @@ type send struct {
 	canvas fyne.Canvas
 }
 
-func newSend(w fyne.Window, c *transport.Client) *send {
-	return &send{window: w, client: c, canvas: w.Canvas()}
+func newSendTab(w fyne.Window, c *transport.Client) *container.TabItem {
+	send := &send{window: w, client: c, canvas: w.Canvas()}
+
+	return &container.TabItem{
+		Text:    "Send",
+		Icon:    theme.MailSendIcon(),
+		Content: send.buildUI(),
+	}
 }
 
 func (s *send) onFileSend() {
@@ -66,8 +72,4 @@ func (s *send) buildUI() *fyne.Container {
 
 	box := container.NewVBox(&widget.Separator{}, contentToSend, &widget.Separator{})
 	return container.NewBorder(box, nil, nil, nil, bridge.NewSendList(s.data))
-}
-
-func (s *send) tabItem() *container.TabItem {
-	return &container.TabItem{Text: "Send", Icon: theme.MailSendIcon(), Content: s.buildUI()}
 }
