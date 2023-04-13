@@ -18,7 +18,7 @@ type RecvItem struct {
 	Max    int64
 	Status func() string
 
-	list *RecvList
+	list *widget.List
 }
 
 func (r *RecvItem) update(delta, total int64) {
@@ -37,24 +37,22 @@ func (r *RecvItem) failed() {
 	r.list.Refresh()
 }
 
-// RecvList is a list of progress bars that track send progress.
-type RecvList struct {
-	widget.List
-
-	client *transport.Client
+// RecvData is a list of progress bars that track send progress.
+type RecvData struct {
+	Client *transport.Client
+	Window fyne.Window
 
 	items []*RecvItem
-
-	window fyne.Window
+	list  *widget.List
 }
 
 // Length returns the length of the data.
-func (p *RecvList) Length() int {
-	return len(p.items)
+func (d *RecvData) Length() int {
+	return len(d.items)
 }
 
 // CreateItem creates a new item in the list.
-func (p *RecvList) CreateItem() fyne.CanvasObject {
+func (d *RecvData) CreateItem() fyne.CanvasObject {
 	return container.New(&listLayout{},
 		&widget.FileIcon{},
 		&widget.Label{Text: "Waiting for filename...", Wrapping: fyne.TextTruncate},
@@ -63,24 +61,24 @@ func (p *RecvList) CreateItem() fyne.CanvasObject {
 }
 
 // UpdateItem updates the data in the list.
-func (p *RecvList) UpdateItem(i int, item fyne.CanvasObject) {
+func (d *RecvData) UpdateItem(i int, item fyne.CanvasObject) {
 	container := item.(*fyne.Container)
-	container.Objects[0].(*widget.FileIcon).SetURI(p.items[i].URI)
-	container.Objects[1].(*widget.Label).SetText(p.items[i].Name)
+	container.Objects[0].(*widget.FileIcon).SetURI(d.items[i].URI)
+	container.Objects[1].(*widget.Label).SetText(d.items[i].Name)
 
 	progress := container.Objects[2].(*widget.ProgressBar)
-	progress.Max = float64(p.items[i].Max)
-	progress.Value = float64(p.items[i].Value)
-	progress.TextFormatter = p.items[i].Status
+	progress.Max = float64(d.items[i].Max)
+	progress.Value = float64(d.items[i].Value)
+	progress.TextFormatter = d.items[i].Status
 	progress.Refresh()
 }
 
 // OnSelected currently just makes sure that we don't persist selection.
-func (p *RecvList) OnSelected(i int) {
-	p.Unselect(i)
+func (d *RecvData) OnSelected(i int) {
+	d.list.Unselect(i)
 
 	// Only allow failed or completed items to be removed.
-	if p.items[i].Value < p.items[i].Max && p.items[i].Status == nil {
+	if d.items[i].Value < d.items[i].Max && d.items[i].Status == nil {
 		return
 	}
 
@@ -89,28 +87,28 @@ func (p *RecvList) OnSelected(i int) {
 			return
 		}
 
-		if i < len(p.items)-1 {
-			copy(p.items[i:], p.items[i+1:])
+		if i < len(d.items)-1 {
+			copy(d.items[i:], d.items[i+1:])
 		}
 
-		p.items[len(p.items)-1] = nil // Allow the GC to reclaim memory.
-		p.items = p.items[:len(p.items)-1]
+		d.items[len(d.items)-1] = nil // Allow the GC to reclaim memory.
+		d.items = d.items[:len(d.items)-1]
 
-		p.Refresh()
-	}, p.window)
+		d.list.Refresh()
+	}, d.Window)
 }
 
 // NewRecvItem creates a new send item and adds it to the items.
-func (p *RecvList) NewRecv() *RecvItem {
-	item := &RecvItem{Name: "Waiting for filename...", Max: 1, list: p}
-	p.items = append(p.items, item)
+func (d *RecvData) NewRecv() *RecvItem {
+	item := &RecvItem{Name: "Waiting for filename...", Max: 1, list: d.list}
+	d.items = append(d.items, item)
 	return item
 }
 
 // NewReceive adds data about a new send to the list and then returns the channel to update the code.
-func (p *RecvList) NewReceive(code string) {
-	item := p.NewRecv()
-	p.Refresh()
+func (d *RecvData) NewReceive(code string) {
+	item := d.NewRecv()
+	d.list.Refresh()
 
 	path := make(chan string)
 
@@ -118,32 +116,32 @@ func (p *RecvList) NewReceive(code string) {
 		item.URI = storage.NewFileURI(<-path)
 		item.Name = item.URI.Name()
 		close(path)
-		p.Refresh()
+		d.list.Refresh()
 	}()
 
 	go func(code string) {
-		if err := p.client.NewReceive(code, path, item.update); err != nil {
-			p.client.ShowNotification("Receive failed", "An error occurred when receiving the data.")
+		if err := d.Client.NewReceive(code, path, item.update); err != nil {
+			d.Client.ShowNotification("Receive failed", "An error occurred when receiving the data.")
 			item.failed()
-			dialog.ShowError(err, p.window)
+			dialog.ShowError(err, d.Window)
 		} else if item.Name != "Text Snippet" {
-			p.client.ShowNotification("Receive completed", "The contents were saved to "+item.URI.Path()+".")
+			d.Client.ShowNotification("Receive completed", "The contents were saved to "+item.URI.Path()+".")
 			item.done()
 		} else {
-			p.client.ShowNotification("Receive completed", "The text was received successfully.")
+			d.Client.ShowNotification("Receive completed", "The text was received successfully.")
 			item.done()
 		}
 	}(code)
 }
 
 // NewRecvList greates a list of progress bars.
-func NewRecvList(window fyne.Window, client *transport.Client) *RecvList {
-	p := &RecvList{client: client, window: window}
-	p.List.Length = p.Length
-	p.List.CreateItem = p.CreateItem
-	p.List.UpdateItem = p.UpdateItem
-	p.List.OnSelected = p.OnSelected
-	p.ExtendBaseWidget(p)
-
-	return p
+func NewRecvList(data *RecvData) *widget.List {
+	list := &widget.List{
+		Length:     data.Length,
+		CreateItem: data.CreateItem,
+		UpdateItem: data.UpdateItem,
+		OnSelected: data.OnSelected,
+	}
+	data.list = list
+	return list
 }

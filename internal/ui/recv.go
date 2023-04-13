@@ -15,7 +15,7 @@ import (
 
 type recv struct {
 	codeEntry *completionEntry
-	recvList  *bridge.RecvList
+	data      *bridge.RecvData
 
 	client *transport.Client
 	window fyne.Window
@@ -31,7 +31,7 @@ func (r *recv) onRecv() {
 		return
 	}
 
-	r.recvList.NewReceive(r.codeEntry.Text)
+	r.data.NewReceive(r.codeEntry.Text)
 	r.codeEntry.SetText("")
 }
 
@@ -41,10 +41,10 @@ func (r *recv) buildUI() *fyne.Container {
 
 	codeButton := &widget.Button{Text: "Receive", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
 
-	r.recvList = bridge.NewRecvList(r.window, r.client)
+	r.data = &bridge.RecvData{Client: r.client, Window: r.window}
 
 	box := container.NewVBox(&widget.Separator{}, container.NewGridWithColumns(2, r.codeEntry, codeButton), &widget.Separator{})
-	return container.NewBorder(box, nil, nil, nil, r.recvList)
+	return container.NewBorder(box, nil, nil, nil, bridge.NewRecvList(r.data))
 }
 
 func (r *recv) tabItem() *container.TabItem {

@@ -17,7 +17,7 @@ type send struct {
 	fileDialog      *dialog.FileDialog
 	directoryDialog *dialog.FileDialog
 
-	sendList *bridge.SendList
+	data *bridge.SendData
 
 	client *transport.Client
 	window fyne.Window
@@ -42,7 +42,7 @@ func (s *send) onDirSend() {
 
 func (s *send) onTextSend() {
 	s.contentPicker.Hide()
-	s.sendList.SendText()
+	s.data.SendText()
 }
 
 func (s *send) onCustomCode(enabled bool) {
@@ -58,14 +58,14 @@ func (s *send) buildUI() *fyne.Container {
 	choiceContent := container.NewGridWithColumns(1, fileChoice, directoryChoice, textChoice, codeChoice)
 	s.contentPicker = dialog.NewCustom("Pick a content type", "Cancel", choiceContent, s.window)
 
-	s.sendList = bridge.NewSendList(s.window, s.client)
+	s.data = &bridge.SendData{Client: s.client, Window: s.window, Canvas: s.canvas}
 	contentToSend := &widget.Button{Text: "Add content to send", Icon: theme.ContentAddIcon(), OnTapped: s.contentPicker.Show}
 
-	s.fileDialog = dialog.NewFileOpen(s.sendList.OnFileSelect, s.window)
-	s.directoryDialog = dialog.NewFolderOpen(s.sendList.OnDirSelect, s.window)
+	s.fileDialog = dialog.NewFileOpen(s.data.OnFileSelect, s.window)
+	s.directoryDialog = dialog.NewFolderOpen(s.data.OnDirSelect, s.window)
 
 	box := container.NewVBox(&widget.Separator{}, contentToSend, &widget.Separator{})
-	return container.NewBorder(box, nil, nil, nil, s.sendList)
+	return container.NewBorder(box, nil, nil, nil, bridge.NewSendList(s.data))
 }
 
 func (s *send) tabItem() *container.TabItem {
