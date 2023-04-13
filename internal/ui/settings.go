@@ -33,16 +33,15 @@ type settings struct {
 	client      *transport.Client
 	preferences fyne.Preferences
 	window      fyne.Window
-	app         fyne.App
 }
 
 func newSettingsTab(a fyne.App, w fyne.Window, c *transport.Client) *container.TabItem {
-	settings := &settings{app: a, window: w, client: c, preferences: a.Preferences()}
+	settings := &settings{window: w, client: c, preferences: a.Preferences()}
 
 	return &container.TabItem{
 		Text:    "Settings",
 		Icon:    theme.SettingsIcon(),
-		Content: settings.buildUI(),
+		Content: settings.buildUI(a),
 	}
 }
 
@@ -157,7 +156,7 @@ func (s *settings) verify(hash string) bool {
 }
 
 // getPreferences is used to set the preferences on startup without saving at the same time.
-func (s *settings) getPreferences() {
+func (s *settings) getPreferences(app fyne.App) {
 	s.client.DownloadPath = s.preferences.StringWithFallback("DownloadPath", util.UserDownloadsFolder())
 	s.downloadPathEntry.Text = s.client.DownloadPath
 
@@ -173,7 +172,7 @@ func (s *settings) getPreferences() {
 		s.checkUpdatesRadio.Disable()
 	}
 	s.checkUpdatesRadio.Selected = onOrOff(checkUpdates)
-	updater.Enable(s.app, s.window)
+	updater.Enable(app, s.window)
 
 	verify := s.preferences.Bool("Verify")
 	s.verifyRadio.Selected = onOrOff(verify)
@@ -195,7 +194,7 @@ func (s *settings) getPreferences() {
 	s.transitRelayAddress.Text = s.client.TransitRelayAddress
 }
 
-func (s *settings) buildUI() *container.Scroll {
+func (s *settings) buildUI(app fyne.App) *container.Scroll {
 	onOffOptions := []string{"On", "Off"}
 
 	pathSelector := &widget.Button{Icon: theme.FolderOpenIcon(), Importance: widget.LowImportance, OnTapped: s.onDownloadsPathSelected}
@@ -217,7 +216,7 @@ func (s *settings) buildUI() *container.Scroll {
 
 	s.transitRelayAddress = &widget.Entry{PlaceHolder: wormhole.DefaultTransitRelayAddress, OnChanged: s.onTransitAdressChange}
 
-	s.getPreferences()
+	s.getPreferences(app)
 
 	interfaceContainer := appearance.NewSettings().LoadAppearanceScreen(s.window)
 
