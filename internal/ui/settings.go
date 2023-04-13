@@ -171,8 +171,10 @@ func (s *settings) getPreferences(app fyne.App) {
 		checkUpdates = false
 		s.checkUpdatesRadio.Disable()
 	}
+	if checkUpdates {
+		updater.Enable(app, s.window)
+	}
 	s.checkUpdatesRadio.Selected = onOrOff(checkUpdates)
-	updater.Enable(app, s.window)
 
 	verify := s.preferences.Bool("Verify")
 	s.verifyRadio.Selected = onOrOff(verify)
