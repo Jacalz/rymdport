@@ -12,12 +12,14 @@ import (
 func Create(app fyne.App, window fyne.Window) *container.AppTabs {
 	client := transport.NewClient(app)
 
-	tabs := &container.AppTabs{Items: []*container.TabItem{
-		newSendTab(window, client),
-		newRecvTab(window, client),
-		newSettingsTab(app, window, client),
-		newAboutTab(app),
-	}}
+	tabs := &container.AppTabs{
+		Items: []*container.TabItem{
+			newSendTab(window, client),
+			newRecvTab(window, client),
+			newSettingsTab(app, window, client),
+			newAboutTab(app),
+		},
+	}
 
 	canvas := window.Canvas()
 
