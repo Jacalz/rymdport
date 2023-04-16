@@ -17,11 +17,11 @@ Great! You have either found a bug to fix or a new feature to implement.
 Follow the steps below to increase the chance of the changes being accepted quickly.
 
 1. Read and follow the guidelines in the [Code standards] (# Code-standards) section further down this page.
-2. Consider how to structure your code so that it can be easily tested.
-3. Write the code changes and create a new commit for your change.
-4. Run the tests and make sure everything still works as expected using `go test ./...`.
-5. Open a PR against the `main` branch. If there is an open bug, you should add "Fixes #", followed by the issue number, on a new line.
-6. Please refrain from pushing or squashing.This makes it easier to review, and squashing can instead be done automatically when merging.
+2. Consider how to structure your code so that it is readable, clean, and can be easily tested.
+4. Write the code changes and create a new commit for your change.
+5. Run the tests and make sure everything still works as expected using `go test ./...`.
+6. Open a PR against the `next` branch for features (only bugfixes should target the `main` branch). If there is an open bug, you should add "Fixes #", followed by the issue number, on a new line.
+7. Please refrain from pushing or squashing.This makes it easier to review, and squashing can instead be done automatically when merging.
 
 ### Code standards
 
