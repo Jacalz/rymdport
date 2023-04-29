@@ -29,7 +29,7 @@ func (a *about) buildUI() *fyne.Container {
 	const (
 		https   = "https"
 		github  = "github.com"
-		version = "v3.3.4"
+		version = "v3.3.5"
 	)
 
 	repoURL := &url.URL{Scheme: https, Host: github, Path: "/jacalz/rymdport"}
