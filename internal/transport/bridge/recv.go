@@ -5,6 +5,7 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/storage"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/rymdport/v3/internal/transport"
 )
@@ -77,16 +78,8 @@ func (d *RecvData) UpdateItem(i int, item fyne.CanvasObject) {
 func (d *RecvData) OnSelected(i int) {
 	d.list.Unselect(i)
 
-	// Only allow failed or completed items to be removed.
-	if d.items[i].Value < d.items[i].Max && d.items[i].Status == nil {
-		return
-	}
-
-	dialog.ShowConfirm("Remove from list", "Do you wish to remove the item from the list?", func(remove bool) {
-		if !remove {
-			return
-		}
-
+	removeLabel := &widget.Label{Text: "This item has finished sending and can be removed."}
+	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.WarningImportance, Text: "Remove item", OnTapped: func() {
 		if i < len(d.items)-1 {
 			copy(d.items[i:], d.items[i+1:])
 		}
@@ -95,7 +88,17 @@ func (d *RecvData) OnSelected(i int) {
 		d.items = d.items[:len(d.items)-1]
 
 		d.list.Refresh()
-	}, d.Window)
+	}}
+
+	removeCard := &widget.Card{Content: container.NewVBox(removeLabel, removeButton)}
+
+	// Only allow failed or completed items to be removed.
+	if d.items[i].Value < d.items[i].Max && d.items[i].Status == nil {
+		removeLabel.Text = "This item has not finished sending and can not be removed."
+		removeButton.Disable()
+	}
+
+	dialog.ShowCustom("Information", "Close", removeCard, d.Window)
 }
 
 // NewRecvItem creates a new send item and adds it to the items.

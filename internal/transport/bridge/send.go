@@ -80,7 +80,7 @@ func (d *SendData) UpdateItem(i int, item fyne.CanvasObject) {
 func (d *SendData) OnSelected(i int) {
 	d.list.Unselect(i)
 
-	code, err := qrcode.New("wormhole-transfer:"+p.items[i].Code, qrcode.High)
+	code, err := qrcode.New("wormhole-transfer:"+d.items[i].Code, qrcode.High)
 	if err != nil {
 		fyne.LogError("Failed to encode qr code", err)
 		return
@@ -90,25 +90,20 @@ func (d *SendData) OnSelected(i int) {
 	code.ForegroundColor = theme.ForegroundColor()
 
 	qrcode := canvas.NewImageFromImage(code.Image(256))
-	qrcode.SetMinSize(fyne.NewSize(200, 200))
+	qrcode.FillMode = canvas.ImageFillOriginal
+	qrcode.SetMinSize(fyne.NewSize(256, 256))
 
-	dialog.ShowCustom("QR Code", "Close", qrcode, p.window)
-
-	// Until we have a better way to show it.
-	if true {
-		return
-	}
+	qrCodeInfo := widget.NewRichTextFromMarkdown("Compatible applications for QR code:\n\n- [Wormhole](https://play.google.com/store/apps/details?id=eu.heili.wormhole) (Android)")
+	qrCard := &widget.Card{Image: qrcode, Content: qrCodeInfo}
 
 	// Only allow failed or completed items to be removed.
 	if d.items[i].Value < d.items[i].Max && d.items[i].Status == nil {
+		dialog.ShowCustom("Information", "Close", qrCard, d.Window)
 		return
 	}
 
-	dialog.ShowConfirm("Remove from list", "Do you wish to remove the item from the list?", func(remove bool) {
-		if !remove {
-			return
-		}
-
+	removeLabel := &widget.Label{Text: "This item has finished sending and can be removed."}
+	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.WarningImportance, Text: "Remove item", OnTapped: func() {
 		if i < len(d.items)-1 {
 			copy(d.items[i:], d.items[i+1:])
 		}
@@ -117,7 +112,11 @@ func (d *SendData) OnSelected(i int) {
 		d.items = d.items[:len(d.items)-1]
 
 		d.list.Refresh()
-	}, d.Window)
+	}}
+
+	removeCard := &widget.Card{Content: container.NewVBox(removeLabel, removeButton)}
+
+	dialog.ShowCustom("Information", "Close", container.NewBorder(nil, removeCard, nil, nil, qrCard), d.Window)
 }
 
 // NewSend adds data about a new send to the list and then returns the item.
