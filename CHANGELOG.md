@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.3.5 - Performance and memory usage improvements
+- Updated `fyne` to [v2.3.4](https://github.com/fyne-io/fyne/releases/tag/v2.3.4).
+  - Binary size improvements (roughly 20% smaller binaries).
+  - Various performance and memory usage improvements.
+
 ## 3.3.4 - Add missing AppStream metadata for v3.3.3
 - Fixed the AppStream metadata not containing the v3.3.3 release information.
 
