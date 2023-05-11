@@ -45,6 +45,21 @@
   </kudos>
 
   <releases>
+    <release version="3.3.6" date="2023-05-11" type="stable">
+      <description>
+        <ul>
+          <li>Fixed a crash when pressing the copy button in the text receive window.</li>
+          <li>Fixed the AppStream metadata not containing the v3.3.5 release information.</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.5</url>
+    </release>
+    <release version="3.3.5" date="2023-05-08" type="stable">
+      <description>
+        <p>Updated fyne to v2.3.4 for improved performance, less memory usage and 20% smaller binaries.</p>
+      </description>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.5</url>
+    </release>
     <release version="3.3.4" date="2023-04-02" type="stable">
       <description>
         <p>Fixed the AppStream metadata not containing the v3.3.3 release information.</p>

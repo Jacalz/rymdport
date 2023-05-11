@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.6 - Crash fix for copying received text
+- Fixed a crash when pressing the copy button in the text receive window.
+- Fixed the AppStream metadata not containing the v3.3.5 release information.
+
 ## 3.3.5 - Performance and memory usage improvements
 - Updated `fyne` to [v2.3.4](https://github.com/fyne-io/fyne/releases/tag/v2.3.4).
   - Binary size improvements (roughly 20% smaller binaries).
