@@ -1,7 +1,7 @@
 # Changelog
 
 ## 3.3.6 - Crash fix for copying received text
-- Fixed a crash when pressing the copy button in the text receive window.
+- Fixed a crash when pressing the copy button in the text receive window (fixes #83).
 - Fixed the AppStream metadata not containing the v3.3.5 release information.
 
 ## 3.3.5 - Performance and memory usage improvements
