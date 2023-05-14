@@ -89,7 +89,7 @@ func (d *SendData) OnSelected(i int) {
 	code.BackgroundColor = theme.OverlayBackgroundColor()
 	code.ForegroundColor = theme.ForegroundColor()
 
-	qrcode := canvas.NewImageFromImage(code.Image(200))
+	qrcode := canvas.NewImageFromImage(code.Image(100))
 	qrcode.FillMode = canvas.ImageFillOriginal
 	qrcode.ScaleMode = canvas.ImageScalePixels
 	qrcode.SetMinSize(fyne.NewSize(100, 100))
