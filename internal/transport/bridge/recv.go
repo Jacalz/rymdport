@@ -78,8 +78,8 @@ func (d *RecvData) UpdateItem(i int, item fyne.CanvasObject) {
 func (d *RecvData) OnSelected(i int) {
 	d.list.Unselect(i)
 
-	removeLabel := &widget.Label{Text: "This item has finished sending and can be removed."}
-	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.WarningImportance, Text: "Remove item", OnTapped: func() {
+	removeLabel := &widget.Label{Text: "This item has completed the transfer and can be removed."}
+	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.WarningImportance, Text: "Remove", OnTapped: func() {
 		if i < len(d.items)-1 {
 			copy(d.items[i:], d.items[i+1:])
 		}
@@ -94,7 +94,7 @@ func (d *RecvData) OnSelected(i int) {
 
 	// Only allow failed or completed items to be removed.
 	if d.items[i].Value < d.items[i].Max && d.items[i].Status == nil {
-		removeLabel.Text = "This item has not finished sending and can not be removed."
+		removeLabel.Text = "This item can not be removed yet. The transfer needs to complete first."
 		removeButton.Disable()
 	}
 

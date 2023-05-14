@@ -88,22 +88,18 @@ func (d *SendData) OnSelected(i int) {
 
 	code.BackgroundColor = theme.OverlayBackgroundColor()
 	code.ForegroundColor = theme.ForegroundColor()
+	code.DisableBorder = true
 
-	qrcode := canvas.NewImageFromImage(code.Image(256))
+	qrcode := canvas.NewImageFromImage(code.Image(200))
 	qrcode.FillMode = canvas.ImageFillOriginal
-	qrcode.SetMinSize(fyne.NewSize(256, 256))
+	qrcode.ScaleMode = canvas.ImageScalePixels
+	qrcode.SetMinSize(fyne.NewSize(100, 100))
 
-	qrCodeInfo := widget.NewRichTextFromMarkdown("Compatible applications for QR code:\n\n- [Wormhole](https://play.google.com/store/apps/details?id=eu.heili.wormhole) (Android)")
-	qrCard := &widget.Card{Image: qrcode, Content: qrCodeInfo}
+	qrCodeInfo := widget.NewRichTextFromMarkdown("Applications compatible with QR code:\n\n- [Wormhole](https://play.google.com/store/apps/details?id=eu.heili.wormhole) (Android)")
+	qrCard := &widget.Card{Content: container.NewGridWithColumns(2, qrcode, qrCodeInfo)}
 
-	// Only allow failed or completed items to be removed.
-	if d.items[i].Value < d.items[i].Max && d.items[i].Status == nil {
-		dialog.ShowCustom("Information", "Close", qrCard, d.Window)
-		return
-	}
-
-	removeLabel := &widget.Label{Text: "This item has finished sending and can be removed."}
-	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.WarningImportance, Text: "Remove item", OnTapped: func() {
+	removeLabel := &widget.Label{Text: "This item has completed the transfer and can be removed."}
+	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.WarningImportance, Text: "Remove", OnTapped: func() {
 		if i < len(d.items)-1 {
 			copy(d.items[i:], d.items[i+1:])
 		}
@@ -113,6 +109,12 @@ func (d *SendData) OnSelected(i int) {
 
 		d.list.Refresh()
 	}}
+
+	// Only allow failed or completed items to be removed.
+	if d.items[i].Value < d.items[i].Max && d.items[i].Status == nil {
+		removeLabel.Text = "This item can not be removed yet. The transfer needs to complete first."
+		removeButton.Disable()
+	}
 
 	removeCard := &widget.Card{Content: container.NewVBox(removeLabel, removeButton)}
 
