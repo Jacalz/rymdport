@@ -14,6 +14,7 @@ import (
 type RecvItem struct {
 	URI  fyne.URI
 	Name string
+	Code string
 
 	Value  int64
 	Max    int64
@@ -57,6 +58,7 @@ func (d *RecvData) CreateItem() fyne.CanvasObject {
 	return container.New(&listLayout{},
 		&widget.FileIcon{},
 		&widget.Label{Text: "Waiting for filename...", Wrapping: fyne.TextTruncate},
+		&widget.Label{Text: "Waiting for code..."},
 		&widget.ProgressBar{},
 	)
 }
@@ -66,8 +68,9 @@ func (d *RecvData) UpdateItem(i int, item fyne.CanvasObject) {
 	container := item.(*fyne.Container)
 	container.Objects[0].(*widget.FileIcon).SetURI(d.items[i].URI)
 	container.Objects[1].(*widget.Label).SetText(d.items[i].Name)
+	container.Objects[2].(*widget.Label).SetText(d.items[i].Code)
 
-	progress := container.Objects[2].(*widget.ProgressBar)
+	progress := container.Objects[3].(*widget.ProgressBar)
 	progress.Max = float64(d.items[i].Max)
 	progress.Value = float64(d.items[i].Value)
 	progress.TextFormatter = d.items[i].Status
@@ -102,15 +105,15 @@ func (d *RecvData) OnSelected(i int) {
 }
 
 // NewRecvItem creates a new send item and adds it to the items.
-func (d *RecvData) NewRecv() *RecvItem {
-	item := &RecvItem{Name: "Waiting for filename...", Max: 1, list: d.list}
+func (d *RecvData) NewRecv(code string) *RecvItem {
+	item := &RecvItem{Name: "Waiting for filename...", Code: code, Max: 1, list: d.list}
 	d.items = append(d.items, item)
 	return item
 }
 
 // NewReceive adds data about a new send to the list and then returns the channel to update the code.
 func (d *RecvData) NewReceive(code string) {
-	item := d.NewRecv()
+	item := d.NewRecv(code)
 	d.list.Refresh()
 
 	path := make(chan string)
