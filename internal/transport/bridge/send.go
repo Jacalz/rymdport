@@ -2,13 +2,16 @@ package bridge
 
 import (
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/storage"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/rymdport/v3/internal/transport"
 	"github.com/Jacalz/rymdport/v3/internal/util"
 	"github.com/psanford/wormhole-william/wormhole"
+	"github.com/skip2/go-qrcode"
 )
 
 // SendItem is the item that is being sent.
@@ -77,16 +80,25 @@ func (d *SendData) UpdateItem(i int, item fyne.CanvasObject) {
 func (d *SendData) OnSelected(i int) {
 	d.list.Unselect(i)
 
-	// Only allow failed or completed items to be removed.
-	if d.items[i].Value < d.items[i].Max && d.items[i].Status == nil {
+	code, err := qrcode.New("wormhole-transfer:"+d.items[i].Code, qrcode.High)
+	if err != nil {
+		fyne.LogError("Failed to encode qr code", err)
 		return
 	}
 
-	dialog.ShowConfirm("Remove from list", "Do you wish to remove the item from the list?", func(remove bool) {
-		if !remove {
-			return
-		}
+	code.BackgroundColor = theme.OverlayBackgroundColor()
+	code.ForegroundColor = theme.ForegroundColor()
 
+	qrcode := canvas.NewImageFromImage(code.Image(100))
+	qrcode.FillMode = canvas.ImageFillOriginal
+	qrcode.ScaleMode = canvas.ImageScalePixels
+	qrcode.SetMinSize(fyne.NewSize(100, 100))
+
+	qrCodeInfo := widget.NewRichTextFromMarkdown("A list of supported apps can be found [here](https://github.com/Jacalz/rymdport/wiki/Supported-clients).")
+	qrCard := &widget.Card{Image: qrcode, Content: container.NewCenter(qrCodeInfo)}
+
+	removeLabel := &widget.Label{Text: "This item can be removed.\nThe transfer has completed."}
+	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.DangerImportance, Text: "Remove", OnTapped: func() {
 		if i < len(d.items)-1 {
 			copy(d.items[i:], d.items[i+1:])
 		}
@@ -95,7 +107,17 @@ func (d *SendData) OnSelected(i int) {
 		d.items = d.items[:len(d.items)-1]
 
 		d.list.Refresh()
-	}, d.Window)
+	}}
+
+	// Only allow failed or completed items to be removed.
+	if d.items[i].Value < d.items[i].Max && d.items[i].Status == nil {
+		removeLabel.Text = "This item can not be removed yet.\nThe transfer needs to complete first."
+		removeButton.Disable()
+	}
+
+	removeCard := &widget.Card{Content: container.NewVBox(removeLabel, removeButton)}
+
+	dialog.ShowCustom("Information", "Close", container.NewGridWithColumns(2, qrCard, removeCard), d.Window)
 }
 
 // NewSend adds data about a new send to the list and then returns the item.
