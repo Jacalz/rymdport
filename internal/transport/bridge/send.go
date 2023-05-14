@@ -98,7 +98,7 @@ func (d *SendData) OnSelected(i int) {
 	qrCard := &widget.Card{Image: qrcode, Content: container.NewCenter(qrCodeInfo)}
 
 	removeLabel := &widget.Label{Text: "This item can be removed.\nThe transfer has completed."}
-	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.WarningImportance, Text: "Remove", OnTapped: func() {
+	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.DangerImportance, Text: "Remove", OnTapped: func() {
 		if i < len(d.items)-1 {
 			copy(d.items[i:], d.items[i+1:])
 		}

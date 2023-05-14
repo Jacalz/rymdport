@@ -79,7 +79,7 @@ func (d *RecvData) OnSelected(i int) {
 	d.list.Unselect(i)
 
 	removeLabel := &widget.Label{Text: "This item has completed the transfer and can be removed."}
-	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.WarningImportance, Text: "Remove", OnTapped: func() {
+	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.DangerImportance, Text: "Remove", OnTapped: func() {
 		if i < len(d.items)-1 {
 			copy(d.items[i:], d.items[i+1:])
 		}
