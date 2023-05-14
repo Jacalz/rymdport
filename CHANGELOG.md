@@ -6,7 +6,7 @@
  - Progress bars no longer display the wrong percentage sometimes.
  - Fixes a potential crash that could happen sometimes when sending.
 - Added support for removing items that have completed the transfer (fixes #32).
-- Added keyboard shortcuts for switching between tabs. See the [Keyboard Shortcuts](https://github.com/Jacalz/rymdport/wiki/Keyboard-shortcuts) for more information.
+- Added keyboard shortcuts for switching between tabs. See the [Keyboard Shortcuts](https://github.com/Jacalz/rymdport/wiki/Keyboard-shortcuts) wiki for more information.
 - Added an option to disable update checking on startup for release binaries (fixes #66).
 - The receive page now shows which code a received item came from.
 - Various improvements to performance and memory usage.
