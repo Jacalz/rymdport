@@ -88,17 +88,16 @@ func (d *SendData) OnSelected(i int) {
 
 	code.BackgroundColor = theme.OverlayBackgroundColor()
 	code.ForegroundColor = theme.ForegroundColor()
-	code.DisableBorder = true
 
 	qrcode := canvas.NewImageFromImage(code.Image(200))
 	qrcode.FillMode = canvas.ImageFillOriginal
 	qrcode.ScaleMode = canvas.ImageScalePixels
 	qrcode.SetMinSize(fyne.NewSize(100, 100))
 
-	qrCodeInfo := widget.NewRichTextFromMarkdown("Applications compatible with QR code:\n\n- [Wormhole](https://play.google.com/store/apps/details?id=eu.heili.wormhole) (Android)")
-	qrCard := &widget.Card{Content: container.NewGridWithColumns(2, qrcode, qrCodeInfo)}
+	qrCodeInfo := widget.NewRichTextFromMarkdown("A list of supported apps can be found [here](https://github.com/Jacalz/rymdport/wiki/Supported-clients).")
+	qrCard := &widget.Card{Image: qrcode, Content: container.NewCenter(qrCodeInfo)}
 
-	removeLabel := &widget.Label{Text: "This item has completed the transfer and can be removed."}
+	removeLabel := &widget.Label{Text: "This item can be removed.\nThe transfer has completed."}
 	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.WarningImportance, Text: "Remove", OnTapped: func() {
 		if i < len(d.items)-1 {
 			copy(d.items[i:], d.items[i+1:])
@@ -112,13 +111,13 @@ func (d *SendData) OnSelected(i int) {
 
 	// Only allow failed or completed items to be removed.
 	if d.items[i].Value < d.items[i].Max && d.items[i].Status == nil {
-		removeLabel.Text = "This item can not be removed yet. The transfer needs to complete first."
+		removeLabel.Text = "This item can not be removed yet.\nThe transfer needs to complete first."
 		removeButton.Disable()
 	}
 
 	removeCard := &widget.Card{Content: container.NewVBox(removeLabel, removeButton)}
 
-	dialog.ShowCustom("Information", "Close", container.NewBorder(nil, removeCard, nil, nil, qrCard), d.Window)
+	dialog.ShowCustom("Information", "Close", container.NewGridWithColumns(2, qrCard, removeCard), d.Window)
 }
 
 // NewSend adds data about a new send to the list and then returns the item.
