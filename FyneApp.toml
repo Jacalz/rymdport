@@ -4,5 +4,5 @@ Website = "https://rymdport.github.io/"
   Icon = "internal/assets/icon/icon-512.png"
   Name = "rymdport"
   ID = "io.github.jacalz.rymdport"
-  Version = "3.3.6"
-  Build = 24
+  Version = "3.4.0"
+  Build = 25
