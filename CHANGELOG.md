@@ -3,8 +3,8 @@
 ## 3.4.0 - QR code support and backend rewrite
 - QR codes can now be generated for easily sending items to [supported apps](https://github.com/Jacalz/rymdport/wiki/Supported-clients#clients-with-qr-code-scanning) (fixes #10).
 - Rewrote a large part of the backend for displaying sends and receives.
- - Progress bars no longer display the wrong percentage sometimes.
- - Fixes a potential crash that could happen sometimes when sending.
+  - Progress bars no longer display the wrong percentage sometimes.
+  - Fixes a potential crash that could happen sometimes when sending.
 - Added support for removing items that have completed the transfer (fixes #32).
 - Added keyboard shortcuts for switching between tabs. See the [Keyboard Shortcuts](https://github.com/Jacalz/rymdport/wiki/Keyboard-shortcuts) wiki for more information.
 - Added an option to disable update checking on startup for release binaries (fixes #66).
