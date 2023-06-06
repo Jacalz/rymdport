@@ -10,6 +10,7 @@
 - Added an option to disable update checking on startup for release binaries (fixes #66).
 - The receive page now shows which code a received item came from.
 - Various improvements to performance and memory usage.
+- Updated `fyne` to [v2.3.5](https://github.com/fyne-io/fyne/releases/tag/v2.3.5) for many bug fixes.
 
 ## 3.3.6 - Crash fix for copying received text
 - Fixed a crash when pressing the copy button in the text receive window (fixes #83).
