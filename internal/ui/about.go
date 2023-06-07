@@ -12,55 +12,44 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-type about struct {
-	icon        *clickableIcon
-	nameLabel   *widget.Label
-	spacerLabel *widget.Label
-	hyperlink   *widget.Hyperlink
-
-	app fyne.App
-}
-
-func newAbout(app fyne.App) *about {
-	return &about{app: app}
-}
-
-func (a *about) buildUI() *fyne.Container {
+func newAboutTab(app fyne.App) *container.TabItem {
 	const (
 		https   = "https"
 		github  = "github.com"
-		version = "v3.3.6"
+		version = "v3.4.0"
 	)
 
 	repoURL := &url.URL{Scheme: https, Host: github, Path: "/jacalz/rymdport"}
-	a.icon = newClickableIcon(a.app.Icon(), repoURL, a.app)
+	icon := newClickableIcon(app.Icon(), repoURL, app)
 
-	a.nameLabel = newBoldLabel("Rymdport")
-	a.spacerLabel = newBoldLabel("-")
+	nameLabel := newBoldLabel("Rymdport")
+	spacerLabel := newBoldLabel("-")
 
 	releaseURL := &url.URL{
 		Scheme: https, Host: github,
 		Path: "/jacalz/rymdport/releases/tag/" + version,
 	}
-	a.hyperlink = &widget.Hyperlink{Text: version, URL: releaseURL, TextStyle: fyne.TextStyle{Bold: true}}
+	hyperlink := &widget.Hyperlink{Text: version, URL: releaseURL, TextStyle: fyne.TextStyle{Bold: true}}
 
 	spacer := &layout.Spacer{}
-	return container.NewVBox(
+	content := container.NewVBox(
 		spacer,
-		container.NewHBox(spacer, a.icon, spacer),
+		container.NewHBox(spacer, icon, spacer),
 		container.NewHBox(
 			spacer,
-			a.nameLabel,
-			a.spacerLabel,
-			a.hyperlink,
+			nameLabel,
+			spacerLabel,
+			hyperlink,
 			spacer,
 		),
 		spacer,
 	)
-}
 
-func (a *about) tabItem() *container.TabItem {
-	return &container.TabItem{Text: "About", Icon: theme.InfoIcon(), Content: a.buildUI()}
+	return &container.TabItem{
+		Text:    "About",
+		Icon:    theme.InfoIcon(),
+		Content: content,
+	}
 }
 
 type clickableIcon struct {

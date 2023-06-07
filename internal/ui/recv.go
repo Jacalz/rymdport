@@ -14,18 +14,32 @@ import (
 )
 
 type recv struct {
-	codeEntry  *completionEntry
-	codeButton *widget.Button
+	codeEntry *completionEntry
+	data      *bridge.RecvData
 
-	recvList *bridge.RecvList
-
-	client *transport.Client
 	window fyne.Window
-	app    fyne.App
 }
 
-func newRecv(a fyne.App, w fyne.Window, c *transport.Client) *recv {
-	return &recv{app: a, window: w, client: c}
+func newRecvTab(w fyne.Window, c *transport.Client) *container.TabItem {
+	recv := &recv{window: w}
+
+	return &container.TabItem{
+		Text:    "Receive",
+		Icon:    theme.DownloadIcon(),
+		Content: recv.buildUI(c),
+	}
+}
+
+func (r *recv) buildUI(client *transport.Client) *fyne.Container {
+	r.codeEntry = newCompletionEntry(client, r.window.Canvas())
+	r.codeEntry.OnSubmitted = func(_ string) { r.onRecv() }
+
+	codeButton := &widget.Button{Text: "Receive", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
+
+	r.data = &bridge.RecvData{Client: client, Window: r.window}
+
+	box := container.NewVBox(&widget.Separator{}, container.NewGridWithColumns(2, r.codeEntry, codeButton), &widget.Separator{})
+	return container.NewBorder(box, nil, nil, nil, bridge.NewRecvList(r.data))
 }
 
 func (r *recv) onRecv() {
@@ -34,24 +48,8 @@ func (r *recv) onRecv() {
 		return
 	}
 
-	r.recvList.NewReceive(r.codeEntry.Text)
+	r.data.NewReceive(r.codeEntry.Text)
 	r.codeEntry.SetText("")
-}
-
-func (r *recv) buildUI() *fyne.Container {
-	r.codeEntry = newCompletionEntry(r.client, r.window.Canvas())
-	r.codeEntry.OnSubmitted = func(_ string) { r.onRecv() }
-
-	r.codeButton = &widget.Button{Text: "Receive", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
-
-	r.recvList = bridge.NewRecvList(r.window, r.client)
-
-	box := container.NewVBox(&widget.Separator{}, container.NewGridWithColumns(2, r.codeEntry, r.codeButton), &widget.Separator{})
-	return container.NewBorder(box, nil, nil, nil, r.recvList)
-}
-
-func (r *recv) tabItem() *container.TabItem {
-	return &container.TabItem{Text: "Receive", Icon: theme.DownloadIcon(), Content: r.buildUI()}
 }
 
 type completionEntry struct {

@@ -45,6 +45,21 @@
   </kudos>
 
   <releases>
+	<release version="3.4.0" date="2023-06-07" type="stable">
+      <description>
+        <ul>
+          <li>QR codes can now be generated for easily sending items to supported apps.</li>
+          <li>Progress bars no longer display the wrong percentage sometimes.</li>
+          <li>Fixed a potential crash that could happen sometimes when sending.</li>
+          <li>Added support for removing items that have completed the transfer.</li>
+          <li>Added keyboard shortcuts for switching between tabs.</li>
+          <li>The receive page now shows which code a received item came from.</li>
+          <li>Various improvements to performance and memory usage.</li>
+          <li>Updated fyne to v2.3.5 for many bug fixes.</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.5</url>
+    </release>
     <release version="3.3.6" date="2023-05-11" type="stable">
       <description>
         <ul>

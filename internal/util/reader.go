@@ -4,32 +4,34 @@ import (
 	"io"
 )
 
-type teeReader struct {
+type ProgressReader struct {
 	readat io.ReaderAt
 	read   io.Reader
-	prog   *ProgressBar
+
+	Max      int64
+	progress func(delta int64, max int64)
 }
 
 // ReadAt wraps the ReaderAt and updates the progress bar.
-func (t *teeReader) ReadAt(p []byte, off int64) (int, error) {
-	n, err := t.readat.ReadAt(p, off)
-	t.prog.SetValue(t.prog.Value + float64(n))
+func (p *ProgressReader) ReadAt(buf []byte, off int64) (int, error) {
+	n, err := p.readat.ReadAt(buf, off)
+	p.progress(int64(n), p.Max)
 	return n, err
 }
 
 // Read wraps the Reader and updates the progress bar.
-func (t *teeReader) Read(p []byte) (int, error) {
-	n, err := t.read.Read(p)
-	t.prog.SetValue(t.prog.Value + float64(n))
+func (p *ProgressReader) Read(buf []byte) (int, error) {
+	n, err := p.read.Read(buf)
+	p.progress(int64(n), p.Max)
 	return n, err
 }
 
-// TeeReaderAt returns a wrapped ReaderAt that updates the progress bar.
-func TeeReaderAt(r io.ReaderAt, p *ProgressBar) io.ReaderAt {
-	return &teeReader{readat: r, prog: p}
+// NewProgressReaderAt returns a wrapped ReaderAt that updates the progress bar.
+func NewProgressReaderAt(r io.ReaderAt, p func(delta int64, max int64), max int64) *ProgressReader {
+	return &ProgressReader{readat: r, progress: p, Max: max}
 }
 
-// TeeReader returns a wrapped Reader that updates the progress bar.
-func TeeReader(r io.Reader, p *ProgressBar) io.Reader {
-	return &teeReader{read: r, prog: p}
+// NewProgressReader returns a wrapped Reader that updates the progress bar.
+func NewProgressReader(r io.Reader, p func(delta int64, max int64), max int64) *ProgressReader {
+	return &ProgressReader{read: r, progress: p, Max: max}
 }

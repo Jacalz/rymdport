@@ -63,7 +63,6 @@ func (c *Client) CompleteRecvCode(toComplete string) []string {
 	return candidates
 }
 
-// TODO: This part is slow. We might want to cache the result.
 func (c *Client) activeNameplates() ([]string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
 	defer cancel()
@@ -80,8 +79,7 @@ func (c *Client) activeNameplates() ([]string, error) {
 
 	client := rendezvous.NewClient(url, randSideID(), appID)
 
-	mood := rendezvous.Happy
-	defer client.Close(ctx, mood)
+	defer client.Close(ctx, rendezvous.Happy)
 
 	_, err := client.Connect(ctx)
 	if err != nil {
@@ -93,12 +91,7 @@ func (c *Client) activeNameplates() ([]string, error) {
 
 // randSideID returns a string appropate for use as the Side ID for a client.
 func randSideID() string {
-	return randHex(5)
-}
-
-// randHex generates hex encoded secure random bytes of the byteCount length.
-func randHex(byteCount int) string {
-	buf := make([]byte, byteCount)
+	buf := make([]byte, 5)
 	_, err := io.ReadFull(rand.Reader, buf)
 	if err != nil {
 		panic(err)

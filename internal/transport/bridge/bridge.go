@@ -10,34 +10,21 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-// codeDisplay is a label extended to copy the code with a menu popup on rightclick.
-type codeDisplay struct {
-	widget.Label
-	button    *widget.Button
-	clipboard fyne.Clipboard
-}
-
-func (c *codeDisplay) copyOnPress() {
-	if c.Text != "Waiting for code..." {
-		c.button.SetIcon(theme.ConfirmIcon())
-		c.clipboard.SetContent(c.Text)
-	} else {
-		c.button.SetIcon(theme.CancelIcon())
-	}
-
-	time.Sleep(500 * time.Millisecond)
-	c.button.SetIcon(theme.ContentCopyIcon())
-}
-
 func newCodeDisplay(window fyne.Window) *fyne.Container {
-	c := &codeDisplay{
-		button:    &widget.Button{Icon: theme.ContentCopyIcon(), Importance: widget.LowImportance},
-		clipboard: window.Clipboard(),
+	codeLabel := &widget.Label{Text: "Waiting for code..."}
+	copyButton := &widget.Button{Icon: theme.ContentCopyIcon(), Importance: widget.LowImportance}
+	clipboard := window.Clipboard()
+	copyButton.OnTapped = func() {
+		if codeLabel.Text != "Waiting for code..." {
+			copyButton.SetIcon(theme.ConfirmIcon())
+			clipboard.SetContent(codeLabel.Text)
+		} else {
+			copyButton.SetIcon(theme.CancelIcon())
+		}
+
+		time.Sleep(500 * time.Millisecond)
+		copyButton.SetIcon(theme.ContentCopyIcon())
 	}
-	c.ExtendBaseWidget(c)
 
-	c.Text = "Waiting for code..."
-	c.button.OnTapped = c.copyOnPress
-
-	return container.NewHBox(c, c.button)
+	return container.NewHBox(codeLabel, copyButton)
 }
