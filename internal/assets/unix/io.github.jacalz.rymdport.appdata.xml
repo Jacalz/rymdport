@@ -45,7 +45,7 @@
   </kudos>
 
   <releases>
-	<release version="3.4.0" date="2023-06-07" type="stable">
+	  <release version="3.4.0" date="2023-06-07" type="stable">
       <description>
         <ul>
           <li>QR codes can now be generated for easily sending items to supported apps.</li>
@@ -58,7 +58,7 @@
           <li>Updated fyne to v2.3.5 for many bug fixes.</li>
         </ul>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.5</url>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.4.0</url>
     </release>
     <release version="3.3.6" date="2023-05-11" type="stable">
       <description>
