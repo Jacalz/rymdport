@@ -91,7 +91,7 @@ func (s *settings) onOverwriteFilesChanged(selected string) {
 		return
 	}
 
-	dialog.ShowConfirm("Are you sure?", "Enabling this option risks potentially overwriting important files.", func(enable bool) {
+	confirm := dialog.NewConfirm("Are you sure?", "Enabling this option risks potentially overwriting important files.", func(enable bool) {
 		if !enable {
 			s.overwriteFiles.SetSelected("Off")
 			return
@@ -100,6 +100,8 @@ func (s *settings) onOverwriteFilesChanged(selected string) {
 		s.client.OverwriteExisting = true
 		s.preferences.SetBool("OverwriteFiles", s.client.OverwriteExisting)
 	}, s.window)
+	confirm.SetConfirmImportance(widget.WarningImportance)
+	confirm.Show()
 }
 
 func (s *settings) onNotificationsChanged(selected string) {
