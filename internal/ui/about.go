@@ -16,7 +16,7 @@ func newAboutTab(app fyne.App) *container.TabItem {
 	const (
 		https   = "https"
 		github  = "github.com"
-		version = "v3.4.0"
+		version = "v3.5.0"
 	)
 
 	repoURL := &url.URL{Scheme: https, Host: github, Path: "/jacalz/rymdport"}
