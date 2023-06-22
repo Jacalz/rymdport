@@ -4,6 +4,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/rymdport/v3/internal/transport"
@@ -46,6 +47,7 @@ func (s *send) buildUI(window fyne.Window) *fyne.Container {
 
 	s.fileDialog = dialog.NewFileOpen(s.data.OnFileSelect, window)
 	s.directoryDialog = dialog.NewFolderOpen(s.data.OnDirSelect, window)
+	window.SetOnDropped(s.onDropped)
 
 	box := container.NewVBox(&widget.Separator{}, contentToSend, &widget.Separator{})
 	return container.NewBorder(box, nil, nil, nil, bridge.NewSendList(s.data))
@@ -70,4 +72,26 @@ func (s *send) onTextSend() {
 
 func (s *send) onCustomCode(enabled bool) {
 	s.client.CustomCode = enabled
+}
+
+func (s *send) onDropped(_ fyne.Position, uris []fyne.URI) {
+	if len(uris) == 0 {
+		return
+	}
+
+	if len(uris) == 1 {
+		isDir, err := storage.CanList(uris[0])
+		if err != nil {
+			fyne.LogError("Could not check if path is directory", err)
+			return
+		}
+
+		if !isDir {
+			reader, err := storage.Reader(uris[0])
+			s.data.OnFileSelect(reader, err)
+		} else {
+			reader, err := storage.ListerForURI(uris[0])
+			s.data.OnDirSelect(reader, err)
+		}
+	}
 }
