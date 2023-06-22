@@ -12,14 +12,23 @@ import (
 func Create(app fyne.App, window fyne.Window) *container.AppTabs {
 	client := transport.NewClient(app)
 
+	send := newSend(window, client)
 	tabs := &container.AppTabs{
 		Items: []*container.TabItem{
-			newSendTab(window, client),
+			send.newSendTab(),
 			newRecvTab(window, client),
 			newSettingsTab(app, window, client),
 			newAboutTab(app),
 		},
 	}
+
+	window.SetOnDropped(func(pos fyne.Position, uris []fyne.URI) {
+		if tabs.SelectedIndex() != 0 {
+			tabs.SelectIndex(0)
+		}
+
+		send.onDropped(pos, uris)
+	})
 
 	canvas := window.Canvas()
 
