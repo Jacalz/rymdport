@@ -79,6 +79,8 @@ func (s *send) onDropped(_ fyne.Position, uris []fyne.URI) {
 		return
 	}
 
+	// TODO: Switch to send tab if not on it already.
+
 	if len(uris) == 1 {
 		isDir, err := storage.CanList(uris[0])
 		if err != nil {
@@ -93,5 +95,7 @@ func (s *send) onDropped(_ fyne.Position, uris []fyne.URI) {
 			reader, err := storage.ListerForURI(uris[0])
 			s.data.OnDirSelect(reader, err)
 		}
+	} else {
+		s.data.NewSendFromFiles(uris)
 	}
 }
