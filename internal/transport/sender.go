@@ -2,12 +2,13 @@ package transport
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"fyne.io/fyne/v2"
+	"github.com/Jacalz/rymdport/v3/zip"
 	"github.com/psanford/wormhole-william/wormhole"
 )
 
@@ -39,7 +40,6 @@ func (c *Client) NewDirSend(dir fyne.ListableURI, progress wormhole.SendOption, 
 
 		return nil
 	}); err != nil {
-		fyne.LogError("Error on walking directory", err)
 		return "", nil, err
 	}
 
@@ -48,51 +48,58 @@ func (c *Client) NewDirSend(dir fyne.ListableURI, progress wormhole.SendOption, 
 
 // NewMultipleFileSend sends multiple files as a directory send using wormhole-william.
 func (c *Client) NewMultipleFileSend(uris []fyne.URI, progress wormhole.SendOption, code string) (string, chan wormhole.SendResult, error) {
-	prefixStr, _ := filepath.Split(uris[0].Path())
-	prefixStr, dirName := filepath.Split(prefixStr[:len(prefixStr)-1])
-	prefix := len(prefixStr) // Where the prefix ends. Doing it this way is faster and works when paths don't use same separator (\ or /).
-
-	// TODO: Support (and handle) files that are not in the same base directory.
+	// We want to prefix all directory entires with the parent folder only.
+	baseDir := filepath.Dir(uris[0].Path())
+	subDir, dirName := filepath.Split(baseDir)
+	prefix := len(subDir)
 
 	files := make([]wormhole.DirectoryEntry, 0, len(uris))
 	for _, uri := range uris {
-		info, err := os.Lstat(uri.Path())
+		absPath, err := filepath.Abs(filepath.Join(baseDir, uri.Name()))
+		if err != nil {
+			return "", nil, err
+		}
+
+		if !strings.HasPrefix(absPath, baseDir) {
+			return "", nil, zip.ErrorDangerousFilename
+		}
+
+		path := uri.Path()
+		info, err := os.Lstat(path)
 		if err != nil {
 			return "", nil, err
 		}
 
 		if !info.IsDir() {
-			path := uri.Path()
-
-			fmt.Println(path[prefix:])
-
 			files = append(files, wormhole.DirectoryEntry{
-				Path: path[prefix:], // Instead of strings.TrimPrefix. Paths don't need match (e.g. "C:/home/dir" == "C:\home\dir").
+				Path: path[prefix:], // Instead of strings.TrimPrefix. Paths don't need match separators (e.g. "C:/home/dir" == "C:\home\dir").
 				Mode: info.Mode(),
 				Reader: func() (io.ReadCloser, error) {
 					return os.Open(path) // #nosec - path is already cleaned by filepath.Walk
 				},
 			})
-		} else {
-			if err := filepath.Walk(uri.Path(), func(path string, info os.FileInfo, err error) error {
-				if err != nil {
-					return err
-				} else if info.IsDir() || !info.Mode().IsRegular() {
-					return nil
-				}
 
-				files = append(files, wormhole.DirectoryEntry{
-					Path: path[prefix:], // Instead of strings.TrimPrefix. Paths don't need match (e.g. "C:/home/dir" == "C:\home\dir").
-					Mode: info.Mode(),
-					Reader: func() (io.ReadCloser, error) {
-						return os.Open(path) // #nosec - path is already cleaned by filepath.Walk
-					},
-				})
+			continue
+		}
 
+		if err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			} else if info.IsDir() || !info.Mode().IsRegular() {
 				return nil
-			}); err != nil {
-				return "", nil, err
 			}
+
+			files = append(files, wormhole.DirectoryEntry{
+				Path: path[prefix:], // Instead of strings.TrimPrefix. Paths don't need match separators (e.g. "C:/home/dir" == "C:\home\dir").
+				Mode: info.Mode(),
+				Reader: func() (io.ReadCloser, error) {
+					return os.Open(path) // #nosec - path is already cleaned by filepath.Walk
+				},
+			})
+
+			return nil
+		}); err != nil {
+			return "", nil, err
 		}
 	}
 
