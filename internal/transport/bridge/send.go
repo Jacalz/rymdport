@@ -1,6 +1,8 @@
 package bridge
 
 import (
+	"path/filepath"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -209,7 +211,8 @@ func (d *SendData) OnDirSelect(dir fyne.ListableURI, err error) {
 
 // NewSendFromFiles creates a directory from the files and sends it as a directory send.
 func (d *SendData) NewSendFromFiles(uris []fyne.URI) {
-	item := d.NewSend(storage.NewFileURI("Dropped Files"))
+	parentDir := storage.NewFileURI(filepath.Dir(uris[0].Path()))
+	item := d.NewSend(parentDir)
 	d.list.Refresh()
 
 	go func() {
