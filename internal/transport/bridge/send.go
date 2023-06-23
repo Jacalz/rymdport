@@ -285,19 +285,12 @@ func (d *SendData) getCustomCode() string {
 		Validator:   util.CodeValidator,
 	}
 
-	// Work around the code being sent within the form when hidden.
-	entrySubmit := false
-
 	form := dialog.NewForm("Create custom code", "Confirm", "Cancel", []*widget.FormItem{
 		{
 			Text: "Code", Widget: codeEntry,
 			HintText: "A code beginning with a number, followed by groups of letters separated with \"-\".",
 		},
 	}, func(submitted bool) {
-		if entrySubmit {
-			return
-		}
-
 		if !submitted || codeEntry.Text == codeEntry.PlaceHolder {
 			code <- ""
 		} else {
@@ -306,14 +299,6 @@ func (d *SendData) getCustomCode() string {
 
 		close(code)
 	}, d.Window)
-
-	codeEntry.OnSubmitted = func(text string) {
-		entrySubmit = true
-		code <- text
-		close(code)
-		form.Hide()
-	}
-
 	form.Resize(fyne.Size{Width: d.Canvas.Size().Width * 0.8})
 	form.Show()
 	d.Canvas.Focus(codeEntry)
