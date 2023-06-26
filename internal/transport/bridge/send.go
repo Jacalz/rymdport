@@ -300,6 +300,7 @@ func (d *SendData) getCustomCode() string {
 		close(code)
 	}, d.Window)
 	form.Resize(fyne.Size{Width: d.Canvas.Size().Width * 0.8})
+	codeEntry.OnSubmitted = func(_ string) { form.Submit() }
 	form.Show()
 	d.Canvas.Focus(codeEntry)
 
