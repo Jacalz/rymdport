@@ -13,11 +13,11 @@ import (
 func newCodeDisplay(window fyne.Window) *fyne.Container {
 	codeLabel := &widget.Label{Text: "Waiting for code..."}
 	copyButton := &widget.Button{Icon: theme.ContentCopyIcon(), Importance: widget.LowImportance}
-	clipboard := window.Clipboard()
+
 	copyButton.OnTapped = func() {
 		if codeLabel.Text != "Waiting for code..." {
 			copyButton.SetIcon(theme.ConfirmIcon())
-			clipboard.SetContent(codeLabel.Text)
+			window.Clipboard().SetContent(codeLabel.Text)
 		} else {
 			copyButton.SetIcon(theme.CancelIcon())
 		}

@@ -75,7 +75,7 @@ func (s *send) onCustomCode(enabled bool) {
 	s.client.CustomCode = enabled
 }
 
-func (s *send) onDropped(_ fyne.Position, uris []fyne.URI) {
+func (s *send) newTransfer(uris []fyne.URI) {
 	if len(uris) == 0 {
 		return
 	}
