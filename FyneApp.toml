@@ -12,3 +12,4 @@ Website = "https://rymdport.github.io/"
   Categories = ["Network", "FileTransfer", "P2P", "Utility"]
   Comment = "Easy encrypted sharing of files, folders, and text between devices."
   Keywords = ["magic-wormhole", "send", "receive", "sharing", "transfer", "fyne"]
+  ExecParams = "%F"
