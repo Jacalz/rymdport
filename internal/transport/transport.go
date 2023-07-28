@@ -12,7 +12,10 @@ type Client struct {
 
 	app fyne.App
 
-	// Save a reference to the window to avoid creating a new one when sending and receiving text
+	// mainWindow holds a reference to the main window so we can focus it after a send.
+	mainWindow fyne.Window
+
+	// Save a reference to the window to avoid creating a new one when sending and receiving text.
 	textSendWindow *textSendWindow
 	textRecvWindow *textRecvWindow
 
@@ -37,6 +40,6 @@ func (c *Client) ShowNotification(title, content string) {
 }
 
 // NewClient returns a new client for sending and receiving using wormhole-william
-func NewClient(app fyne.App) *Client {
-	return &Client{app: app}
+func NewClient(app fyne.App, mainWindow fyne.Window) *Client {
+	return &Client{app: app, mainWindow: mainWindow}
 }

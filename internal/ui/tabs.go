@@ -10,7 +10,7 @@ import (
 
 // Create will set up and create the ui components.
 func Create(app fyne.App, window fyne.Window) *container.AppTabs {
-	client := transport.NewClient(app)
+	client := transport.NewClient(app, window)
 
 	tabs := &container.AppTabs{
 		Items: []*container.TabItem{
