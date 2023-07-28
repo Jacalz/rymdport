@@ -2,10 +2,8 @@
 
 [![Tests](https://github.com/Jacalz/rymdport/actions/workflows/tests.yml/badge.svg)](https://github.com/Jacalz/rymdport/actions/workflows/tests.yml)
 [![Analysis](https://github.com/Jacalz/rymdport/actions/workflows/analysis.yml/badge.svg?branch=main)](https://github.com/Jacalz/rymdport/actions/workflows/analysis.yml)
-![Downloads](https://img.shields.io/github/downloads/jacalz/rymdport/total)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Jacalz/rymdport/v3)](https://goreportcard.com/report/github.com/Jacalz/rymdport/v3)
 [![version](https://img.shields.io/github/v/tag/Jacalz/rymdport?label=version)](https://github.com/Jacalz/rymdport/releases/latest)
-
 
 Rymdport (formerly wormhole-gui) is a cross-platform application that lets you easily and safely share files, folders, and text between devices.
 The data is sent securely with end-to-end encryption using the same protocol as [magic-wormhole](https://github.com/magic-wormhole/magic-wormhole). This means that Rymdport can talk not only to itself, but also to other wormhole clients.
