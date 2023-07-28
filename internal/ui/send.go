@@ -4,6 +4,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/rymdport/v3/internal/transport"
@@ -19,16 +20,18 @@ type send struct {
 	data *bridge.SendData
 
 	client *transport.Client
-	canvas fyne.Canvas
+	window fyne.Window
 }
 
-func newSendTab(w fyne.Window, c *transport.Client) *container.TabItem {
-	send := &send{client: c, canvas: w.Canvas()}
+func newSend(w fyne.Window, c *transport.Client) *send {
+	return &send{client: c, window: w}
+}
 
+func (s *send) newSendTab() *container.TabItem {
 	return &container.TabItem{
 		Text:    "Send",
 		Icon:    theme.MailSendIcon(),
-		Content: send.buildUI(w),
+		Content: s.buildUI(s.window),
 	}
 }
 
@@ -41,7 +44,7 @@ func (s *send) buildUI(window fyne.Window) *fyne.Container {
 	choiceContent := container.NewGridWithColumns(1, fileChoice, directoryChoice, textChoice, codeChoice)
 	s.contentPicker = dialog.NewCustom("Pick a content type", "Cancel", choiceContent, window)
 
-	s.data = &bridge.SendData{Client: s.client, Window: window, Canvas: s.canvas}
+	s.data = &bridge.SendData{Client: s.client, Window: window, Canvas: s.window.Canvas()}
 	contentToSend := &widget.Button{Text: "Add content to send", Icon: theme.ContentAddIcon(), OnTapped: s.contentPicker.Show}
 
 	s.fileDialog = dialog.NewFileOpen(s.data.OnFileSelect, window)
@@ -53,13 +56,13 @@ func (s *send) buildUI(window fyne.Window) *fyne.Container {
 
 func (s *send) onFileSend() {
 	s.contentPicker.Hide()
-	s.fileDialog.Resize(util.WindowSizeToDialog(s.canvas.Size()))
+	s.fileDialog.Resize(util.WindowSizeToDialog(s.window.Canvas().Size()))
 	s.fileDialog.Show()
 }
 
 func (s *send) onDirSend() {
 	s.contentPicker.Hide()
-	s.fileDialog.Resize(util.WindowSizeToDialog(s.canvas.Size()))
+	s.fileDialog.Resize(util.WindowSizeToDialog(s.window.Canvas().Size()))
 	s.directoryDialog.Show()
 }
 
@@ -70,4 +73,29 @@ func (s *send) onTextSend() {
 
 func (s *send) onCustomCode(enabled bool) {
 	s.client.CustomCode = enabled
+}
+
+func (s *send) newTransfer(uris []fyne.URI) {
+	if len(uris) == 0 {
+		return
+	}
+
+	if len(uris) > 1 {
+		s.data.NewSendFromFiles(uris)
+		return
+	}
+
+	isDir, err := storage.CanList(uris[0])
+	if err != nil {
+		fyne.LogError("Could not check if path is directory", err)
+		return
+	}
+
+	if !isDir {
+		reader, err := storage.Reader(uris[0])
+		s.data.OnFileSelect(reader, err)
+	} else {
+		reader, err := storage.ListerForURI(uris[0])
+		s.data.OnDirSelect(reader, err)
+	}
 }

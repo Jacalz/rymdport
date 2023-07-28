@@ -2,9 +2,13 @@
 package ui
 
 import (
+	"os"
+	"path/filepath"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/driver/desktop"
+	"fyne.io/fyne/v2/storage"
 	"github.com/Jacalz/rymdport/v3/internal/transport"
 )
 
@@ -12,13 +16,37 @@ import (
 func Create(app fyne.App, window fyne.Window) *container.AppTabs {
 	client := transport.NewClient(app, window)
 
+	send := newSend(window, client)
 	tabs := &container.AppTabs{
 		Items: []*container.TabItem{
-			newSendTab(window, client),
+			send.newSendTab(),
 			newRecvTab(window, client),
 			newSettingsTab(app, window, client),
 			newAboutTab(app),
 		},
+	}
+
+	window.SetOnDropped(func(_ fyne.Position, uris []fyne.URI) {
+		if tabs.SelectedIndex() != 0 {
+			tabs.SelectIndex(0)
+		}
+
+		send.newTransfer(uris)
+	})
+
+	if args := os.Args[1:]; len(args) > 0 {
+		uris := make([]fyne.URI, 0, len(args))
+		for _, path := range args {
+			path, err := filepath.Abs(path)
+			if err != nil {
+				fyne.LogError("Failed to create absolute path", err)
+				continue
+			}
+
+			uris = append(uris, storage.NewFileURI(path))
+		}
+
+		send.newTransfer(uris)
 	}
 
 	canvas := window.Canvas()

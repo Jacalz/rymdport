@@ -1,6 +1,8 @@
 package bridge
 
 import (
+	"path/filepath"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
@@ -131,7 +133,7 @@ func (d *RecvData) NewReceive(code string) {
 			item.failed()
 			dialog.ShowError(err, d.Window)
 		} else if item.Name != "Text Snippet" {
-			d.Client.ShowNotification("Receive completed", "The contents were saved to "+item.URI.Path()+".")
+			d.Client.ShowNotification("Receive completed", "The contents were saved to "+filepath.Dir(item.URI.Path())+".")
 			item.done()
 		} else {
 			d.Client.ShowNotification("Receive completed", "The text was received successfully.")

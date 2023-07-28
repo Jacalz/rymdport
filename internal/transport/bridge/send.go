@@ -1,6 +1,8 @@
 package bridge
 
 import (
+	"path/filepath"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -207,6 +209,35 @@ func (d *SendData) OnDirSelect(dir fyne.ListableURI, err error) {
 	}()
 }
 
+// NewSendFromFiles creates a directory from the files and sends it as a directory send.
+func (d *SendData) NewSendFromFiles(uris []fyne.URI) {
+	parentDir := storage.NewFileURI(filepath.Dir(uris[0].Path()))
+	item := d.NewSend(parentDir)
+	d.list.Refresh()
+
+	go func() {
+		code, result, err := d.Client.NewMultipleFileSend(uris, wormhole.WithProgress(item.update), d.getCustomCode())
+		if err != nil {
+			fyne.LogError("Error on sending directory", err)
+			item.failed()
+			dialog.ShowError(err, d.Window)
+			return
+		}
+
+		item.Code = code
+		d.list.Refresh()
+
+		if res := <-result; res.Error != nil {
+			fyne.LogError("Error on sending directory", res.Error)
+			item.failed()
+			dialog.ShowError(res.Error, d.Window)
+			d.Client.ShowNotification("Directory send failed", "An error occurred when sending the directory.")
+		} else if res.OK {
+			d.Client.ShowNotification("Directory send completed", "The directory was sent successfully.")
+		}
+	}()
+}
+
 // SendText sends new text.
 func (d *SendData) SendText() {
 	go func() {
@@ -269,6 +300,7 @@ func (d *SendData) getCustomCode() string {
 		close(code)
 	}, d.Window)
 	form.Resize(fyne.Size{Width: d.Canvas.Size().Width * 0.8})
+	codeEntry.OnSubmitted = func(_ string) { form.Submit() }
 	form.Show()
 	d.Canvas.Focus(codeEntry)
 
