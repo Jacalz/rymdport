@@ -3,7 +3,7 @@ module github.com/Jacalz/rymdport/v3
 go 1.17
 
 require (
-	fyne.io/fyne/v2 v2.3.6-0.20230711180435-d4b95e1cb1eb
+	fyne.io/fyne/v2 v2.3.6-0.20230802221337-a3d63a1ab0cd
 	github.com/fynelabs/fyneselfupdate v0.1.0
 	github.com/fynelabs/selfupdate v0.2.0
 	github.com/klauspost/compress v1.15.14
@@ -13,7 +13,7 @@ require (
 )
 
 require (
-	fyne.io/systray v1.10.1-0.20230602210930-b6a2d6ca2a7b // indirect
+	fyne.io/systray v1.10.1-0.20230722100817-88df1e0ffa9a // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fredbi/uri v0.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect

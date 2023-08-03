@@ -13,7 +13,7 @@ import (
 )
 
 type send struct {
-	contentPicker   dialog.Dialog // TODO: Switch to non-interface type when using Fyne v2.4.0.
+	contentPicker   *dialog.CustomDialog
 	fileDialog      *dialog.FileDialog
 	directoryDialog *dialog.FileDialog
 
