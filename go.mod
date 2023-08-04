@@ -6,10 +6,10 @@ require (
 	fyne.io/fyne/v2 v2.3.6-0.20230804131704-dbe853f8e048
 	github.com/fynelabs/fyneselfupdate v0.1.0
 	github.com/fynelabs/selfupdate v0.2.0
-	github.com/klauspost/compress v1.15.14
+	github.com/klauspost/compress v1.16.7
 	github.com/psanford/wormhole-william v1.0.6
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
-	github.com/stretchr/testify v1.8.1
+	github.com/stretchr/testify v1.8.4
 )
 
 require (
