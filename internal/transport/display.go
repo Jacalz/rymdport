@@ -109,7 +109,7 @@ func createTextSendWindow(app fyne.App) *textSendWindow {
 }
 
 // ShowTextSendWindow opens a new window for setting up text to send.
-func (c *Client) ShowTextSendWindow() chan string {
+func (c *Client) ShowTextSendWindow() string {
 	if c.textSendWindow == nil {
 		c.textSendWindow = createTextSendWindow(c.app)
 	}
@@ -137,5 +137,5 @@ func (c *Client) ShowTextSendWindow() chan string {
 	d.window.RequestFocus()
 	d.window.Canvas().Focus(d.textEntry)
 
-	return text
+	return <-text
 }

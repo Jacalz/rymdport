@@ -241,7 +241,7 @@ func (d *SendData) NewSendFromFiles(uris []fyne.URI) {
 // SendText sends new text.
 func (d *SendData) SendText() {
 	go func() {
-		text := <-d.Client.ShowTextSendWindow()
+		text := d.Client.ShowTextSendWindow()
 		if text == "" {
 			return
 		}
