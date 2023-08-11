@@ -117,7 +117,10 @@ func (c *Client) NewReceive(code string, pathname chan string, progress func(int
 		return err
 	}
 
-	err = zip.Extract(util.NewProgressReaderAt(tmp, progress, contents.Max), n, path)
+	err = zip.ExtractSafe(
+		util.NewProgressReaderAt(tmp, progress, contents.Max),
+		n, path, msg.UncompressedBytes64, msg.FileCount,
+	)
 	if err != nil {
 		fyne.LogError("Error on unzipping contents", err)
 		return err
