@@ -246,6 +246,7 @@ func (d *SendData) SendText() {
 			return
 		}
 
+		d.Window.RequestFocus() // Refocus the main window
 		item := d.NewSend(storage.NewFileURI("Text Snippet"))
 		d.list.Refresh()
 

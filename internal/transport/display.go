@@ -121,7 +121,6 @@ func (c *Client) ShowTextSendWindow() string {
 		text <- ""
 		d.window.Hide()
 		d.textEntry.SetText("")
-		// don't force focus the main window - we didn't send anything so there's no new code to see
 	}
 
 	d.window.SetCloseIntercept(onClose)
@@ -130,7 +129,6 @@ func (c *Client) ShowTextSendWindow() string {
 		text <- d.textEntry.Text
 		d.window.Hide()
 		d.textEntry.SetText("")
-		c.mainWindow.RequestFocus() // So the user can see the code for the sent text
 	}
 
 	d.window.Show()
