@@ -1,7 +1,7 @@
 Website = "https://rymdport.github.io/"
 
 [Details]
-  Icon = "internal/assets/icon/icon-512.png"
+  Icon = "internal/assets/icons/icon-512.png"
   Name = "rymdport"
   ID = "io.github.jacalz.rymdport"
   Version = "3.5.0"
