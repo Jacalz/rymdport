@@ -17,9 +17,9 @@ type textRecvWindow struct {
 	window                 fyne.Window
 }
 
-func (t *textRecvWindow) interceptClose() {
-	t.window.Hide()
-	t.textEntry.SetText("")
+func (r *textRecvWindow) interceptClose() {
+	r.window.Hide()
+	r.textEntry.SetText("")
 }
 
 func createTextRecvWindow(app fyne.App) *textRecvWindow {
@@ -88,6 +88,19 @@ type textSendWindow struct {
 	textEntry                *widget.Entry
 	cancelButton, sendButton *widget.Button
 	window                   fyne.Window
+	text                     chan string
+}
+
+func (s *textSendWindow) dismiss() {
+	s.text <- ""
+	s.window.Hide()
+	s.textEntry.SetText("")
+}
+
+func (s *textSendWindow) send() {
+	s.text <- s.textEntry.Text
+	s.window.Hide()
+	s.textEntry.SetText("")
 }
 
 func createTextSendWindow(app fyne.App) *textSendWindow {
@@ -96,15 +109,17 @@ func createTextSendWindow(app fyne.App) *textSendWindow {
 		textEntry:    &widget.Entry{MultiLine: true, Wrapping: fyne.TextWrapWord},
 		cancelButton: &widget.Button{Text: "Cancel", Icon: theme.CancelIcon()},
 		sendButton:   &widget.Button{Text: "Send", Icon: theme.MailSendIcon(), Importance: widget.HighImportance},
+		text:         make(chan string),
 	}
-	display.textEntry.OnSubmitted = func(_ string) {
-		display.sendButton.OnTapped()
-	}
+
+	display.window.SetCloseIntercept(display.dismiss)
+	display.cancelButton.OnTapped = display.dismiss
+	display.sendButton.OnTapped = display.send
+	display.textEntry.OnSubmitted = func(_ string) { display.send() }
 
 	actionContainer := container.NewGridWithColumns(2, display.cancelButton, display.sendButton)
 	display.window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, display.textEntry))
 	display.window.Resize(fyne.NewSize(400, 300))
-
 	return display
 }
 
@@ -117,26 +132,12 @@ func (c *Client) ShowTextSendWindow() string {
 		return ""
 	}
 
-	d := c.textSendWindow
+	s := c.textSendWindow
+	win := s.window
 
-	text := make(chan string)
-	onClose := func() {
-		text <- ""
-		d.window.Hide()
-		d.textEntry.SetText("")
-	}
+	win.Show()
+	win.RequestFocus()
+	win.Canvas().Focus(s.textEntry)
 
-	d.window.SetCloseIntercept(onClose)
-	d.cancelButton.OnTapped = onClose
-	d.sendButton.OnTapped = func() {
-		text <- d.textEntry.Text
-		d.window.Hide()
-		d.textEntry.SetText("")
-	}
-
-	d.window.Show()
-	d.window.RequestFocus()
-	d.window.Canvas().Focus(d.textEntry)
-
-	return <-text
+	return <-s.text
 }
