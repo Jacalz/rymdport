@@ -118,7 +118,7 @@ func newCompletionEntry(client *transport.Client, canvas fyne.Canvas) *completio
 		complete: &completion.TabCompleter{Generate: client.CompleteRecvCode},
 		canvas:   canvas,
 		Entry: widget.Entry{
-			PlaceHolder: "Enter code", Wrapping: fyne.TextTruncate, Validator: util.CodeValidator,
+			PlaceHolder: "Enter code", Wrapping: fyne.TextTruncate, Validator: util.CodeValidator, //lint:ignore SA1019 No replacement yet.
 		},
 	}
 	entry.ExtendBaseWidget(entry)
