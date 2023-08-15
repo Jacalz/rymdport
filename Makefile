@@ -8,10 +8,10 @@ LOCAL ?= $(shell test -d $(DESTDIR)/usr/local && echo "/local" || echo "")
 PREFIX ?= /usr$(LOCAL)
 
 debug:
-	go build -o $(NAME)
+	go build -tags no_emoji -trimpath -o $(NAME)
 
 release:
-	go build -ldflags="-s -w" -o $(NAME)
+	go build -tags no_emoji -trimpath -ldflags="-s -w" -buildvcs=false -o $(NAME)
 
 install:
 	install -Dm00755 $(NAME) $(DESTDIR)$(PREFIX)/bin/$(NAME)
