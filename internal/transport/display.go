@@ -113,6 +113,7 @@ func (c *Client) ShowTextSendWindow() string {
 	if c.textSendWindow == nil {
 		c.textSendWindow = createTextSendWindow(c.app)
 	} else if c.textSendWindow.window.Canvas().Content().Visible() {
+		c.textSendWindow.window.RequestFocus()
 		return ""
 	}
 
