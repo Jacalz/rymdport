@@ -59,7 +59,7 @@ func (d *RecvData) Length() int {
 func (d *RecvData) CreateItem() fyne.CanvasObject {
 	return container.New(&listLayout{},
 		&widget.FileIcon{},
-		&widget.Label{Text: "Waiting for filename...", Wrapping: fyne.TextTruncate},
+		&widget.Label{Text: "Waiting for filename...", Truncation: fyne.TextTruncateEllipsis},
 		&widget.Label{Text: "Waiting for code..."},
 		&widget.ProgressBar{},
 	)
