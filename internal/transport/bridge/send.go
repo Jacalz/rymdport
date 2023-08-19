@@ -115,6 +115,13 @@ func (d *SendData) OnSelected(i int) {
 	if d.items[i].Value < d.items[i].Max && d.items[i].Status == nil {
 		removeLabel.Text = "This item can not be removed yet.\nThe transfer needs to complete first."
 		removeButton.Disable()
+	} else {
+		qrcode.Image = nil
+		qrcode.Resource = theme.InfoIcon()
+		qrcode.ScaleMode = canvas.ImageScaleSmooth
+		qrcode.Refresh()
+
+		qrCard.Content = &widget.Label{Text: "This transfer is not active.\nCan't show a QR code."}
 	}
 
 	removeCard := &widget.Card{Content: container.NewVBox(removeLabel, removeButton)}
