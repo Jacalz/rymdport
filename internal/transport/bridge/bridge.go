@@ -11,7 +11,7 @@ import (
 )
 
 func newCodeDisplay(window fyne.Window) *fyne.Container {
-	codeLabel := &widget.Label{Text: "Waiting for code..."}
+	codeLabel := &widget.Label{Text: "Waiting for code...", Truncation: fyne.TextTruncateEllipsis}
 	copyButton := &widget.Button{Icon: theme.ContentCopyIcon(), Importance: widget.LowImportance}
 
 	copyButton.OnTapped = func() {
@@ -26,5 +26,25 @@ func newCodeDisplay(window fyne.Window) *fyne.Container {
 		copyButton.SetIcon(theme.ContentCopyIcon())
 	}
 
-	return container.NewHBox(codeLabel, copyButton)
+	return container.New(codeLayout{}, codeLabel, copyButton)
+}
+
+type codeLayout struct{}
+
+func (c codeLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
+	displacement := size.Width * 0.8
+
+	objects[0].Move(fyne.NewSquareOffsetPos(0))
+	objects[0].Resize(fyne.NewSize(displacement, size.Height))
+
+	objects[1].Move(fyne.NewPos(displacement, 0))
+	objects[1].Resize(fyne.NewSquareSize(size.Height))
+
+}
+
+func (c codeLayout) MinSize(objects []fyne.CanvasObject) fyne.Size {
+	leftMin := objects[0].MinSize()
+	rightMin := objects[1].MinSize()
+
+	return fyne.NewSize(leftMin.Width+leftMin.Width, fyne.Max(leftMin.Height, rightMin.Height))
 }
