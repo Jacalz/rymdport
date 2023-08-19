@@ -1,11 +1,8 @@
 APPID = io.github.jacalz.rymdport
 NAME = rymdport
 
-# If PREFIX isn't provided, we check for $(DESTDIR)/usr/local and use that if it exists.
-# Otherwice we fall back to using /usr.
-LOCAL != test -d $(DESTDIR)/usr/local && echo -n "/local" || echo -n ""
-LOCAL ?= $(shell test -d $(DESTDIR)/usr/local && echo "/local" || echo "")
-PREFIX ?= /usr$(LOCAL)
+# If PREFIX isn't provided, default to /usr.
+PREFIX ?= /usr
 
 debug:
 	go build -tags no_emoji -trimpath -o $(NAME)
@@ -26,6 +23,7 @@ install:
 	install -Dm00644 internal/assets/svg/icon.svg $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/$(APPID).svg
 	install -Dm00644 internal/assets/unix/$(APPID).desktop $(DESTDIR)$(PREFIX)/share/applications/$(APPID).desktop
 	install -Dm00644 internal/assets/unix/$(APPID).appdata.xml $(DESTDIR)$(PREFIX)/share/appdata/$(APPID).appdata.xml
+	sudo gtk-update-icon-cache -f /usr/share/icons/hicolor/
 
 uninstall:
 	-rm $(DESTDIR)$(PREFIX)/bin/$(NAME)
