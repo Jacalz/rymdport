@@ -55,7 +55,7 @@ func (d *SendData) Length() int {
 
 // CreateItem creates a new item in the list.
 func (d *SendData) CreateItem() fyne.CanvasObject {
-	return container.New(&listLayout{},
+	return container.New(listLayout{},
 		&widget.FileIcon{},
 		&widget.Label{Text: "Waiting for filename...", Truncation: fyne.TextTruncateEllipsis},
 		newCodeDisplay(d.Window),

@@ -7,7 +7,7 @@ import (
 
 type listLayout struct{}
 
-func (g *listLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
+func (g listLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
 	padding := theme.InnerPadding()
 	doublePadding := 2 * padding
 
@@ -27,7 +27,7 @@ func (g *listLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
 
 // MinSize finds the smallest size that satisfies all the child objects.
 // Height will stay consistent between each each instance.
-func (g *listLayout) MinSize(objects []fyne.CanvasObject) fyne.Size {
+func (g listLayout) MinSize(objects []fyne.CanvasObject) fyne.Size {
 	doublePadding := 2 * theme.InnerPadding()
 
 	maxMinSizeWidth := float32(0)
