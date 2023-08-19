@@ -39,7 +39,6 @@ func (c codeLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
 
 	objects[1].Move(fyne.NewPos(displacement, 0))
 	objects[1].Resize(fyne.NewSquareSize(size.Height))
-
 }
 
 func (c codeLayout) MinSize(objects []fyne.CanvasObject) fyne.Size {
