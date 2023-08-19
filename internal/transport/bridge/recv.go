@@ -66,16 +66,17 @@ func (d *RecvData) CreateItem() fyne.CanvasObject {
 }
 
 // UpdateItem updates the data in the list.
-func (d *RecvData) UpdateItem(i int, item fyne.CanvasObject) {
-	container := item.(*fyne.Container)
-	container.Objects[0].(*widget.FileIcon).SetURI(d.items[i].URI)
-	container.Objects[1].(*widget.Label).SetText(d.items[i].Name)
-	container.Objects[2].(*widget.Label).SetText(d.items[i].Code)
+func (d *RecvData) UpdateItem(i int, object fyne.CanvasObject) {
+	item := d.items[i]
+	container := object.(*fyne.Container)
+	container.Objects[0].(*widget.FileIcon).SetURI(item.URI)
+	container.Objects[1].(*widget.Label).SetText(item.Name)
+	container.Objects[2].(*widget.Label).SetText(item.Code)
 
 	progress := container.Objects[3].(*widget.ProgressBar)
-	progress.Max = float64(d.items[i].Max)
-	progress.Value = float64(d.items[i].Value)
-	progress.TextFormatter = d.items[i].Status
+	progress.Max = float64(item.Max)
+	progress.Value = float64(item.Value)
+	progress.TextFormatter = item.Status
 	progress.Refresh()
 }
 
