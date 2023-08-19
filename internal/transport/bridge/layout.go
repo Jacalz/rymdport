@@ -3,7 +3,6 @@ package bridge
 import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/theme"
-	"fyne.io/fyne/v2/widget"
 )
 
 type listLayout struct{}
@@ -18,12 +17,7 @@ func (g *listLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
 	cellSize := (size.Width - size.Height - doublePadding) / (float32(len(objects) - 1))
 	start, end := size.Height, size.Height+cellSize-padding
 	for _, child := range objects[1:] {
-		ypos := padding
-		if _, label := child.(*widget.Label); label {
-			ypos = (size.Height - child.MinSize().Height) / 2
-		}
-
-		child.Move(fyne.NewPos(start, ypos))
+		child.Move(fyne.NewPos(start, padding))
 		child.Resize(fyne.NewSize(end-start, size.Height-doublePadding))
 
 		start = end + padding
