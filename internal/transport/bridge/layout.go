@@ -18,12 +18,12 @@ func (g *listLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
 	cellSize := (size.Width - size.Height - doublePadding) / (float32(len(objects) - 1))
 	start, end := size.Height, size.Height+cellSize-padding
 	for _, child := range objects[1:] {
+		ypos := padding
 		if _, label := child.(*widget.Label); label {
-			child.Move(fyne.NewPos(start, (size.Height-child.MinSize().Height)/2))
-		} else {
-			child.Move(fyne.NewPos(start, padding))
+			ypos = (size.Height - child.MinSize().Height) / 2
 		}
 
+		child.Move(fyne.NewPos(start, ypos))
 		child.Resize(fyne.NewSize(end-start, size.Height-doublePadding))
 
 		start = end + padding
