@@ -1,6 +1,6 @@
 module github.com/Jacalz/rymdport/v3
 
-go 1.17
+go 1.18
 
 require (
 	fyne.io/fyne/v2 v2.3.6-0.20230816204928-580211ac094d
