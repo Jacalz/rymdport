@@ -290,7 +290,7 @@ func (d *SendData) getCustomCode() string {
 	code := make(chan string)
 	codeEntry := &widget.Entry{
 		PlaceHolder: "123-example-code",
-		Wrapping:    fyne.TextTruncate, //lint:ignore SA1019 No replacement yet.
+		Scroll:      container.ScrollBoth,
 		Validator:   util.CodeValidator,
 	}
 
