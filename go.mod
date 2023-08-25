@@ -3,7 +3,7 @@ module github.com/Jacalz/rymdport/v3
 go 1.18
 
 require (
-	fyne.io/fyne/v2 v2.3.6-0.20230823165052-4a46f1a7e262
+	fyne.io/fyne/v2 v2.3.6-0.20230824201830-93057100a4e9
 	github.com/fynelabs/fyneselfupdate v0.1.0
 	github.com/fynelabs/selfupdate v0.2.0
 	github.com/klauspost/compress v1.16.7
