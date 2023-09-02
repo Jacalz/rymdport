@@ -4,7 +4,7 @@
 package assets
 
 import (
-	_ "embed"
+	_ "embed" // Needed for embedding the iconData on line 14.
 
 	"fyne.io/fyne/v2"
 )

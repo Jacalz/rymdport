@@ -107,7 +107,7 @@ func (d *RecvData) OnSelected(i int) {
 	dialog.ShowCustom("Information", "Close", removeCard, d.Window)
 }
 
-// NewRecvItem creates a new send item and adds it to the items.
+// NewRecv creates a new send item and adds it to the items.
 func (d *RecvData) NewRecv(code string) *RecvItem {
 	item := &RecvItem{Name: "Waiting for filename...", Code: code, Max: 1, list: d.list}
 	d.items = append(d.items, item)

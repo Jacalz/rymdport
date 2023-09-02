@@ -90,7 +90,7 @@ func (c *Client) NewReceive(code string, pathname chan string, progress func(int
 		return
 	}
 
-	// We are reading the transfered bytes twice. First from msg to temp file and then from temp.
+	// We are reading the transferred bytes twice. First from msg to temp file and then from temp.
 	contents.Max *= 2
 
 	tmp, err := os.CreateTemp("", msg.Name+"-*.zip.tmp")

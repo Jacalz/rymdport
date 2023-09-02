@@ -4,6 +4,7 @@ import (
 	"io"
 )
 
+// ProgressReader is a reader wrapper that calls a function for each part content being read.
 type ProgressReader struct {
 	readat io.ReaderAt
 	read   io.Reader

@@ -18,7 +18,7 @@ https://github.com/psanford/wormhole-william/blob/master/cmd/completion.go and
 https://github.com/psanford/wormhole-william/blob/master/internal/crypto/crypto.go.
 */
 
-// CompleteCode returns completion suggestions for the receiver code.
+// CompleteRecvCode returns completion suggestions for the receiver code.
 func (c *Client) CompleteRecvCode(toComplete string) []string {
 	parts := strings.Split(toComplete, "-")
 	if len(parts) < 2 {
