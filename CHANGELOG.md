@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.5.0 - Major redesign plaus drag and drop support
+## 3.5.0 - Major theme redesign plus drag and drop support
 - Major theme rework with rounded corners.
 - Added support for dragging and dropping files and folders onto the application (#73).
 - Users on Linux and BSD can now open files or folders in Rymdport from the file manager to start a transfer (#91).
