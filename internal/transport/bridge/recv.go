@@ -1,6 +1,8 @@
 package bridge
 
 import (
+	"path/filepath"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
@@ -55,25 +57,26 @@ func (d *RecvData) Length() int {
 
 // CreateItem creates a new item in the list.
 func (d *RecvData) CreateItem() fyne.CanvasObject {
-	return container.New(&listLayout{},
+	return container.New(listLayout{},
 		&widget.FileIcon{},
-		&widget.Label{Text: "Waiting for filename...", Wrapping: fyne.TextTruncate},
-		&widget.Label{Text: "Waiting for code..."},
+		&widget.Label{Text: "Waiting for filename...", Truncation: fyne.TextTruncateEllipsis},
+		&widget.Label{Text: "Waiting for code...", Truncation: fyne.TextTruncateEllipsis},
 		&widget.ProgressBar{},
 	)
 }
 
 // UpdateItem updates the data in the list.
-func (d *RecvData) UpdateItem(i int, item fyne.CanvasObject) {
-	container := item.(*fyne.Container)
-	container.Objects[0].(*widget.FileIcon).SetURI(d.items[i].URI)
-	container.Objects[1].(*widget.Label).SetText(d.items[i].Name)
-	container.Objects[2].(*widget.Label).SetText(d.items[i].Code)
+func (d *RecvData) UpdateItem(i int, object fyne.CanvasObject) {
+	item := d.items[i]
+	container := object.(*fyne.Container)
+	container.Objects[0].(*widget.FileIcon).SetURI(item.URI)
+	container.Objects[1].(*widget.Label).SetText(item.Name)
+	container.Objects[2].(*widget.Label).SetText(item.Code)
 
 	progress := container.Objects[3].(*widget.ProgressBar)
-	progress.Max = float64(d.items[i].Max)
-	progress.Value = float64(d.items[i].Value)
-	progress.TextFormatter = d.items[i].Status
+	progress.Max = float64(item.Max)
+	progress.Value = float64(item.Value)
+	progress.TextFormatter = item.Status
 	progress.Refresh()
 }
 
@@ -131,7 +134,7 @@ func (d *RecvData) NewReceive(code string) {
 			item.failed()
 			dialog.ShowError(err, d.Window)
 		} else if item.Name != "Text Snippet" {
-			d.Client.ShowNotification("Receive completed", "The contents were saved to "+item.URI.Path()+".")
+			d.Client.ShowNotification("Receive completed", "The contents were saved to "+filepath.Dir(item.URI.Path())+".")
 			item.done()
 		} else {
 			d.Client.ShowNotification("Receive completed", "The text was received successfully.")

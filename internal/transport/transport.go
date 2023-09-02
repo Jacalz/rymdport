@@ -12,7 +12,7 @@ type Client struct {
 
 	app fyne.App
 
-	// Save a reference to the window to avoid creating a new one when sending and receiving text
+	// Save a reference to the window to avoid creating a new one when sending and receiving text.
 	textSendWindow *textSendWindow
 	textRecvWindow *textRecvWindow
 

@@ -8,5 +8,5 @@ Categories=Network;FileTransfer;P2P;Utility;
 Keywords=magic-wormhole;send;receive;sharing;transfer;fyne;
 
 Icon=io.github.jacalz.rymdport
-Exec=rymdport
+Exec=rymdport %F
 Terminal=false

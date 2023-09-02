@@ -1,6 +1,8 @@
 package bridge
 
 import (
+	"path/filepath"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -53,26 +55,27 @@ func (d *SendData) Length() int {
 
 // CreateItem creates a new item in the list.
 func (d *SendData) CreateItem() fyne.CanvasObject {
-	return container.New(&listLayout{},
+	return container.New(listLayout{},
 		&widget.FileIcon{},
-		&widget.Label{Text: "Waiting for filename...", Wrapping: fyne.TextTruncate},
+		&widget.Label{Text: "Waiting for filename...", Truncation: fyne.TextTruncateEllipsis},
 		newCodeDisplay(d.Window),
 		&widget.ProgressBar{},
 	)
 }
 
 // UpdateItem updates the data in the list.
-func (d *SendData) UpdateItem(i int, item fyne.CanvasObject) {
-	container := item.(*fyne.Container)
+func (d *SendData) UpdateItem(i int, object fyne.CanvasObject) {
+	container := object.(*fyne.Container)
 
-	container.Objects[0].(*widget.FileIcon).SetURI(d.items[i].URI)
-	container.Objects[1].(*widget.Label).SetText(d.items[i].URI.Name())
-	container.Objects[2].(*fyne.Container).Objects[0].(*widget.Label).SetText(d.items[i].Code)
+	item := d.items[i]
+	container.Objects[0].(*widget.FileIcon).SetURI(item.URI)
+	container.Objects[1].(*widget.Label).SetText(item.URI.Name())
+	container.Objects[2].(*fyne.Container).Objects[0].(*widget.Label).SetText(item.Code)
 
 	progress := container.Objects[3].(*widget.ProgressBar)
-	progress.Max = float64(d.items[i].Max)
-	progress.Value = float64(d.items[i].Value)
-	progress.TextFormatter = d.items[i].Status
+	progress.Max = float64(item.Max)
+	progress.Value = float64(item.Value)
+	progress.TextFormatter = item.Status
 	progress.Refresh()
 }
 
@@ -113,6 +116,13 @@ func (d *SendData) OnSelected(i int) {
 	if d.items[i].Value < d.items[i].Max && d.items[i].Status == nil {
 		removeLabel.Text = "This item can not be removed yet.\nThe transfer needs to complete first."
 		removeButton.Disable()
+	} else {
+		qrcode.Image = nil
+		qrcode.Resource = theme.InfoIcon()
+		qrcode.ScaleMode = canvas.ImageScaleSmooth
+		qrcode.Refresh()
+
+		qrCard.Content = &widget.Label{Text: "This transfer is not active.\nCan't show a QR code."}
 	}
 
 	removeCard := &widget.Card{Content: container.NewVBox(removeLabel, removeButton)}
@@ -207,14 +217,44 @@ func (d *SendData) OnDirSelect(dir fyne.ListableURI, err error) {
 	}()
 }
 
+// NewSendFromFiles creates a directory from the files and sends it as a directory send.
+func (d *SendData) NewSendFromFiles(uris []fyne.URI) {
+	parentDir := storage.NewFileURI(filepath.Dir(uris[0].Path()))
+	item := d.NewSend(parentDir)
+	d.list.Refresh()
+
+	go func() {
+		code, result, err := d.Client.NewMultipleFileSend(uris, wormhole.WithProgress(item.update), d.getCustomCode())
+		if err != nil {
+			fyne.LogError("Error on sending directory", err)
+			item.failed()
+			dialog.ShowError(err, d.Window)
+			return
+		}
+
+		item.Code = code
+		d.list.Refresh()
+
+		if res := <-result; res.Error != nil {
+			fyne.LogError("Error on sending directory", res.Error)
+			item.failed()
+			dialog.ShowError(res.Error, d.Window)
+			d.Client.ShowNotification("Directory send failed", "An error occurred when sending the directory.")
+		} else if res.OK {
+			d.Client.ShowNotification("Directory send completed", "The directory was sent successfully.")
+		}
+	}()
+}
+
 // SendText sends new text.
 func (d *SendData) SendText() {
 	go func() {
-		text := <-d.Client.ShowTextSendWindow()
+		text := d.Client.ShowTextSendWindow()
 		if text == "" {
 			return
 		}
 
+		d.Window.RequestFocus() // Refocus the main window
 		item := d.NewSend(storage.NewFileURI("Text Snippet"))
 		d.list.Refresh()
 
@@ -250,7 +290,7 @@ func (d *SendData) getCustomCode() string {
 	code := make(chan string)
 	codeEntry := &widget.Entry{
 		PlaceHolder: "123-example-code",
-		Wrapping:    fyne.TextTruncate,
+		Scroll:      container.ScrollBoth,
 		Validator:   util.CodeValidator,
 	}
 
@@ -269,6 +309,7 @@ func (d *SendData) getCustomCode() string {
 		close(code)
 	}, d.Window)
 	form.Resize(fyne.Size{Width: d.Canvas.Size().Width * 0.8})
+	codeEntry.OnSubmitted = func(_ string) { form.Submit() }
 	form.Show()
 	d.Canvas.Focus(codeEntry)
 

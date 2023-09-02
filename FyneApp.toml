@@ -1,8 +1,15 @@
 Website = "https://rymdport.github.io/"
 
 [Details]
-  Icon = "internal/assets/icon/icon-512.png"
-  Name = "rymdport"
+  Icon = "internal/assets/icons/icon-512.png"
+  Name = "Rymdport"
   ID = "io.github.jacalz.rymdport"
-  Version = "3.4.0"
-  Build = 25
+  Version = "3.5.0"
+  Build = 26
+
+[LinuxAndBSD]
+  GenericName = "File Transfer"
+  Categories = ["Network", "FileTransfer", "P2P", "Utility"]
+  Comment = "Easy encrypted sharing of files, folders, and text between devices."
+  Keywords = ["magic-wormhole", "send", "receive", "sharing", "transfer", "fyne"]
+  ExecParams = "%F"

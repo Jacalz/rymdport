@@ -44,6 +44,34 @@
   </kudos>
 
   <releases>
+    <release version="3.5.0" date="2023-09-02" type="stable">
+      <description>
+        <ul>
+          <li>Major theme rework with rounded corners.</li>
+          <li>Added support for dragging and dropping files and folders onto the application.</li>
+          <li>It is now possible to open files or folders in Rymdport from the file manager to start a transfer.</li>
+          <li>A transfer can now be started by passing files or folders as command-line arguments.</li>
+          <li>Pressing enter after writing a custom code will now start the transfer (#55).</li>
+          <li>Instead of giving an error, a number is now added to the end of a file if a duplicate exists (#87).</li>
+          <li>Fixed long codes flowing into the progress bar (#96).</li>
+          <li>Fixed the QR code showing for failed and completed transfers (#90).</li>
+          <li>Refocus the main window after sending text (#85).</li>
+          <li>Enabling the option to overwrite files now shows the submit button using a warning colour (#48).</li>
+          <li>Fixed a memory leak when starting a second text transfer with the window already open.</li>
+          <li>The text send window now opens faster for transfers after the initial start.</li>
+          <li>Directory transfers now check that the size and file number are as expected before extraction.</li>
+          <li>Long filenames and codes are now truncated using ellipsis instead of clipping.</li>
+          <li>Fix text in the progress bar flickering and having the wrong colour sometimes.</li>
+          <li>Added an option to disable animations (which can be found within our Settings tab).</li>
+          <li>Icons are now installed in more sizes to look better in more places.</li>
+          <li>Updated the fyne package to v2.4.0 for many improvements.</li>
+          <li>Updated the wormhole-william package to v1.0.7 for minor bug fixes and performance improvements.</li>
+          <li>Updated the compress package to v1.16.7 for slightly more efficient compression and decompression of directory transfers.</li>
+          <li>Various cleanups and performance improvements throughout the codebase.</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.5.0</url>
+    </release>
 	  <release version="3.4.0" date="2023-06-07" type="stable">
       <description>
         <ul>

@@ -41,7 +41,7 @@ If this does not work, the `amd64` binaries work fine through Rosetta.
 ## Requirements
 
 Rymdport compiles into a statically linked binary with no explicit runtime dependencies.
-Compiling requires a [Go](https://go.dev) compiler (version 1.17 or later are supported) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
+Compiling requires a [Go](https://go.dev) compiler (aversion 1.18 or later is required) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
 
 ## Building
 
@@ -50,7 +50,7 @@ Systems with the compile-time requirements satisfied can build the project using
 go build
 ```
 
-Installation can also be performed using GNU Make (installing this way is only supported on Linux and BSD):
+Compilation and installation can also be performed using GNU Make (installing this way is only supported on Linux and BSD):
 ```bash
 make
 sudo make install

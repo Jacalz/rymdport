@@ -1,5 +1,36 @@
 # Changelog
 
+## 3.5.0 - Major redesign plaus drag and drop support
+- Major theme rework with rounded corners.
+- Added support for dragging and dropping files and folders onto the application (#73).
+- Users on Linux and BSD can now open files or folders in Rymdport from the file manager to start a transfer (#91).
+- A transfer can now be started by passing files or folders as command-line arguments (#75).
+- Pressing enter after writing a custom code will now start the transfer (#55).
+- Instead of giving an error, a number is now added to the end of a file if a duplicate exists (#87).
+- Fixed long codes flowing into the progress bar (#96).
+- Fixed the QR code showing for failed and completed transfers (#90).
+- Refocus the main window after sending text (#85).
+- Enabling the option to overwrite files now shows the submit button using a warning colour (#48).
+- Fixed a memory leak when starting a second text transfer with the window already open.
+- The text send window now opens faster for transfers after the initial start.
+- Directory transfers now check that the size and file number are as expected before extraction.
+- Long filenames and codes are now truncated using ellipsis instead of clipping.
+- The `Makefile` for building and installing on Linux and BSD has been improved.
+  - Binaries are now more reproducible and cleaned up more aggressively for release builds.
+  - The icon path has been updated to install the files in a more suitable location.
+  - Icons are now installed in more sizes to look better in more places.
+  - The icon cache is now automatically updated after installing files.
+- Release bianries now install Rymdport with a capital R.
+- Go 1.18 or later is now required for compiling the application. 
+- Updated `fyne` to [v2.4.0](https://github.com/fyne-io/fyne/releases/tag/v2.4.0).
+  - Added an option to disable animations (which can be found within our Settings tab).
+  - Various improvements to keyboard navigation in widgets.
+  - Fix text in the progress bar flickering and having the wrong colour sometimes.
+  - Various bug fixes, performance improvements, and code cleanups.
+- Updated `wormhole-william` to [v1.0.7](https://github.com/psanford/wormhole-william/releases/tag/v1.0.7) for minor bug fixes and performance improvements.
+- Updated `compress` to [v1.16.7](https://github.com/klauspost/compress/releases/tag/v1.16.7) for slightly more efficient compression and decompression of directory transfers.
+- Various cleanups and performance improvements throughout the codebase.
+
 ## 3.4.0 - QR code support and backend rewrite
 - QR codes can now be generated for easily sending items to [supported apps](https://github.com/Jacalz/rymdport/wiki/Supported-clients#clients-with-qr-code-scanning) (fixes #10).
 - Rewrote a large part of the backend for displaying sends and receives.

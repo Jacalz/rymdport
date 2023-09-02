@@ -91,7 +91,7 @@ func (s *settings) onOverwriteFilesChanged(selected string) {
 		return
 	}
 
-	dialog.ShowConfirm("Are you sure?", "Enabling this option risks potentially overwriting important files.", func(enable bool) {
+	confirm := dialog.NewConfirm("Are you sure?", "Enabling this option risks potentially overwriting important files.", func(enable bool) {
 		if !enable {
 			s.overwriteFiles.SetSelected("Off")
 			return
@@ -100,6 +100,8 @@ func (s *settings) onOverwriteFilesChanged(selected string) {
 		s.client.OverwriteExisting = true
 		s.preferences.SetBool("OverwriteFiles", s.client.OverwriteExisting)
 	}, s.window)
+	confirm.SetConfirmImportance(widget.WarningImportance)
+	confirm.Show()
 }
 
 func (s *settings) onNotificationsChanged(selected string) {
@@ -200,7 +202,7 @@ func (s *settings) buildUI(app fyne.App) *container.Scroll {
 	onOffOptions := []string{"On", "Off"}
 
 	pathSelector := &widget.Button{Icon: theme.FolderOpenIcon(), Importance: widget.LowImportance, OnTapped: s.onDownloadsPathSelected}
-	s.downloadPathEntry = &widget.Entry{Wrapping: fyne.TextTruncate, OnSubmitted: s.onDownloadsPathSubmitted, ActionItem: pathSelector}
+	s.downloadPathEntry = &widget.Entry{Scroll: container.ScrollHorizontalOnly, OnSubmitted: s.onDownloadsPathSubmitted, ActionItem: pathSelector}
 
 	s.overwriteFiles = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onOverwriteFilesChanged}
 
