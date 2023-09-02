@@ -24,6 +24,7 @@
 - Go 1.18 or later is now required for compiling the application. 
 - Updated `fyne` to [v2.4.0](https://github.com/fyne-io/fyne/releases/tag/v2.4.0).
   - Added an option to disable animations (which can be found within our Settings tab).
+  - Rectangles now use OpenGL hardware-acceleration for improved rendering performance.
   - Various improvements to keyboard navigation in widgets.
   - Fix text in the progress bar flickering and having the wrong colour sometimes.
   - Various bug fixes, performance improvements, and code cleanups.
