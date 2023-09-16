@@ -25,3 +25,6 @@ fyne-cross/
 # Flatpak related information
 build-dir/
 .flatpak-builder
+
+# Go workspace file
+go.work
