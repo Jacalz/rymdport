@@ -6,11 +6,14 @@ PREFIX ?= /usr
 
 debug:
 	go build -tags no_emoji -trimpath -o $(NAME)
+.PHONY: debug
 
 release:
 	go build -tags no_emoji -trimpath -ldflags="-s -w" -buildvcs=false -o $(NAME)
+.PHONY: release
 
 install:
+	# You'll maybe want to update your gtk icon cache by running `make update-icon-cache` afterwards.
 	install -Dm00755 $(NAME) $(DESTDIR)$(PREFIX)/bin/$(NAME)
 	install -Dm00644 internal/assets/icons/icon-512.png $(DESTDIR)$(PREFIX)/share/icons/hicolor/512x512/apps/$(APPID).png
 	install -Dm00644 internal/assets/icons/icon-256.png $(DESTDIR)$(PREFIX)/share/icons/hicolor/256x256/apps/$(APPID).png
@@ -23,7 +26,12 @@ install:
 	install -Dm00644 internal/assets/svg/icon.svg $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/$(APPID).svg
 	install -Dm00644 internal/assets/unix/$(APPID).desktop $(DESTDIR)$(PREFIX)/share/applications/$(APPID).desktop
 	install -Dm00644 internal/assets/unix/$(APPID).appdata.xml $(DESTDIR)$(PREFIX)/share/appdata/$(APPID).appdata.xml
+.PHONY: install
+
+update-icon-cache:
 	sudo gtk-update-icon-cache -f /usr/share/icons/hicolor/
+.PHONY: update-icon-cache
+
 
 uninstall:
 	-rm $(DESTDIR)$(PREFIX)/bin/$(NAME)
@@ -38,3 +46,4 @@ uninstall:
 	-rm $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/$(APPID).svg
 	-rm $(DESTDIR)$(PREFIX)/share/applications/$(APPID).desktop
 	-rm $(DESTDIR)$(PREFIX)/share/appdata/$(APPID).appdata.xml
+.PHONY: uninstall
