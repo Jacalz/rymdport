@@ -13,7 +13,6 @@ release:
 .PHONY: release
 
 install:
-	# You'll maybe want to update your gtk icon cache by running `make update-icon-cache` afterwards.
 	install -Dm00755 $(NAME) $(DESTDIR)$(PREFIX)/bin/$(NAME)
 	install -Dm00644 internal/assets/icons/icon-512.png $(DESTDIR)$(PREFIX)/share/icons/hicolor/512x512/apps/$(APPID).png
 	install -Dm00644 internal/assets/icons/icon-256.png $(DESTDIR)$(PREFIX)/share/icons/hicolor/256x256/apps/$(APPID).png
@@ -26,6 +25,8 @@ install:
 	install -Dm00644 internal/assets/svg/icon.svg $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/$(APPID).svg
 	install -Dm00644 internal/assets/unix/$(APPID).desktop $(DESTDIR)$(PREFIX)/share/applications/$(APPID).desktop
 	install -Dm00644 internal/assets/unix/$(APPID).appdata.xml $(DESTDIR)$(PREFIX)/share/appdata/$(APPID).appdata.xml
+	# NOTE: You might want to update your gtk icon cache by running `make update-icon-cache` afterwards.
+	# Not doing this might result in the application not showing up in the application menu.
 .PHONY: install
 
 update-icon-cache:
