@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.5.1 - Bug fixes and improved performance
+- The `Makefile` now includes `.PHONY` targets to avoid problems with targets having the same name as local files. 
+- The `Makefile` no longer updates the icon cache (per request from Linux package maintainers).
+  - A user installing locally should manually run `make update-icon-cache` afterwards instead. 
+- Updated `fyne` to [v2.4.1](https://github.com/fyne-io/fyne/releases/tag/v2.4.1).
+  - File names inside the file dialog grid view are now shown on two lines and with better truncation.
+  - Various other improvements and bug fixes.
+- Updated `compress` to [v1.17.0](https://github.com/klauspost/compress/releases/tag/v1.17.0) for more efficient decompression of directory transfers.
+
 ## 3.5.0 - Major theme redesign plus drag and drop support
 - Major theme rework with rounded corners.
 - Added support for dragging and dropping files and folders onto the application (#73).
