@@ -1,7 +1,6 @@
 package bridge
 
 import (
-	"net/url"
 	"path/filepath"
 
 	"fyne.io/fyne/v2"
@@ -98,8 +97,7 @@ func (d *SendData) OnSelected(i int) {
 	qrcode.ScaleMode = canvas.ImageScalePixels
 	qrcode.SetMinSize(fyne.NewSize(100, 100))
 
-	const supported = util.Repo + "/wiki/Supported-clients"
-	supportedClientsUrl := &url.URL{Scheme: util.Https, Host: util.Github, Path: supported}
+	supportedClientsUrl := util.URLToGitHubProject("/wiki/Supported-clients")
 	qrCodeInfo := widget.NewRichText(&widget.TextSegment{
 		Style: widget.RichTextStyleInline,
 		Text:  "A list of supported apps can be found ",

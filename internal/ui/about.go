@@ -14,18 +14,15 @@ import (
 )
 
 func newAboutTab(app fyne.App) *container.TabItem {
-	const (
-		version = "v3.5.1"
-		release = util.Repo + "/releases/tag/" + version
-	)
+	const version = "v3.5.1"
 
-	repoURL := &url.URL{Scheme: util.Https, Host: util.Github, Path: util.Repo}
+	repoURL := util.URLToGitHubProject("")
 	icon := newClickableIcon(app.Icon(), repoURL, app)
 
 	nameLabel := newBoldLabel("Rymdport")
 	spacerLabel := newBoldLabel("-")
 
-	releaseURL := &url.URL{Scheme: util.Https, Host: util.Github, Path: release}
+	releaseURL := util.URLToGitHubProject("/releases/tag/" + version)
 	hyperlink := &widget.Hyperlink{Text: version, URL: releaseURL, TextStyle: fyne.TextStyle{Bold: true}}
 
 	spacer := &layout.Spacer{}
