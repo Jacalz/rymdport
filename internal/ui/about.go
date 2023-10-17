@@ -10,25 +10,22 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	"github.com/Jacalz/rymdport/v3/internal/util"
 )
 
 func newAboutTab(app fyne.App) *container.TabItem {
 	const (
-		https   = "https"
-		github  = "github.com"
 		version = "v3.5.3"
+		release = util.Repo + "/releases/tag/" + version
 	)
 
-	repoURL := &url.URL{Scheme: https, Host: github, Path: "/jacalz/rymdport"}
+	repoURL := &url.URL{Scheme: util.Https, Host: util.Github, Path: util.Repo}
 	icon := newClickableIcon(app.Icon(), repoURL, app)
 
 	nameLabel := newBoldLabel("Rymdport")
 	spacerLabel := newBoldLabel("-")
 
-	releaseURL := &url.URL{
-		Scheme: https, Host: github,
-		Path: "/jacalz/rymdport/releases/tag/" + version,
-	}
+	releaseURL := &url.URL{Scheme: util.Https, Host: util.Github, Path: release}
 	hyperlink := &widget.Hyperlink{Text: version, URL: releaseURL, TextStyle: fyne.TextStyle{Bold: true}}
 
 	spacer := &layout.Spacer{}
