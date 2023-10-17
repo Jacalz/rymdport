@@ -1,6 +1,7 @@
 package bridge
 
 import (
+	"net/url"
 	"path/filepath"
 
 	"fyne.io/fyne/v2"
@@ -98,7 +99,17 @@ func (d *SendData) OnSelected(i int) {
 	qrcode.ScaleMode = canvas.ImageScalePixels
 	qrcode.SetMinSize(fyne.NewSize(100, 100))
 
-	qrCodeInfo := widget.NewRichTextFromMarkdown("A list of supported apps can be found [here](https://github.com/Jacalz/rymdport/wiki/Supported-clients).")
+	supportedClientsUrl, _ := url.Parse("htps://github.com/Jacalz/rymdport/wiki/Supported-clients")
+	qrCodeInfo := widget.NewRichText(&widget.TextSegment{
+		Style: widget.RichTextStyleInline,
+		Text:  "A list of supported apps can be found ",
+	}, &widget.HyperlinkSegment{
+		Text: "here",
+		URL:  supportedClientsUrl,
+	}, &widget.TextSegment{
+		Style: widget.RichTextStyleInline,
+		Text:  ".",
+	})
 	qrCard := &widget.Card{Image: qrcode, Content: container.NewCenter(qrCodeInfo)}
 
 	removeLabel := &widget.Label{Text: "This item can be removed.\nThe transfer has completed."}
