@@ -31,6 +31,8 @@ func Create(app fyne.App, window fyne.Window) *container.AppTabs {
 			tabs.SelectIndex(0)
 		}
 
+		send.client.CustomCode = true
+		send.client.Drop = true
 		send.newTransfer(uris)
 	})
 
