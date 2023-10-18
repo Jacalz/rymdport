@@ -27,6 +27,9 @@ type Client struct {
 
 	// Defines if we should pass a custom code or let wormhole-william generate on for us.
 	CustomCode bool
+
+	// Indicates a file is about to send by dropping file onto the window.
+	Drop bool
 }
 
 // ShowNotification sends a notification if c.Notifications is true.
