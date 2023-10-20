@@ -39,13 +39,14 @@ func (s *send) buildUI(window fyne.Window) *fyne.Container {
 	fileChoice := &widget.Button{Text: "File", Icon: theme.FileIcon(), OnTapped: s.onFileSend}
 	directoryChoice := &widget.Button{Text: "Directory", Icon: theme.FolderOpenIcon(), OnTapped: s.onDirSend}
 	textChoice := &widget.Button{Text: "Text", Icon: theme.DocumentCreateIcon(), OnTapped: s.onTextSend}
-	codeChoice := &widget.Check{Text: "Use a custom code", OnChanged: s.onCustomCode}
-
-	choiceContent := container.NewGridWithColumns(1, fileChoice, directoryChoice, textChoice, codeChoice)
-	s.contentPicker = dialog.NewCustom("Pick a content type", "Cancel", choiceContent, window)
 
 	s.data = &bridge.SendData{Client: s.client, Window: window, Canvas: s.window.Canvas()}
-	contentToSend := &widget.Button{Text: "Add content to send", Icon: theme.ContentAddIcon(), OnTapped: s.contentPicker.Show}
+	contentToSend := &widget.Button{Text: "Add content to send", Icon: theme.ContentAddIcon(), OnTapped: func() {
+		codeChoice := &widget.Check{Text: "Use a custom code", OnChanged: s.onCustomCode, Checked: s.client.CustomCode}
+		choiceContent := container.NewGridWithColumns(1, fileChoice, directoryChoice, textChoice, codeChoice)
+		s.contentPicker = dialog.NewCustom("Pick a content type", "Cancel", choiceContent, window)
+		s.contentPicker.Show()
+	}}
 
 	s.fileDialog = dialog.NewFileOpen(s.data.OnFileSelect, window)
 	s.directoryDialog = dialog.NewFolderOpen(s.data.OnDirSelect, window)

@@ -294,12 +294,6 @@ func (d *SendData) SendText() {
 // getCustomCode returns "" if the user has custom codes disabled.
 // Otherwise, it will ask the user for a code.
 func (d *SendData) getCustomCode() string {
-	defer func() {
-		if d.Client.Drop {
-			d.Client.Drop = false
-		}
-	}()
-
 	if !d.Client.CustomCode {
 		return ""
 	}
@@ -310,13 +304,8 @@ func (d *SendData) getCustomCode() string {
 		Scroll:      container.ScrollBoth,
 		Validator:   util.CodeValidator,
 	}
-	cancelMessage := "Cancel"
 
-	if d.Client.Drop {
-		cancelMessage = "Use default instead"
-	}
-
-	form := dialog.NewForm("Create custom code", "Confirm", cancelMessage, []*widget.FormItem{
+	form := dialog.NewForm("Create custom code", "Confirm", "Cancel", []*widget.FormItem{
 		{
 			Text: "Code", Widget: codeEntry,
 			HintText: "A code beginning with a number, followed by groups of letters separated with \"-\".",
