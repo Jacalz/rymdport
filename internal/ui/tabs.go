@@ -32,11 +32,10 @@ func Create(app fyne.App, window fyne.Window) *container.AppTabs {
 			tabs.SelectIndex(0)
 		}
 
-		confirm := dialog.NewConfirm("Create using custom code", "Create using custom code?", func(custom bool) {
+		dialog.ShowConfirm("Custom Code", "Use a custom code?", func(custom bool) {
 			send.client.CustomCode = custom
 			send.newTransfer(uris)
 		}, window)
-		confirm.Show()
 	})
 
 	if args := os.Args[1:]; len(args) > 0 {
