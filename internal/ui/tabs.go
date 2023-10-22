@@ -7,6 +7,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/storage"
 	"github.com/Jacalz/rymdport/v3/internal/transport"
@@ -31,7 +32,10 @@ func Create(app fyne.App, window fyne.Window) *container.AppTabs {
 			tabs.SelectIndex(0)
 		}
 
-		send.newTransfer(uris)
+		dialog.ShowConfirm("Custom Code", "Use a custom code?", func(custom bool) {
+			send.client.CustomCode = custom
+			send.newTransfer(uris)
+		}, window)
 	})
 
 	if args := os.Args[1:]; len(args) > 0 {
