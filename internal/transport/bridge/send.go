@@ -1,6 +1,7 @@
 package bridge
 
 import (
+	"fmt"
 	"path/filepath"
 
 	"fyne.io/fyne/v2"
@@ -43,6 +44,7 @@ type SendData struct {
 	Client *transport.Client
 	Window fyne.Window
 	Canvas fyne.Canvas
+	Uris   []fyne.URI
 
 	items []*SendItem
 	list  *widget.List
@@ -119,7 +121,7 @@ func (d *SendData) OnSelected(i int) {
 		d.items[len(d.items)-1] = nil // Allow the GC to reclaim memory.
 		d.items = d.items[:len(d.items)-1]
 
-		d.list.Refresh()
+		d.list.RefreshItem(i)
 	}}
 
 	// Only allow failed or completed items to be removed.
@@ -189,6 +191,20 @@ func (d *SendData) OnFileSelect(file fyne.URIReadCloser, err error) {
 			d.Client.ShowNotification("File send completed", "The file was sent successfully.")
 		}
 	}()
+}
+
+func (d *SendData) OnMultiFilesSelect(file fyne.URIReadCloser, err error) {
+	if err != nil {
+		fyne.LogError("Error on selecting file to send", err)
+		dialog.ShowError(err, d.Window)
+		return
+	} else if file == nil {
+		return
+	}
+
+	fmt.Println("uris before:", d.Uris)
+	d.Uris = append(d.Uris, file.URI())
+	fmt.Println("uris after:", d.Uris)
 }
 
 // OnDirSelect is intended to be passed as callback to a FolderOpen dialog.

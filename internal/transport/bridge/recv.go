@@ -93,7 +93,7 @@ func (d *RecvData) OnSelected(i int) {
 		d.items[len(d.items)-1] = nil // Allow the GC to reclaim memory.
 		d.items = d.items[:len(d.items)-1]
 
-		d.list.Refresh()
+		d.list.RefreshItem(i)
 	}}
 
 	removeCard := &widget.Card{Content: container.NewVBox(removeLabel, removeButton)}
