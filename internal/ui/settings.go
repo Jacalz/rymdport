@@ -26,9 +26,9 @@ type settings struct {
 	componentSlider     *widget.Slider
 	componentLabel      *widget.Label
 	verifyRadio         *widget.RadioGroup
-	appID               *widget.Entry
-	rendezvousURL       *widget.Entry
-	transitRelayAddress *widget.Entry
+	appID               *widget.SelectEntry
+	rendezvousURL       *widget.SelectEntry
+	transitRelayAddress *widget.SelectEntry
 
 	client      *transport.Client
 	preferences fyne.Preferences
@@ -214,11 +214,14 @@ func (s *settings) buildUI(app fyne.App) *container.Scroll {
 
 	s.componentSlider, s.componentLabel = &widget.Slider{Min: 2.0, Max: 6.0, Step: 1, OnChanged: s.onComponentsChange}, &widget.Label{}
 
-	s.appID = &widget.Entry{PlaceHolder: wormhole.WormholeCLIAppID, OnChanged: s.onAppIDChanged}
+	s.appID = widget.NewSelectEntry([]string{wormhole.WormholeCLIAppID})
+	s.appID.OnChanged = s.onAppIDChanged
 
-	s.rendezvousURL = &widget.Entry{PlaceHolder: wormhole.DefaultRendezvousURL, OnChanged: s.onRendezvousURLChange}
+	s.rendezvousURL = widget.NewSelectEntry([]string{wormhole.DefaultRendezvousURL, "wss://mailbox.mw.leastauthority.com/v1"})
+	s.rendezvousURL.OnChanged = s.onRendezvousURLChange
 
-	s.transitRelayAddress = &widget.Entry{PlaceHolder: wormhole.DefaultTransitRelayAddress, OnChanged: s.onTransitAdressChange}
+	s.transitRelayAddress = widget.NewSelectEntry([]string{wormhole.DefaultTransitRelayAddress, "relay.mw.leastauthority.com:4001"})
+	s.transitRelayAddress.OnChanged = s.onTransitAdressChange
 
 	s.getPreferences(app)
 
