@@ -13,7 +13,7 @@ import (
 	"github.com/Jacalz/rymdport/v3/internal/transport"
 	"github.com/Jacalz/rymdport/v3/internal/util"
 	"github.com/psanford/wormhole-william/wormhole"
-	"github.com/skip2/go-qrcode"
+	"github.com/rymdport/go-qrcode"
 )
 
 // SendItem is the item that is being sent.
