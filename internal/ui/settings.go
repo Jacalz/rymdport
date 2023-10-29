@@ -215,12 +215,17 @@ func (s *settings) buildUI(app fyne.App) *container.Scroll {
 	s.componentSlider, s.componentLabel = &widget.Slider{Min: 2.0, Max: 6.0, Step: 1, OnChanged: s.onComponentsChange}, &widget.Label{}
 
 	s.appID = widget.NewSelectEntry([]string{wormhole.WormholeCLIAppID})
+	s.appID.PlaceHolder = wormhole.WormholeCLIAppID
 	s.appID.OnChanged = s.onAppIDChanged
 
-	s.rendezvousURL = widget.NewSelectEntry([]string{wormhole.DefaultRendezvousURL, "wss://mailbox.mw.leastauthority.com/v1"})
+	const leastAuthorityRendzvousURL = "wss://mailbox.mw.leastauthority.com/v1"
+	s.rendezvousURL = widget.NewSelectEntry([]string{wormhole.DefaultRendezvousURL, leastAuthorityRendzvousURL})
+	s.rendezvousURL.PlaceHolder = wormhole.DefaultRendezvousURL
 	s.rendezvousURL.OnChanged = s.onRendezvousURLChange
 
-	s.transitRelayAddress = widget.NewSelectEntry([]string{wormhole.DefaultTransitRelayAddress, "relay.mw.leastauthority.com:4001"})
+	const leastAuthorityTransitRelayAddress = "relay.mw.leastauthority.com:4001"
+	s.transitRelayAddress = widget.NewSelectEntry([]string{wormhole.DefaultTransitRelayAddress, leastAuthorityTransitRelayAddress})
+	s.transitRelayAddress.PlaceHolder = wormhole.DefaultTransitRelayAddress
 	s.transitRelayAddress.OnChanged = s.onTransitAdressChange
 
 	s.getPreferences(app)
