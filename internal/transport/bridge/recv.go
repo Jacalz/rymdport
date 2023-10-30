@@ -2,6 +2,7 @@ package bridge
 
 import (
 	"path/filepath"
+	"sync/atomic"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -22,23 +23,25 @@ type RecvItem struct {
 	Max    int64
 	Status func() string
 
-	list *widget.List
+	// Allow the list to only refresh a single object.
+	refresh func(int)
+	index   int
 }
 
 func (r *RecvItem) update(delta, total int64) {
 	r.Value += delta
 	r.Max = total
-	r.list.Refresh()
+	r.refresh(r.index)
 }
 
 func (r *RecvItem) done() {
 	r.Value = r.Max
-	r.list.Refresh()
+	r.refresh(r.index)
 }
 
 func (r *RecvItem) failed() {
 	r.Status = func() string { return "Failed" }
-	r.list.Refresh()
+	r.refresh(r.index)
 }
 
 // RecvData is a list of progress bars that track send progress.
@@ -47,7 +50,9 @@ type RecvData struct {
 	Window fyne.Window
 
 	items []*RecvItem
-	list  *widget.List
+
+	deleting atomic.Bool
+	list     *widget.List
 }
 
 // Length returns the length of the data.
@@ -86,6 +91,9 @@ func (d *RecvData) OnSelected(i int) {
 
 	removeLabel := &widget.Label{Text: "This item has completed the transfer and can be removed."}
 	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.DangerImportance, Text: "Remove", OnTapped: func() {
+		// Make sure that no updates happen while we modify the slice.
+		d.deleting.Store(true)
+
 		if i < len(d.items)-1 {
 			copy(d.items[i:], d.items[i+1:])
 		}
@@ -93,7 +101,16 @@ func (d *RecvData) OnSelected(i int) {
 		d.items[len(d.items)-1] = nil // Allow the GC to reclaim memory.
 		d.items = d.items[:len(d.items)-1]
 
+		// Update the moved items to have the correct index.
+		for j := i; j < len(d.items); j++ {
+			d.items[j].index = j
+		}
+
+		// Refresh the whole list.
 		d.list.Refresh()
+
+		// Allow individual objects to be refreshed again.
+		d.deleting.Store(false)
 	}}
 
 	removeCard := &widget.Card{Content: container.NewVBox(removeLabel, removeButton)}
@@ -109,7 +126,7 @@ func (d *RecvData) OnSelected(i int) {
 
 // NewRecv creates a new send item and adds it to the items.
 func (d *RecvData) NewRecv(code string) *RecvItem {
-	item := &RecvItem{Name: "Waiting for filename...", Code: code, Max: 1, list: d.list}
+	item := &RecvItem{Name: "Waiting for filename...", Code: code, Max: 1, refresh: d.refresh, index: len(d.items)}
 	d.items = append(d.items, item)
 	return item
 }
@@ -141,6 +158,14 @@ func (d *RecvData) NewReceive(code string) {
 			item.done()
 		}
 	}(code)
+}
+
+func (d *RecvData) refresh(index int) {
+	if d.deleting.Load() {
+		return // Don't update if we are deleting.
+	}
+
+	d.list.RefreshItem(index)
 }
 
 // NewRecvList greates a list of progress bars.
