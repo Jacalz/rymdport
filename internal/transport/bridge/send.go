@@ -36,6 +36,7 @@ func (s *SendItem) update(sent, total int64) {
 
 func (s *SendItem) failed() {
 	s.Status = func() string { return "Failed" }
+	s.list.Refresh()
 }
 
 // SendData is a list of progress bars that track send progress.
