@@ -2,6 +2,7 @@ package bridge
 
 import (
 	"path/filepath"
+	"sync/atomic"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -25,18 +26,20 @@ type SendItem struct {
 	Max    int64
 	Status func() string
 
-	list *widget.List
+	// Allow the list to only refresh a single object.
+	refresh func(int)
+	index   int
 }
 
 func (s *SendItem) update(sent, total int64) {
 	s.Value = sent
 	s.Max = total
-	s.list.Refresh()
+	s.refresh(s.index)
 }
 
 func (s *SendItem) failed() {
 	s.Status = func() string { return "Failed" }
-	s.list.Refresh()
+	s.refresh(s.index)
 }
 
 // SendData is a list of progress bars that track send progress.
@@ -46,7 +49,9 @@ type SendData struct {
 	Canvas fyne.Canvas
 
 	items []*SendItem
-	list  *widget.List
+
+	deleting atomic.Bool
+	list     *widget.List
 }
 
 // Length returns the length of the data.
@@ -113,6 +118,9 @@ func (d *SendData) OnSelected(i int) {
 
 	removeLabel := &widget.Label{Text: "This item can be removed.\nThe transfer has completed."}
 	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.DangerImportance, Text: "Remove", OnTapped: func() {
+		// Make sure that no updates happen while we modify the slice.
+		d.deleting.Store(true)
+
 		if i < len(d.items)-1 {
 			copy(d.items[i:], d.items[i+1:])
 		}
@@ -120,7 +128,16 @@ func (d *SendData) OnSelected(i int) {
 		d.items[len(d.items)-1] = nil // Allow the GC to reclaim memory.
 		d.items = d.items[:len(d.items)-1]
 
+		// Update the moved items to have the correct index.
+		for j := i; j < len(d.items); j++ {
+			d.items[j].index = j
+		}
+
+		// Refresh the whole list.
 		d.list.Refresh()
+
+		// Allow individual objects to be refreshed again.
+		d.deleting.Store(false)
 	}}
 
 	// Only allow failed or completed items to be removed.
@@ -143,7 +160,7 @@ func (d *SendData) OnSelected(i int) {
 
 // NewSend adds data about a new send to the list and then returns the item.
 func (d *SendData) NewSend(uri fyne.URI) *SendItem {
-	item := &SendItem{Code: "Waiting for code...", URI: uri, list: d.list, Max: 1}
+	item := &SendItem{Code: "Waiting for code...", URI: uri, Max: 1, refresh: d.refresh, index: len(d.items)}
 	d.items = append(d.items, item)
 	return item
 }
@@ -325,6 +342,14 @@ func (d *SendData) getCustomCode() string {
 	d.Canvas.Focus(codeEntry)
 
 	return <-code
+}
+
+func (d *SendData) refresh(index int) {
+	if d.deleting.Load() {
+		return // Don't update if we are deleting.
+	}
+
+	d.list.RefreshItem(index)
 }
 
 // NewSendList greates a list of progress bars.
