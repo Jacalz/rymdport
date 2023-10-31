@@ -142,7 +142,7 @@ func (d *RecvData) NewReceive(code string) {
 		item.URI = storage.NewFileURI(<-path)
 		item.Name = item.URI.Name()
 		close(path)
-		d.list.Refresh()
+		d.refresh(item.index)
 	}()
 
 	go func(code string) {
