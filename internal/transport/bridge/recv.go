@@ -89,6 +89,7 @@ func (d *RecvData) UpdateItem(i int, object fyne.CanvasObject) {
 func (d *RecvData) OnSelected(i int) {
 	d.list.Unselect(i)
 
+	var infoDialog *dialog.CustomDialog
 	removeLabel := &widget.Label{Text: "This item has completed the transfer and can be removed."}
 	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.DangerImportance, Text: "Remove", OnTapped: func() {
 		// Make sure that no updates happen while we modify the slice.
@@ -111,6 +112,9 @@ func (d *RecvData) OnSelected(i int) {
 
 		// Allow individual objects to be refreshed again.
 		d.deleting.Store(false)
+
+		infoDialog.Hide()
+		infoDialog = nil
 	}}
 
 	removeCard := &widget.Card{Content: container.NewVBox(removeLabel, removeButton)}
@@ -121,7 +125,8 @@ func (d *RecvData) OnSelected(i int) {
 		removeButton.Disable()
 	}
 
-	dialog.ShowCustom("Information", "Close", removeCard, d.Window)
+	infoDialog = dialog.NewCustom("Information", "Close", removeCard, d.Window)
+	infoDialog.Show()
 }
 
 // NewRecv creates a new send item and adds it to the items.
