@@ -116,6 +116,7 @@ func (d *SendData) OnSelected(i int) {
 	})
 	qrCard := &widget.Card{Image: qrcode, Content: container.NewCenter(qrCodeInfo)}
 
+	var infoDialog *dialog.CustomDialog
 	removeLabel := &widget.Label{Text: "This item can be removed.\nThe transfer has completed."}
 	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.DangerImportance, Text: "Remove", OnTapped: func() {
 		// Make sure that no updates happen while we modify the slice.
@@ -138,6 +139,9 @@ func (d *SendData) OnSelected(i int) {
 
 		// Allow individual objects to be refreshed again.
 		d.deleting.Store(false)
+
+		infoDialog.Hide()
+		infoDialog = nil
 	}}
 
 	// Only allow failed or completed items to be removed.
@@ -155,7 +159,8 @@ func (d *SendData) OnSelected(i int) {
 
 	removeCard := &widget.Card{Content: container.NewVBox(removeLabel, removeButton)}
 
-	dialog.ShowCustom("Information", "Close", container.NewGridWithColumns(2, qrCard, removeCard), d.Window)
+	infoDialog = dialog.NewCustom("Information", "Close", container.NewGridWithColumns(2, qrCard, removeCard), d.Window)
+	infoDialog.Show()
 }
 
 // NewSend adds data about a new send to the list and then returns the item.
