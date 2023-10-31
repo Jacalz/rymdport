@@ -196,7 +196,7 @@ func (d *SendData) OnFileSelect(file fyne.URIReadCloser, err error) {
 		}
 
 		item.Code = code
-		d.list.Refresh()
+		d.refresh(item.index)
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending file", res.Error)
@@ -232,7 +232,7 @@ func (d *SendData) OnDirSelect(dir fyne.ListableURI, err error) {
 		}
 
 		item.Code = code
-		d.list.Refresh()
+		d.refresh(item.index)
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending directory", res.Error)
@@ -261,7 +261,7 @@ func (d *SendData) NewSendFromFiles(uris []fyne.URI) {
 		}
 
 		item.Code = code
-		d.list.Refresh()
+		d.refresh(item.index)
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending directory", res.Error)
@@ -295,7 +295,7 @@ func (d *SendData) SendText() {
 		}
 
 		item.Code = code
-		d.list.Refresh()
+		d.refresh(item.index)
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending text", res.Error)
