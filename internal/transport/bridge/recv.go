@@ -44,6 +44,12 @@ func (r *RecvItem) failed() {
 	r.refresh(r.index)
 }
 
+func (r *RecvItem) setPath(path string) {
+	r.URI = storage.NewFileURI(path)
+	r.Name = r.URI.Name()
+	r.refresh(r.index)
+}
+
 // RecvData is a list of progress bars that track send progress.
 type RecvData struct {
 	Client *transport.Client
@@ -141,17 +147,8 @@ func (d *RecvData) NewReceive(code string) {
 	item := d.NewRecv(code)
 	d.list.Refresh()
 
-	path := make(chan string)
-
-	go func() {
-		item.URI = storage.NewFileURI(<-path)
-		item.Name = item.URI.Name()
-		close(path)
-		d.refresh(item.index)
-	}()
-
 	go func(code string) {
-		if err := d.Client.NewReceive(code, path, item.update); err != nil {
+		if err := d.Client.NewReceive(code, item.setPath, item.update); err != nil {
 			d.Client.ShowNotification("Receive failed", "An error occurred when receiving the data.")
 			item.failed()
 			dialog.ShowError(err, d.Window)
