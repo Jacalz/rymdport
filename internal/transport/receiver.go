@@ -27,10 +27,9 @@ func bail(msg *wormhole.IncomingMessage, err error) error {
 }
 
 // NewReceive runs a receive using wormhole-william and handles types accordingly.
-func (c *Client) NewReceive(code string, pathname chan string, progress func(int64, int64)) (err error) {
+func (c *Client) NewReceive(code string, setPath func(string), progress func(int64, int64)) (err error) {
 	msg, err := c.Receive(context.Background(), code)
 	if err != nil {
-		pathname <- "" // We want to always send a URI, even on fail, in order to not block goroutines.
 		fyne.LogError("Error on receiving data", err)
 		return bail(msg, err)
 	}
@@ -38,7 +37,7 @@ func (c *Client) NewReceive(code string, pathname chan string, progress func(int
 	contents := util.NewProgressReader(msg, progress, msg.TransferBytes64)
 
 	if msg.Type == wormhole.TransferText {
-		pathname <- "Text Snippet"
+		setPath("Text Snippet")
 
 		text := make([]byte, int(msg.TransferBytes64))
 		_, err := io.ReadFull(contents, text)
@@ -52,7 +51,7 @@ func (c *Client) NewReceive(code string, pathname chan string, progress func(int
 	}
 
 	path := filepath.Join(c.DownloadPath, msg.Name)
-	pathname <- path
+	setPath(path)
 
 	if !c.OverwriteExisting {
 		if _, err := os.Stat(path); err == nil || os.IsExist(err) {
