@@ -114,9 +114,12 @@ func (s *settings) onCheckUpdatesChanged(selected string) {
 }
 
 func (s *settings) onComponentsChange(value float64) {
-	s.client.PassPhraseComponentLength = int(value)
-	s.preferences.SetInt("ComponentLength", s.client.PassPhraseComponentLength)
 	s.componentLabel.SetText(string('0' + byte(value)))
+}
+
+func (s *settings) onComponentsChangeEnded(value float64) {
+	s.client.PassPhraseComponentLength = int(value)
+	s.preferences.SetInt("ComponentLength", int(value))
 }
 
 func (s *settings) onAppIDChanged(appID string) {
@@ -212,7 +215,8 @@ func (s *settings) buildUI(app fyne.App) *container.Scroll {
 
 	s.verifyRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onVerifyChanged}
 
-	s.componentSlider, s.componentLabel = &widget.Slider{Min: 2.0, Max: 6.0, Step: 1, OnChanged: s.onComponentsChange}, &widget.Label{}
+	s.componentSlider = &widget.Slider{Min: 2.0, Max: 6.0, Step: 1, OnChanged: s.onComponentsChange, OnChangeEnded: s.onComponentsChangeEnded}
+	s.componentLabel = &widget.Label{}
 
 	s.appID = widget.NewSelectEntry([]string{wormhole.WormholeCLIAppID})
 	s.appID.PlaceHolder = wormhole.WormholeCLIAppID
