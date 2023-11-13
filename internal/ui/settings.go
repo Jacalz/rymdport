@@ -215,7 +215,7 @@ func (s *settings) buildUI(app fyne.App) *container.Scroll {
 
 	s.verifyRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onVerifyChanged}
 
-	s.componentSlider = &widget.Slider{Min: 2.0, Max: 6.0, Step: 1, OnChanged: s.onComponentsChange, OnChangeEnded: s.onComponentsChangeEnded}
+	s.componentSlider = &widget.Slider{Min: 2.0, Max: 9.0, Step: 1, OnChanged: s.onComponentsChange, OnChangeEnded: s.onComponentsChangeEnded}
 	s.componentLabel = &widget.Label{}
 
 	s.appID = widget.NewSelectEntry([]string{wormhole.WormholeCLIAppID})
