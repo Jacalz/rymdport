@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.5.2 - Updated Fyne UI toolkit dependency
+- Updated `fyne` to [v2.4.3](https://github.com/fyne-io/fyne/releases/tag/v2.4.3).
+
 ## 3.5.1 - Bug fixes and improved performance
 - The `Makefile` now includes `.PHONY` targets to avoid problems with targets having the same name as local files. 
 - The `Makefile` no longer updates the icon cache (per request from Linux package maintainers).

@@ -4,8 +4,8 @@ Website = "https://rymdport.github.io/"
   Icon = "internal/assets/icons/icon-512.png"
   Name = "Rymdport"
   ID = "io.github.jacalz.rymdport"
-  Version = "3.5.1"
-  Build = 27
+  Version = "3.5.2"
+  Build = 26
 
 [LinuxAndBSD]
   GenericName = "File Transfer"

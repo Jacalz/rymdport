@@ -44,6 +44,14 @@
   </kudos>
 
   <releases>
+    <release version="3.5.2" date="2023-12-30" type="stable">
+      <description>
+        <ul>
+          <li>Updated fyne to v2.4.3 for various bug fixes and performance improvements.</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.5.2</url>
+    </release>
     <release version="3.5.1" date="2023-10-09" type="stable">
       <description>
         <ul>
@@ -51,7 +59,7 @@
           <li>Updated fyne to v2.4.1 for improved file names in the file dialog along with many bug fixes.</li>
         </ul>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.5</url>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.5.1</url>
     </release>
     <release version="3.5.0" date="2023-09-02" type="stable">
       <description>
