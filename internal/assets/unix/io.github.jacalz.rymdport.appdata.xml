@@ -44,7 +44,7 @@
   </kudos>
 
   <releases>
-    <release version="3.5.2" date="2023-12-30" type="stable">
+    <release version="3.5.2" date="2024-01-03" type="stable">
       <description>
         <ul>
           <li>Updated fyne to v2.4.3 for various bug fixes and performance improvements.</li>
