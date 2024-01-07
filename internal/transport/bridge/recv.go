@@ -50,12 +50,26 @@ func (r *RecvItem) setPath(path string) {
 	r.refresh(r.index)
 }
 
+// NewRecvList greates a list of progress bars.
+func NewRecvList(data *RecvData) *widget.List {
+	list := &widget.List{
+		Length:     data.Length,
+		CreateItem: data.CreateItem,
+		UpdateItem: data.UpdateItem,
+		OnSelected: data.OnSelected,
+	}
+	data.list = list
+	data.setUpRecvInfoDialog()
+	return list
+}
+
 // RecvData is a list of progress bars that track send progress.
 type RecvData struct {
 	Client *transport.Client
 	Window fyne.Window
 
 	items []*RecvItem
+	info  recvInfoDialog
 
 	deleting atomic.Bool
 	list     *widget.List
@@ -95,24 +109,24 @@ func (d *RecvData) UpdateItem(i int, object fyne.CanvasObject) {
 func (d *RecvData) OnSelected(i int) {
 	d.list.Unselect(i)
 
-	var infoDialog *dialog.CustomDialog
-	removeLabel := &widget.Label{Text: "This item has completed the transfer and can be removed."}
-	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.DangerImportance, Text: "Remove", OnTapped: func() {
+	d.info.button.OnTapped = func() {
 		d.remove(i)
-		infoDialog.Hide()
-		infoDialog = nil
-	}}
-
-	removeCard := &widget.Card{Content: container.NewVBox(removeLabel, removeButton)}
-
-	// Only allow failed or completed items to be removed.
-	if d.items[i].Value < d.items[i].Max && d.items[i].Status == nil {
-		removeLabel.Text = "This item can not be removed yet. The transfer needs to complete first."
-		removeButton.Disable()
+		d.info.dialog.Hide()
 	}
 
-	infoDialog = dialog.NewCustom("Information", "Close", removeCard, d.Window)
-	infoDialog.Show()
+	if d.info.button.Disabled() {
+		d.info.label.Text = "This item can be removed.\nThe transfer has completed."
+		d.info.button.Enable()
+	}
+
+	// Only allow failed or completed items to be removed.
+	item := d.items[i]
+	if item.Value < item.Max && item.Status == nil {
+		d.info.label.Text = "This item can't be removed yet.\nThe transfer needs to complete first."
+		d.info.button.Disable()
+	}
+
+	d.info.dialog.Show()
 }
 
 // NewRecv creates a new send item and adds it to the items.
@@ -173,14 +187,15 @@ func (d *RecvData) remove(index int) {
 	d.deleting.Store(false)
 }
 
-// NewRecvList greates a list of progress bars.
-func NewRecvList(data *RecvData) *widget.List {
-	list := &widget.List{
-		Length:     data.Length,
-		CreateItem: data.CreateItem,
-		UpdateItem: data.UpdateItem,
-		OnSelected: data.OnSelected,
-	}
-	data.list = list
-	return list
+func (d *RecvData) setUpRecvInfoDialog() {
+	d.info.label = &widget.Label{Text: "This item can be removed.\nThe transfer has completed."}
+	d.info.button = &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.DangerImportance, Text: "Remove"}
+	removeCard := &widget.Card{Content: container.NewVBox(d.info.label, d.info.button)}
+	d.info.dialog = dialog.NewCustom("Information", "Close", removeCard, d.Window)
+}
+
+type recvInfoDialog struct {
+	dialog *dialog.CustomDialog
+	button *widget.Button
+	label  *widget.Label
 }
