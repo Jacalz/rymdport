@@ -103,13 +103,13 @@ func (d *SendData) OnSelected(i int) {
 	qrcode.ScaleMode = canvas.ImageScalePixels
 	qrcode.SetMinSize(fyne.NewSize(100, 100))
 
-	supportedClientsUrl := util.URLToGitHubProject("/wiki/Supported-clients")
+	supportedClientsURL := util.URLToGitHubProject("/wiki/Supported-clients")
 	qrCodeInfo := widget.NewRichText(&widget.TextSegment{
 		Style: widget.RichTextStyleInline,
 		Text:  "A list of supported apps can be found ",
 	}, &widget.HyperlinkSegment{
 		Text: "here",
-		URL:  supportedClientsUrl,
+		URL:  supportedClientsURL,
 	}, &widget.TextSegment{
 		Style: widget.RichTextStyleInline,
 		Text:  ".",
