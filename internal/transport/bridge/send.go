@@ -42,6 +42,19 @@ func (s *SendItem) failed() {
 	s.refresh(s.index)
 }
 
+// NewSendList greates a list of progress bars.
+func NewSendList(data *SendData) *widget.List {
+	list := &widget.List{
+		Length:     data.Length,
+		CreateItem: data.CreateItem,
+		UpdateItem: data.UpdateItem,
+		OnSelected: data.OnSelected,
+	}
+	data.list = list
+	data.setUpSendInfoDialog()
+	return list
+}
+
 // SendData is a list of progress bars that track send progress.
 type SendData struct {
 	Client *transport.Client
@@ -49,6 +62,7 @@ type SendData struct {
 	Canvas fyne.Canvas
 
 	items []*SendItem
+	info  sendInfoDialog
 
 	deleting atomic.Bool
 	list     *widget.List
@@ -97,50 +111,36 @@ func (d *SendData) OnSelected(i int) {
 
 	code.BackgroundColor = theme.OverlayBackgroundColor()
 	code.ForegroundColor = theme.ForegroundColor()
+	d.info.image.Image = code.Image(100)
+	d.info.image.Resource = nil
+	d.info.image.ScaleMode = canvas.ImageScalePixels
+	d.info.image.Refresh()
 
-	qrcode := canvas.NewImageFromImage(code.Image(100))
-	qrcode.FillMode = canvas.ImageFillOriginal
-	qrcode.ScaleMode = canvas.ImageScalePixels
-	qrcode.SetMinSize(fyne.NewSize(100, 100))
-
-	supportedClientsURL := util.URLToGitHubProject("/wiki/Supported-clients")
-	qrCodeInfo := widget.NewRichText(&widget.TextSegment{
-		Style: widget.RichTextStyleInline,
-		Text:  "A list of supported apps can be found ",
-	}, &widget.HyperlinkSegment{
-		Text: "here",
-		URL:  supportedClientsURL,
-	}, &widget.TextSegment{
-		Style: widget.RichTextStyleInline,
-		Text:  ".",
-	})
-	qrCard := &widget.Card{Image: qrcode, Content: container.NewCenter(qrCodeInfo)}
-
-	var infoDialog *dialog.CustomDialog
-	removeLabel := &widget.Label{Text: "This item can be removed.\nThe transfer has completed."}
-	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.DangerImportance, Text: "Remove", OnTapped: func() {
+	d.info.button.OnTapped = func() {
 		d.remove(i)
-		infoDialog.Hide()
-		infoDialog = nil
-	}}
-
-	// Only allow failed or completed items to be removed.
-	if d.items[i].Value < d.items[i].Max && d.items[i].Status == nil {
-		removeLabel.Text = "This item can not be removed yet.\nThe transfer needs to complete first."
-		removeButton.Disable()
-	} else {
-		qrcode.Image = nil
-		qrcode.Resource = theme.InfoIcon()
-		qrcode.ScaleMode = canvas.ImageScaleSmooth
-		qrcode.Refresh()
-
-		qrCard.Content = &widget.Label{Text: "This transfer is not active.\nCan't show a QR code."}
+		d.info.dialog.Hide()
 	}
 
-	removeCard := &widget.Card{Content: container.NewVBox(removeLabel, removeButton)}
+	if d.info.button.Disabled() {
+		d.info.label.Text = "This item can be removed.\nThe transfer has completed."
+		d.info.button.Enable()
+	}
 
-	infoDialog = dialog.NewCustom("Information", "Close", container.NewGridWithColumns(2, qrCard, removeCard), d.Window)
-	infoDialog.Show()
+	// Only allow failed or completed items to be removed.
+	item := d.items[i]
+	if item.Value < item.Max && item.Status == nil {
+		d.info.label.Text = "This item can't be removed yet.\nThe transfer needs to complete first."
+		d.info.button.Disable()
+	} else {
+		d.info.image.Image = nil
+		d.info.image.Resource = theme.BrokenImageIcon()
+		d.info.image.ScaleMode = canvas.ImageScaleSmooth
+		d.info.image.Refresh()
+
+		// TODO: Display something like: "This transfer is not active.\nCan't show a QR code.".
+	}
+
+	d.info.dialog.Show()
 }
 
 // NewSend adds data about a new send to the list and then returns the item.
@@ -360,14 +360,38 @@ func (d *SendData) remove(index int) {
 	d.deleting.Store(false)
 }
 
-// NewSendList greates a list of progress bars.
-func NewSendList(data *SendData) *widget.List {
-	list := &widget.List{
-		Length:     data.Length,
-		CreateItem: data.CreateItem,
-		UpdateItem: data.UpdateItem,
-		OnSelected: data.OnSelected,
-	}
-	data.list = list
-	return list
+func (d *SendData) setUpSendInfoDialog() {
+	d.info.label = &widget.Label{Text: "This item can be removed.\nThe transfer has completed."}
+	d.info.button = &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.DangerImportance, Text: "Remove"}
+
+	image := &canvas.Image{}
+	image.FillMode = canvas.ImageFillOriginal
+	image.ScaleMode = canvas.ImageScalePixels
+	image.SetMinSize(fyne.NewSize(100, 100))
+	d.info.image = image
+
+	supportedClientsURL := util.URLToGitHubProject("/wiki/Supported-clients")
+	qrCodeInfo := widget.NewRichText(&widget.TextSegment{
+		Style: widget.RichTextStyleInline,
+		Text:  "A list of supported apps can be found ",
+	}, &widget.HyperlinkSegment{
+		Text: "here",
+		URL:  supportedClientsURL,
+	}, &widget.TextSegment{
+		Style: widget.RichTextStyleInline,
+		Text:  ".",
+	})
+	qrCard := &widget.Card{Image: image, Content: container.NewCenter(qrCodeInfo)}
+
+	removeCard := &widget.Card{Content: container.NewVBox(d.info.label, d.info.button)}
+
+	content := container.NewGridWithColumns(2, qrCard, removeCard)
+	d.info.dialog = dialog.NewCustom("Information", "Close", content, d.Window)
+}
+
+type sendInfoDialog struct {
+	dialog *dialog.CustomDialog
+	button *widget.Button
+	label  *widget.Label
+	image  *canvas.Image
 }
