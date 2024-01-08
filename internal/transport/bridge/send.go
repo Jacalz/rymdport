@@ -42,19 +42,6 @@ func (s *SendItem) failed() {
 	s.refresh(s.index)
 }
 
-// NewSendList greates a list of progress bars.
-func NewSendList(data *SendData) *widget.List {
-	list := &widget.List{
-		Length:     data.Length,
-		CreateItem: data.CreateItem,
-		UpdateItem: data.UpdateItem,
-		OnSelected: data.OnSelected,
-	}
-	data.list = list
-	data.setUpSendInfoDialog()
-	return list
-}
-
 // SendData is a list of progress bars that track send progress.
 type SendData struct {
 	Client *transport.Client
@@ -66,6 +53,18 @@ type SendData struct {
 
 	deleting atomic.Bool
 	list     *widget.List
+}
+
+// NewSendList greates a list of progress bars.
+func (d *SendData) NewSendList() *widget.List {
+	d.list = &widget.List{
+		Length:     d.Length,
+		CreateItem: d.CreateItem,
+		UpdateItem: d.UpdateItem,
+		OnSelected: d.OnSelected,
+	}
+	d.setUpSendInfoDialog()
+	return d.list
 }
 
 // Length returns the length of the data.
