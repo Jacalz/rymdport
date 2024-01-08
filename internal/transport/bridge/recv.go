@@ -50,19 +50,6 @@ func (r *RecvItem) setPath(path string) {
 	r.refresh(r.index)
 }
 
-// NewRecvList greates a list of progress bars.
-func NewRecvList(data *RecvData) *widget.List {
-	list := &widget.List{
-		Length:     data.Length,
-		CreateItem: data.CreateItem,
-		UpdateItem: data.UpdateItem,
-		OnSelected: data.OnSelected,
-	}
-	data.list = list
-	data.setUpRecvInfoDialog()
-	return list
-}
-
 // RecvData is a list of progress bars that track send progress.
 type RecvData struct {
 	Client *transport.Client
@@ -73,6 +60,18 @@ type RecvData struct {
 
 	deleting atomic.Bool
 	list     *widget.List
+}
+
+// NewRecvList greates a list of progress bars.
+func (d *RecvData) NewRecvList() *widget.List {
+	d.list = &widget.List{
+		Length:     d.Length,
+		CreateItem: d.CreateItem,
+		UpdateItem: d.UpdateItem,
+		OnSelected: d.OnSelected,
+	}
+	d.setUpRecvInfoDialog()
+	return d.list
 }
 
 // Length returns the length of the data.

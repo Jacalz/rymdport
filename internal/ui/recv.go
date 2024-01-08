@@ -15,7 +15,7 @@ import (
 
 type recv struct {
 	codeEntry *completionEntry
-	data      *bridge.RecvData
+	data      bridge.RecvData
 
 	window fyne.Window
 }
@@ -36,10 +36,10 @@ func (r *recv) buildUI(client *transport.Client) *fyne.Container {
 
 	codeButton := &widget.Button{Text: "Receive", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
 
-	r.data = &bridge.RecvData{Client: client, Window: r.window}
+	r.data = bridge.RecvData{Client: client, Window: r.window}
 
 	box := container.NewVBox(&widget.Separator{}, container.NewGridWithColumns(2, r.codeEntry, codeButton), &widget.Separator{})
-	return container.NewBorder(box, nil, nil, nil, bridge.NewRecvList(r.data))
+	return container.NewBorder(box, nil, nil, nil, r.data.NewRecvList())
 }
 
 func (r *recv) onRecv() {
@@ -56,7 +56,7 @@ type completionEntry struct {
 	widget.Entry
 	canvas    fyne.Canvas
 	backwards bool
-	complete  *completion.TabCompleter
+	complete  completion.TabCompleter
 }
 
 // AcceptsTab overrides tab handling to allow tabs as input.
@@ -115,12 +115,12 @@ func (c *completionEntry) next() {
 
 func newCompletionEntry(client *transport.Client, canvas fyne.Canvas) *completionEntry {
 	entry := &completionEntry{
-		complete: &completion.TabCompleter{Generate: client.CompleteRecvCode},
-		canvas:   canvas,
+		canvas: canvas,
 		Entry: widget.Entry{
 			PlaceHolder: "Enter code", Scroll: container.ScrollHorizontalOnly, Validator: util.CodeValidator,
 		},
 	}
+	entry.complete.Generate = client.CompleteRecvCode
 	entry.ExtendBaseWidget(entry)
 	return entry
 }
