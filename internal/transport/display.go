@@ -15,6 +15,7 @@ type textRecvWindow struct {
 	textEntry              *widget.Entry
 	copyButton, saveButton *widget.Button
 	window                 fyne.Window
+	// TODO: Save received text here and avoid creating new functions each time?
 }
 
 func (r *textRecvWindow) interceptClose() {
@@ -22,28 +23,27 @@ func (r *textRecvWindow) interceptClose() {
 	r.textEntry.SetText("")
 }
 
-func createTextRecvWindow(app fyne.App) *textRecvWindow {
-	display := &textRecvWindow{
-		window:     app.NewWindow("Received Text"),
+func (c *Client) createTextRecvWindow() {
+	window := c.App.NewWindow("Received Text")
+	window.SetCloseIntercept(c.textRecvWindow.interceptClose)
+
+	c.textRecvWindow = textRecvWindow{
+		window:     window,
 		textEntry:  &widget.Entry{MultiLine: true, Wrapping: fyne.TextWrapWord},
 		copyButton: &widget.Button{Text: "Copy", Icon: theme.ContentCopyIcon()},
 		saveButton: &widget.Button{Text: "Save", Icon: theme.DocumentSaveIcon()},
 	}
 
-	display.window.SetCloseIntercept(display.interceptClose)
-
-	actionContainer := container.NewGridWithColumns(2, display.copyButton, display.saveButton)
-	display.window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, display.textEntry))
-	display.window.Resize(fyne.NewSize(400, 300))
-
-	return display
+	actionContainer := container.NewGridWithColumns(2, c.textRecvWindow.copyButton, c.textRecvWindow.saveButton)
+	window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, c.textRecvWindow.textEntry))
+	window.Resize(fyne.NewSize(400, 300))
 }
 
 // showTextReceiveWindow handles the creation of a window for displaying text content.
 func (c *Client) showTextReceiveWindow(received []byte) {
-	if c.textRecvWindow == nil {
-		c.textRecvWindow = createTextRecvWindow(c.App)
-	}
+	if c.textRecvWindow.window == nil {
+		c.createTextRecvWindow()
+	} // else: Might want to request window focus?
 
 	d := c.textRecvWindow
 	text := string(received)
@@ -72,7 +72,7 @@ func (c *Client) showTextReceiveWindow(received []byte) {
 				dialog.ShowError(err, d.window)
 			}
 		}, d.window)
-		now := time.Now().Format("2006-01-02T15:04")
+		now := time.Now().Format("2006-01-02T15:04") // TODO: Might want to use AppendFormat and strings.Builder
 		save.SetFileName("received-" + now + ".txt")
 		save.Resize(util.WindowSizeToDialog(d.window.Canvas().Size()))
 		save.Show()
