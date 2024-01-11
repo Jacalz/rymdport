@@ -46,10 +46,10 @@ func (s *SendItem) failed() {
 type SendData struct {
 	Client *transport.Client
 	Window fyne.Window
-	Canvas fyne.Canvas
 
-	items []*SendItem
-	info  sendInfoDialog
+	items      []*SendItem
+	info       sendInfoDialog
+	textWindow *textSendWindow
 
 	deleting atomic.Bool
 	list     *widget.List
@@ -261,7 +261,7 @@ func (d *SendData) NewSendFromFiles(uris []fyne.URI) {
 // SendText sends new text.
 func (d *SendData) SendText() {
 	go func() {
-		text := d.Client.ShowTextSendWindow()
+		text := d.showTextSendWindow()
 		if text == "" {
 			return
 		}
@@ -320,10 +320,10 @@ func (d *SendData) getCustomCode() string {
 
 		close(code)
 	}, d.Window)
-	form.Resize(fyne.Size{Width: d.Canvas.Size().Width * 0.8})
+	form.Resize(fyne.Size{Width: d.Window.Canvas().Size().Width * 0.8})
 	codeEntry.OnSubmitted = func(_ string) { form.Submit() }
 	form.Show()
-	d.Canvas.Focus(codeEntry)
+	d.Window.Canvas().Focus(codeEntry)
 
 	return <-code
 }
@@ -393,4 +393,61 @@ type sendInfoDialog struct {
 	button *widget.Button
 	label  *widget.Label
 	image  *canvas.Image
+}
+
+type textSendWindow struct {
+	textEntry                *widget.Entry
+	cancelButton, sendButton *widget.Button
+	window                   fyne.Window
+	text                     chan string
+}
+
+func (s *textSendWindow) dismiss() {
+	s.text <- ""
+	s.window.Hide()
+	s.textEntry.SetText("")
+}
+
+func (s *textSendWindow) send() {
+	s.text <- s.textEntry.Text
+	s.window.Hide()
+	s.textEntry.SetText("")
+}
+
+func createTextSendWindow(app fyne.App) *textSendWindow {
+	display := &textSendWindow{
+		window:       app.NewWindow("Send Text"),
+		textEntry:    &widget.Entry{MultiLine: true, Wrapping: fyne.TextWrapWord},
+		cancelButton: &widget.Button{Text: "Cancel", Icon: theme.CancelIcon()},
+		sendButton:   &widget.Button{Text: "Send", Icon: theme.MailSendIcon(), Importance: widget.HighImportance},
+		text:         make(chan string),
+	}
+
+	display.window.SetCloseIntercept(display.dismiss)
+	display.cancelButton.OnTapped = display.dismiss
+	display.sendButton.OnTapped = display.send
+	display.textEntry.OnSubmitted = func(_ string) { display.send() }
+
+	actionContainer := container.NewGridWithColumns(2, display.cancelButton, display.sendButton)
+	display.window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, display.textEntry))
+	display.window.Resize(fyne.NewSize(400, 300))
+	return display
+}
+
+// showTextSendWindow opens a new window for setting up text to send.
+func (d *SendData) showTextSendWindow() string {
+	if d.textWindow == nil {
+		d.textWindow = createTextSendWindow(d.Client.App)
+	} else if d.textWindow.window.Canvas().Content().Visible() {
+		d.textWindow.window.RequestFocus()
+		return ""
+	}
+
+	win := d.textWindow.window
+
+	win.Show()
+	win.RequestFocus()
+	win.Canvas().Focus(d.textWindow.textEntry)
+
+	return <-d.textWindow.text
 }

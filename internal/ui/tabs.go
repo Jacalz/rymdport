@@ -22,7 +22,7 @@ func Create(app fyne.App, window fyne.Window) *container.AppTabs {
 		Items: []*container.TabItem{
 			send.newSendTab(),
 			newRecvTab(window, client),
-			newSettingsTab(app, window, client),
+			newSettingsTab(window, client),
 			newAboutTab(app),
 		},
 	}
