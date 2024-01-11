@@ -73,7 +73,7 @@ func (c *Client) createTextRecvWindow() {
 func (c *Client) showTextReceiveWindow(received []byte) {
 	if c.textRecvWindow.window == nil {
 		c.createTextRecvWindow()
-	} // else: Might want to request window focus?
+	}
 
 	c.textRecvWindow.received = received
 	c.textRecvWindow.textEntry.SetText(string(received))
