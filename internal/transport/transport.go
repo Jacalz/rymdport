@@ -14,7 +14,7 @@ type Client struct {
 	App fyne.App
 
 	// Save a reference to the window to avoid creating a new one when sending and receiving text.
-	textRecvWindow *textRecvWindow
+	textRecvWindow textRecvWindow
 
 	// Notification holds the settings value for if we have notifications enabled or not.
 	Notifications bool
