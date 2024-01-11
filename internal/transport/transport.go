@@ -10,10 +10,10 @@ import (
 type Client struct {
 	wormhole.Client
 
-	app fyne.App
+	// App is a reference to the currently running Fyne applciation.
+	App fyne.App
 
 	// Save a reference to the window to avoid creating a new one when sending and receiving text.
-	textSendWindow *textSendWindow
 	textRecvWindow *textRecvWindow
 
 	// Notification holds the settings value for if we have notifications enabled or not.
@@ -32,11 +32,11 @@ type Client struct {
 // ShowNotification sends a notification if c.Notifications is true.
 func (c *Client) ShowNotification(title, content string) {
 	if c.Notifications {
-		c.app.SendNotification(&fyne.Notification{Title: title, Content: content})
+		c.App.SendNotification(&fyne.Notification{Title: title, Content: content})
 	}
 }
 
 // NewClient returns a new client for sending and receiving using wormhole-william
 func NewClient(app fyne.App) *Client {
-	return &Client{app: app}
+	return &Client{App: app}
 }

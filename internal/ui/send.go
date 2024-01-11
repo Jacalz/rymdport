@@ -43,7 +43,7 @@ func (s *send) buildUI(window fyne.Window) *fyne.Container {
 	choiceContent := container.NewGridWithColumns(1, fileChoice, directoryChoice, textChoice, codeChoice)
 	s.contentPicker = dialog.NewCustom("Pick a content type", "Cancel", choiceContent, window)
 
-	s.data = bridge.SendData{Client: s.client, Window: window, Canvas: s.window.Canvas()}
+	s.data = bridge.SendData{Client: s.client, Window: window}
 	contentToSend := &widget.Button{Text: "Add content to send", Icon: theme.ContentAddIcon(), OnTapped: func() {
 		codeChoice.SetChecked(s.client.CustomCode)
 		s.contentPicker.Show()

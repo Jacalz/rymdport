@@ -35,13 +35,13 @@ type settings struct {
 	window      fyne.Window
 }
 
-func newSettingsTab(a fyne.App, w fyne.Window, c *transport.Client) *container.TabItem {
-	settings := &settings{window: w, client: c, preferences: a.Preferences()}
+func newSettingsTab(w fyne.Window, c *transport.Client) *container.TabItem {
+	settings := &settings{window: w, client: c, preferences: c.App.Preferences()}
 
 	return &container.TabItem{
 		Text:    "Settings",
 		Icon:    theme.SettingsIcon(),
-		Content: settings.buildUI(a),
+		Content: settings.buildUI(c.App),
 	}
 }
 
