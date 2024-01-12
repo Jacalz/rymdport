@@ -20,44 +20,43 @@ https://github.com/psanford/wormhole-william/blob/master/internal/crypto/crypto.
 
 // CompleteRecvCode returns completion suggestions for the receiver code.
 func (c *Client) CompleteRecvCode(toComplete string) []string {
-	parts := strings.Split(toComplete, "-")
-	if len(parts) < 2 {
-		return c.completeNameplates(parts)
+	separators := strings.Count(toComplete, "-")
+	if separators == 0 {
+		return c.completeNameplates(toComplete)
 	}
 
-	currentCompletion := parts[len(parts)-1]
-	prefix := parts[:len(parts)-1]
+	lastPart := strings.LastIndexByte(toComplete, '-')
+	completionMatch := toComplete[lastPart+1:] // Word prefix to match completion against.
+	prefix := toComplete[:lastPart+1]          // Everything before the match prefix.
 
-	// Even/odd is based on just the number of words, slice off the mailbox
-	parts = parts[1:]
-	even := len(parts)%2 == 0
+	// Even/odd is based on just the number of words, ignore mailbox
+	even := (separators-1)%2 == 0
 
 	var candidates []string
 	for _, pair := range wordlist.RawWords {
-		var candidateWord string
+		var candidate string
 		if even {
-			candidateWord = pair.Even
+			candidate = pair.Even
 		} else {
-			candidateWord = pair.Odd
+			candidate = pair.Odd
 		}
-		if strings.HasPrefix(candidateWord, currentCompletion) {
-			guessParts := append(prefix, candidateWord)
-			candidates = append(candidates, strings.Join(guessParts, "-"))
+		if strings.HasPrefix(candidate, completionMatch) {
+			candidates = append(candidates, prefix+candidate)
 		}
 	}
 
 	return candidates
 }
 
-func (c *Client) completeNameplates(parts []string) []string {
+func (c *Client) completeNameplates(toComplete string) []string {
 	nameplates, err := c.activeNameplates()
-	if err != nil || len(parts) == 0 {
+	if err != nil {
 		return nameplates
 	}
 
 	var candidates []string
 	for _, nameplate := range nameplates {
-		if strings.HasPrefix(nameplate, parts[0]) {
+		if strings.HasPrefix(nameplate, toComplete) {
 			candidates = append(candidates, nameplate+"-")
 		}
 	}
