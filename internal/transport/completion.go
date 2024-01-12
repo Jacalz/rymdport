@@ -22,21 +22,7 @@ https://github.com/psanford/wormhole-william/blob/master/internal/crypto/crypto.
 func (c *Client) CompleteRecvCode(toComplete string) []string {
 	parts := strings.Split(toComplete, "-")
 	if len(parts) < 2 {
-		nameplates, err := c.activeNameplates()
-		if err != nil {
-			return nil
-		} else if len(parts) == 0 {
-			return nameplates
-		}
-
-		var candidates []string
-		for _, nameplate := range nameplates {
-			if strings.HasPrefix(nameplate, parts[0]) {
-				candidates = append(candidates, nameplate+"-")
-			}
-		}
-
-		return candidates
+		return c.completeNameplates(parts)
 	}
 
 	currentCompletion := parts[len(parts)-1]
@@ -57,6 +43,22 @@ func (c *Client) CompleteRecvCode(toComplete string) []string {
 		if strings.HasPrefix(candidateWord, currentCompletion) {
 			guessParts := append(prefix, candidateWord)
 			candidates = append(candidates, strings.Join(guessParts, "-"))
+		}
+	}
+
+	return candidates
+}
+
+func (c *Client) completeNameplates(parts []string) []string {
+	nameplates, err := c.activeNameplates()
+	if err != nil || len(parts) == 0 {
+		return nameplates
+	}
+
+	var candidates []string
+	for _, nameplate := range nameplates {
+		if strings.HasPrefix(nameplate, parts[0]) {
+			candidates = append(candidates, nameplate+"-")
 		}
 	}
 
