@@ -43,23 +43,19 @@ func (c *Client) GenerateCodeCompletion(toComplete string) []string {
 
 	// Perform binary search for word prefix in alphabetically sorted word list.
 	index := sort.Search(words, func(i int) bool {
-		pair := wordlist.RawWords[i]
-		prefix := ""
+		pair := wordlist.RawWords[byte(i)]
 		if even {
-			prefix = pair.Even
-		} else {
-			prefix = pair.Odd
+			return pair.Even[:len(completionMatch)] >= completionMatch
 		}
 
-		prefix = prefix[:len(completionMatch)]
-		return prefix >= completionMatch
+		return pair.Odd[:len(completionMatch)] >= completionMatch
 	})
 
 	var candidates []string
 
 	// Search forward for the other prefix matches.
 	for i := index; i < 256; i++ {
-		candidate, match := lookupWordMatch(i, completionMatch, even)
+		candidate, match := lookupWordMatch(byte(i), completionMatch, even)
 		if !match {
 			break // Sorted in increasing alphabetical order. No more matches.
 		}
@@ -70,20 +66,15 @@ func (c *Client) GenerateCodeCompletion(toComplete string) []string {
 	return candidates
 }
 
-func lookupWordMatch(index int, prefix string, even bool) (string, bool) {
+// lookupWordMatch looks up a word at a specific index and even/odd setting.
+// It also returns information about if the given word matches a completion prefix.
+func lookupWordMatch(index byte, prefix string, even bool) (string, bool) {
 	pair := wordlist.RawWords[index]
-	var candidate string
 	if even {
-		candidate = pair.Even
-	} else {
-		candidate = pair.Odd
+		return pair.Even, strings.HasPrefix(pair.Even, prefix)
 	}
 
-	if !strings.HasPrefix(candidate, prefix) {
-		return "", false
-	}
-
-	return candidate, true
+	return pair.Odd, strings.HasPrefix(pair.Odd, prefix)
 }
 
 func (c *Client) completeNameplates(toComplete string) []string {
