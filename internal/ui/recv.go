@@ -120,7 +120,7 @@ func newCompletionEntry(client *transport.Client, canvas fyne.Canvas) *completio
 			PlaceHolder: "Enter code", Scroll: container.ScrollHorizontalOnly, Validator: util.CodeValidator,
 		},
 	}
-	entry.complete.Generate = client.CompleteRecvCode
+	entry.complete.Generate = client.GenerateCodeCompletion
 	entry.ExtendBaseWidget(entry)
 	return entry
 }
