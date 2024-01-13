@@ -45,10 +45,10 @@ func (c *Client) GenerateCodeCompletion(toComplete string) []string {
 	index := sort.Search(words, func(i int) bool {
 		pair := wordlist.RawWords[byte(i)]
 		if even {
-			return pair.Even[:len(completionMatch)] >= completionMatch
+			return pair.Even >= completionMatch
 		}
 
-		return pair.Odd[:len(completionMatch)] >= completionMatch
+		return pair.Odd >= completionMatch
 	})
 
 	var candidates []string
