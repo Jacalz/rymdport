@@ -19,8 +19,8 @@ https://github.com/psanford/wormhole-william/blob/master/cmd/completion.go and
 https://github.com/psanford/wormhole-william/blob/master/internal/crypto/crypto.go.
 */
 
-// CompleteRecvCode returns completion suggestions for the receiver code.
-func (c *Client) CompleteRecvCode(toComplete string) []string {
+// GenerateCodeCompletion returns completion suggestions for the receiver code.
+func (c *Client) GenerateCodeCompletion(toComplete string) []string {
 	separators := strings.Count(toComplete, "-")
 	if separators == 0 {
 		return c.completeNameplates(toComplete)
@@ -49,18 +49,8 @@ func (c *Client) CompleteRecvCode(toComplete string) []string {
 
 	var candidates []string
 
-	// Search forward for prefix matches from found index.
+	// Search forward for the other prefix matches.
 	for i := index; i < 256; i++ {
-		candidate, match := lookupWordMatch(byte(i), completionMatch, even)
-		if !match {
-			break // Sorted in increasing alphabetical order. No more matches.
-		}
-
-		candidates = append(candidates, prefix+candidate)
-	}
-
-	// Search backwards for prefix matches from before the found index.
-	for i := index - 1; i >= 0; i-- {
 		candidate, match := lookupWordMatch(byte(i), completionMatch, even)
 		if !match {
 			break // Sorted in increasing alphabetical order. No more matches.
