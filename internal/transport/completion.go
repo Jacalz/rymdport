@@ -34,7 +34,7 @@ func (c *Client) CompleteRecvCode(toComplete string) []string {
 	even := (separators-1)%2 == 0
 
 	// Perform binary search for word prefix in alphabetically sorted word list.
-	index := byte(sort.Search(256, func(i int) bool {
+	index := sort.Search(256, func(i int) bool {
 		pair := wordlist.RawWords[byte(i)]
 		prefix := ""
 		if even {
@@ -45,13 +45,13 @@ func (c *Client) CompleteRecvCode(toComplete string) []string {
 
 		prefix = prefix[:len(completionMatch)]
 		return prefix >= completionMatch
-	}))
+	})
 
 	var candidates []string
 
 	// Search forward for prefix matches from found index.
-	for i := index; i <= 255; i++ {
-		candidate, match := lookupWordMatch(i, completionMatch, even)
+	for i := index; i < 256; i++ {
+		candidate, match := lookupWordMatch(byte(i), completionMatch, even)
 		if !match {
 			break // Sorted in increasing alphabetical order. No more matches.
 		}
@@ -60,8 +60,8 @@ func (c *Client) CompleteRecvCode(toComplete string) []string {
 	}
 
 	// Search backwards for prefix matches from before the found index.
-	for i := index - 1; i < 255; i-- {
-		candidate, match := lookupWordMatch(i, completionMatch, even)
+	for i := index - 1; i >= 0; i-- {
+		candidate, match := lookupWordMatch(byte(i), completionMatch, even)
 		if !match {
 			break // Sorted in increasing alphabetical order. No more matches.
 		}
@@ -119,7 +119,6 @@ func (c *Client) activeNameplates() ([]string, error) {
 	}
 
 	client := rendezvous.NewClient(url, randSideID(), appID)
-
 	defer client.Close(ctx, rendezvous.Happy)
 
 	_, err := client.Connect(ctx)
