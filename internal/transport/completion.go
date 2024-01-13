@@ -33,9 +33,17 @@ func (c *Client) GenerateCodeCompletion(toComplete string) []string {
 	// Even/odd is based on just the number of words, ignore mailbox
 	even := (separators-1)%2 == 0
 
+	// Number of words in wordlist.
+	words := 256
+
+	// Fast path for matching everything. No binary search needed.
+	if len(completionMatch) == 0 {
+		words = 0
+	}
+
 	// Perform binary search for word prefix in alphabetically sorted word list.
-	index := sort.Search(256, func(i int) bool {
-		pair := wordlist.RawWords[byte(i)]
+	index := sort.Search(words, func(i int) bool {
+		pair := wordlist.RawWords[i]
 		prefix := ""
 		if even {
 			prefix = pair.Even
