@@ -59,7 +59,7 @@ func (c *Client) GenerateCodeCompletion(toComplete string) []string {
 
 	// Search forward for the other prefix matches.
 	for i := index; i < 256; i++ {
-		candidate, match := lookupWordMatch(byte(i), completionMatch, even)
+		candidate, match := lookupWordMatch(i, completionMatch, even)
 		if !match {
 			break // Sorted in increasing alphabetical order. No more matches.
 		}
@@ -70,7 +70,7 @@ func (c *Client) GenerateCodeCompletion(toComplete string) []string {
 	return candidates
 }
 
-func lookupWordMatch(index byte, prefix string, even bool) (string, bool) {
+func lookupWordMatch(index int, prefix string, even bool) (string, bool) {
 	pair := wordlist.RawWords[index]
 	var candidate string
 	if even {
