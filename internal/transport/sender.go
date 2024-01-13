@@ -9,7 +9,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"github.com/Jacalz/rymdport/v3/zip"
-	"github.com/psanford/wormhole-william/wormhole"
+	"github.com/rymdport/wormhole/wormhole"
 )
 
 // NewFileSend takes the chosen file and sends it using wormhole-william.

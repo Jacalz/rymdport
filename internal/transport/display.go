@@ -15,7 +15,7 @@ type textRecvWindow struct {
 	textEntry              *widget.Entry
 	copyButton, saveButton *widget.Button
 	window                 fyne.Window
-	received               []byte
+	received               string
 	fileSaveDialog         *dialog.FileDialog
 }
 
@@ -37,7 +37,7 @@ func (r *textRecvWindow) saveFileToDisk(file fyne.URIWriteCloser, err error) {
 		return
 	}
 
-	if _, err := file.Write(r.received); err != nil {
+	if _, err := file.Write([]byte(r.received)); err != nil {
 		fyne.LogError("Error on writing text to the file", err)
 		dialog.ShowError(err, r.window)
 	}
@@ -73,13 +73,13 @@ func (c *Client) createTextRecvWindow() {
 }
 
 // showTextReceiveWindow handles the creation of a window for displaying text content.
-func (c *Client) showTextReceiveWindow(received []byte) {
+func (c *Client) showTextReceiveWindow(received string) {
 	if c.textRecvWindow.window == nil {
 		c.createTextRecvWindow()
 	}
 
 	c.textRecvWindow.received = received
-	c.textRecvWindow.textEntry.SetText(string(received))
+	c.textRecvWindow.textEntry.SetText(received)
 
 	win := c.textRecvWindow.window
 	win.Show()

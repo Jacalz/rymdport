@@ -3,7 +3,7 @@ package transport
 
 import (
 	"fyne.io/fyne/v2"
-	"github.com/psanford/wormhole-william/wormhole"
+	"github.com/rymdport/wormhole/wormhole"
 )
 
 // Client defines the client for handling sending and receiving using wormhole-william

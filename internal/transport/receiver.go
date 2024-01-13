@@ -11,7 +11,7 @@ import (
 	"fyne.io/fyne/v2"
 	"github.com/Jacalz/rymdport/v3/internal/util"
 	"github.com/Jacalz/rymdport/v3/zip"
-	"github.com/psanford/wormhole-william/wormhole"
+	"github.com/rymdport/wormhole/wormhole"
 )
 
 var errorTooManyDuplicates = errors.New("too many duplicates found. Stopped trying to add new numbers to end")
@@ -34,19 +34,11 @@ func (c *Client) NewReceive(code string, setPath func(string), progress func(int
 		return bail(msg, err)
 	}
 
-	contents := util.NewProgressReader(msg, progress, msg.TransferBytes64)
+	contents := util.NewProgressReader(msg, progress, msg.TransferBytes)
 
 	if msg.Type == wormhole.TransferText {
 		setPath("Text Snippet")
-
-		text := make([]byte, int(msg.TransferBytes64))
-		_, err := io.ReadFull(contents, text)
-		if err != nil {
-			fyne.LogError("Could read the received text", err)
-			return err
-		}
-
-		c.showTextReceiveWindow(text)
+		c.showTextReceiveWindow(msg.ReadText())
 		return nil
 	}
 
@@ -118,7 +110,7 @@ func (c *Client) NewReceive(code string, setPath func(string), progress func(int
 
 	err = zip.ExtractSafe(
 		util.NewProgressReaderAt(tmp, progress, contents.Max),
-		n, path, msg.UncompressedBytes64, msg.FileCount,
+		n, path, msg.UncompressedBytes, msg.FileCount,
 	)
 	if err != nil {
 		fyne.LogError("Error on unzipping contents", err)

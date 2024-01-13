@@ -14,7 +14,7 @@ import (
 	"github.com/Jacalz/rymdport/v3/internal/transport"
 	"github.com/Jacalz/rymdport/v3/internal/updater"
 	"github.com/Jacalz/rymdport/v3/internal/util"
-	"github.com/psanford/wormhole-william/wormhole"
+	"github.com/rymdport/wormhole/wormhole"
 )
 
 type settings struct {

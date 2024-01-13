@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/psanford/wormhole-william/rendezvous"
-	"github.com/psanford/wormhole-william/wordlist"
-	"github.com/psanford/wormhole-william/wormhole"
+	"github.com/rymdport/wormhole/rendezvous"
+	"github.com/rymdport/wormhole/wordlist"
+	"github.com/rymdport/wormhole/wormhole"
 )
 
 /* The code below is an adapted and improved version based initially on the following two files:
