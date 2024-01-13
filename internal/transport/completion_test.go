@@ -10,7 +10,7 @@ func BenchmarkNameplateCompletion(b *testing.B) {
 	local := []string{}
 
 	for i := 0; i < b.N; i++ {
-		local = c.CompleteRecvCode("5-letterhead-b")
+		local = c.CompleteRecvCode("5-letterhead-be")
 	}
 
 	completions = local

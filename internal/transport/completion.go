@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"io"
+	"sort"
 	"strings"
 	"time"
 
@@ -13,7 +14,7 @@ import (
 	"github.com/psanford/wormhole-william/wormhole"
 )
 
-/* The code below is largely based on the following two files:
+/* The code below is an adapted and improved version based initially on the following two files:
 https://github.com/psanford/wormhole-william/blob/master/cmd/completion.go and
 https://github.com/psanford/wormhole-william/blob/master/internal/crypto/crypto.go.
 */
@@ -32,20 +33,59 @@ func (c *Client) CompleteRecvCode(toComplete string) []string {
 	// Even/odd is based on just the number of words, ignore mailbox
 	even := (separators-1)%2 == 0
 
-	var candidates []string
-	for _, pair := range wordlist.RawWords {
-		var candidate string
+	// Perform binary search for word prefix in alphabetically sorted word list.
+	index := byte(sort.Search(256, func(i int) bool {
+		pair := wordlist.RawWords[byte(i)]
+		prefix := ""
 		if even {
-			candidate = pair.Even
+			prefix = pair.Even
 		} else {
-			candidate = pair.Odd
+			prefix = pair.Odd
 		}
-		if strings.HasPrefix(candidate, completionMatch) {
-			candidates = append(candidates, prefix+candidate)
+
+		prefix = prefix[:len(completionMatch)]
+		return prefix >= completionMatch
+	}))
+
+	var candidates []string
+
+	// Search forward for prefix matches from found index.
+	for i := index; i <= 255; i++ {
+		candidate, match := lookupWordMatch(i, completionMatch, even)
+		if !match {
+			break // Sorted in increasing alphabetical order. No more matches.
 		}
+
+		candidates = append(candidates, prefix+candidate)
+	}
+
+	// Search backwards for prefix matches from before the found index.
+	for i := index - 1; i < 255; i-- {
+		candidate, match := lookupWordMatch(i, completionMatch, even)
+		if !match {
+			break // Sorted in increasing alphabetical order. No more matches.
+		}
+
+		candidates = append(candidates, prefix+candidate)
 	}
 
 	return candidates
+}
+
+func lookupWordMatch(index byte, prefix string, even bool) (string, bool) {
+	pair := wordlist.RawWords[index]
+	var candidate string
+	if even {
+		candidate = pair.Even
+	} else {
+		candidate = pair.Odd
+	}
+
+	if !strings.HasPrefix(candidate, prefix) {
+		return "", false
+	}
+
+	return candidate, true
 }
 
 func (c *Client) completeNameplates(toComplete string) []string {
