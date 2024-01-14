@@ -27,23 +27,29 @@ func bail(msg *wormhole.IncomingMessage, err error) error {
 }
 
 // NewReceive runs a receive using wormhole-william and handles types accordingly.
-func (c *Client) NewReceive(code string, setPath func(string), progress func(int64, int64)) (err error) {
+func (c *Client) NewReceive(code string, setPath func(string), progress func(int64, int64)) error {
 	msg, err := c.Receive(context.Background(), code)
 	if err != nil {
 		fyne.LogError("Error on receiving data", err)
 		return bail(msg, err)
 	}
 
-	contents := util.NewProgressReader(msg, progress, msg.TransferBytes)
-
 	if msg.Type == wormhole.TransferText {
 		setPath("Text Snippet")
 		c.showTextReceiveWindow(msg.ReadText())
+		progress(0, 1) // Make sure that text updates progress.
 		return nil
 	}
 
 	path := filepath.Join(c.DownloadPath, msg.Name)
 	setPath(path)
+
+	return c.SaveToDisk(msg, path, progress)
+}
+
+// SaveToDisk saves the incomming file or directory transfer to the disk.
+func (c *Client) SaveToDisk(msg *wormhole.IncomingMessage, path string, progress func(int64, int64)) (err error) {
+	contents := util.NewProgressReader(msg, progress, msg.TransferBytes)
 
 	if !c.OverwriteExisting {
 		if _, err := os.Stat(path); err == nil || os.IsExist(err) {
