@@ -3,6 +3,7 @@ package bridge
 import (
 	"path/filepath"
 	"sync/atomic"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -11,6 +12,8 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/rymdport/v3/internal/transport"
+	"github.com/Jacalz/rymdport/v3/internal/util"
+	"github.com/rymdport/wormhole/wormhole"
 )
 
 // RecvItem is the item that is being received
@@ -55,8 +58,9 @@ type RecvData struct {
 	Client *transport.Client
 	Window fyne.Window
 
-	items []*RecvItem
-	info  recvInfoDialog
+	items      []*RecvItem
+	info       recvInfoDialog
+	textWindow textRecvWindow
 
 	deleting atomic.Bool
 	list     *widget.List
@@ -141,17 +145,37 @@ func (d *RecvData) NewReceive(code string) {
 	d.list.Refresh()
 
 	go func(code string) {
-		if err := d.Client.NewReceive(code, item.setPath, item.update); err != nil {
+		msg, err := d.Client.NewReceive(code)
+		if err != nil {
 			d.Client.ShowNotification("Receive failed", "An error occurred when receiving the data.")
 			item.failed()
 			dialog.ShowError(err, d.Window)
-		} else if item.Name != "Text Snippet" {
-			d.Client.ShowNotification("Receive completed", "The contents were saved to "+filepath.Dir(item.URI.Path())+".")
-			item.done()
-		} else {
-			d.Client.ShowNotification("Receive completed", "The text was received successfully.")
-			item.done()
+			return
 		}
+
+		if msg.Type == wormhole.TransferText {
+			item.setPath("Text Snippet")
+			d.showTextWindow(msg.ReadText())
+
+			d.Client.ShowNotification("Receive completed", "The text was received successfully.")
+			item.update(0, 1) // Make sure that text updates progress.
+			item.done()
+			return
+		}
+
+		path := filepath.Join(d.Client.DownloadPath, msg.Name)
+		item.setPath(path)
+
+		err = d.Client.SaveToDisk(msg, path, item.update)
+		if err != nil {
+			d.Client.ShowNotification("Receive failed", "An error occurred when receiving the data.")
+			item.failed()
+			dialog.ShowError(err, d.Window)
+			return
+		}
+
+		d.Client.ShowNotification("Receive completed", "The contents were saved to "+filepath.Dir(item.URI.Path())+".")
+		item.done()
 	}(code)
 }
 
@@ -197,4 +221,80 @@ type recvInfoDialog struct {
 	dialog *dialog.CustomDialog
 	button *widget.Button
 	label  *widget.Label
+}
+
+type textRecvWindow struct {
+	textEntry              *widget.Entry
+	copyButton, saveButton *widget.Button
+	window                 fyne.Window
+	received               string
+	fileSaveDialog         *dialog.FileDialog
+}
+
+func (r *textRecvWindow) copy() {
+	r.window.Clipboard().SetContent(string(r.received))
+}
+
+func (r *textRecvWindow) interceptClose() {
+	r.window.Hide()
+	r.textEntry.SetText("")
+}
+
+func (r *textRecvWindow) saveFileToDisk(file fyne.URIWriteCloser, err error) {
+	if err != nil {
+		fyne.LogError("Error on selecting file to write to", err)
+		dialog.ShowError(err, r.window)
+		return
+	} else if file == nil {
+		return
+	}
+
+	if _, err := file.Write([]byte(r.received)); err != nil {
+		fyne.LogError("Error on writing text to the file", err)
+		dialog.ShowError(err, r.window)
+	}
+
+	if err := file.Close(); err != nil {
+		fyne.LogError("Error on closing text file", err)
+		dialog.ShowError(err, r.window)
+	}
+}
+
+func (r *textRecvWindow) save() {
+	now := time.Now().Format("2006-01-02T15:04") // TODO: Might want to use AppendFormat and strings.Builder
+	r.fileSaveDialog.SetFileName("received-" + now + ".txt")
+	r.fileSaveDialog.Resize(util.WindowSizeToDialog(r.window.Canvas().Size()))
+	r.fileSaveDialog.Show()
+}
+
+func (d *RecvData) createTextWindow() {
+	window := d.Client.App.NewWindow("Received Text")
+	window.SetCloseIntercept(d.textWindow.interceptClose)
+
+	d.textWindow = textRecvWindow{
+		window:         window,
+		textEntry:      &widget.Entry{MultiLine: true, Wrapping: fyne.TextWrapWord},
+		copyButton:     &widget.Button{Text: "Copy", Icon: theme.ContentCopyIcon(), OnTapped: d.textWindow.copy},
+		saveButton:     &widget.Button{Text: "Save", Icon: theme.DocumentSaveIcon(), OnTapped: d.textWindow.save},
+		fileSaveDialog: dialog.NewFileSave(d.textWindow.saveFileToDisk, window),
+	}
+
+	actionContainer := container.NewGridWithColumns(2, d.textWindow.copyButton, d.textWindow.saveButton)
+	window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, d.textWindow.textEntry))
+	window.Resize(fyne.NewSize(400, 300))
+}
+
+// showTextWindow handles the creation of a window for displaying text content.
+func (d *RecvData) showTextWindow(received string) {
+	if d.textWindow.window == nil {
+		d.createTextWindow()
+	}
+
+	d.textWindow.received = received
+	d.textWindow.textEntry.SetText(received)
+
+	win := d.textWindow.window
+	win.Show()
+	win.RequestFocus()
+	win.Canvas().Focus(d.textWindow.textEntry)
 }
