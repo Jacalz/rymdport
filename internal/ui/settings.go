@@ -21,6 +21,7 @@ type settings struct {
 	downloadPathEntry *widget.Entry
 	overwriteFiles    *widget.RadioGroup
 	notificationRadio *widget.RadioGroup
+	extractRadio      *widget.RadioGroup
 	checkUpdatesRadio *widget.RadioGroup
 
 	componentSlider     *widget.Slider
@@ -109,6 +110,11 @@ func (s *settings) onNotificationsChanged(selected string) {
 	s.preferences.SetBool("Notifications", s.client.Notifications)
 }
 
+func (s *settings) onExtractChanged(selected string) {
+	s.client.NoExtractDirectory = selected == "Off" // UI representation is flipped.
+	s.preferences.SetBool("NoExtractDirectory", s.client.NoExtractDirectory)
+}
+
 func (s *settings) onCheckUpdatesChanged(selected string) {
 	s.preferences.SetBool("CheckUpdates", selected == "On")
 }
@@ -171,6 +177,9 @@ func (s *settings) getPreferences(app fyne.App) {
 	s.client.Notifications = s.preferences.BoolWithFallback("Notifications", true)
 	s.notificationRadio.Selected = onOrOff(s.client.Notifications)
 
+	s.client.NoExtractDirectory = s.preferences.Bool("NoExtractDirectory")
+	s.extractRadio.Selected = onOrOff(!s.client.NoExtractDirectory)
+
 	checkUpdates := s.preferences.BoolWithFallback("CheckUpdates", true)
 	if !updater.Enabled {
 		checkUpdates = false
@@ -211,6 +220,8 @@ func (s *settings) buildUI(app fyne.App) *container.Scroll {
 
 	s.notificationRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onNotificationsChanged}
 
+	s.extractRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onExtractChanged}
+
 	s.checkUpdatesRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onCheckUpdatesChanged}
 
 	s.verifyRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onVerifyChanged}
@@ -240,6 +251,7 @@ func (s *settings) buildUI(app fyne.App) *container.Scroll {
 		newBoldLabel("Save files to"), s.downloadPathEntry,
 		newBoldLabel("Overwrite files"), s.overwriteFiles,
 		newBoldLabel("Notifications"), s.notificationRadio,
+		newBoldLabel("Extract received directory"), s.extractRadio,
 		newBoldLabel("Check for updates"), s.checkUpdatesRadio,
 	)
 

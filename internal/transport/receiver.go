@@ -41,6 +41,10 @@ func (c *Client) NewReceive(code string) (*wormhole.IncomingMessage, error) {
 func (c *Client) SaveToDisk(msg *wormhole.IncomingMessage, targetPath string, progress func(int64, int64)) (err error) {
 	contents := util.NewProgressReader(msg, progress, msg.TransferBytes)
 
+	if msg.Type == wormhole.TransferDirectory && c.NoExtractDirectory {
+		targetPath += ".zip" // We are saving the zip-file and not extracting.
+	}
+
 	if !c.OverwriteExisting {
 		if _, err := os.Stat(targetPath); err == nil || os.IsExist(err) {
 			targetPath, err = addFileIncrement(targetPath)
@@ -51,7 +55,7 @@ func (c *Client) SaveToDisk(msg *wormhole.IncomingMessage, targetPath string, pr
 		}
 	}
 
-	if msg.Type == wormhole.TransferFile {
+	if msg.Type == wormhole.TransferFile || c.NoExtractDirectory {
 		var file *os.File
 		file, err = os.Create(targetPath) // #nosec Path is cleaned by filepath.Join().
 		if err != nil {
