@@ -27,45 +27,33 @@ func bail(msg *wormhole.IncomingMessage, err error) error {
 }
 
 // NewReceive runs a receive using wormhole-william and handles types accordingly.
-func (c *Client) NewReceive(code string, setPath func(string), progress func(int64, int64)) error {
+func (c *Client) NewReceive(code string) (*wormhole.IncomingMessage, error) {
 	msg, err := c.Receive(context.Background(), code)
 	if err != nil {
 		fyne.LogError("Error on receiving data", err)
-		return bail(msg, err)
+		return nil, bail(msg, err)
 	}
 
-	if msg.Type == wormhole.TransferText {
-		setPath("Text Snippet")
-		c.showTextReceiveWindow(msg.ReadText())
-		progress(0, 1) // Make sure that text updates progress.
-		return nil
-	}
-
-	path := filepath.Join(c.DownloadPath, msg.Name)
-	setPath(path)
-
-	return c.SaveToDisk(msg, path, progress)
+	return msg, nil
 }
 
 // SaveToDisk saves the incomming file or directory transfer to the disk.
-func (c *Client) SaveToDisk(msg *wormhole.IncomingMessage, path string, progress func(int64, int64)) (err error) {
+func (c *Client) SaveToDisk(msg *wormhole.IncomingMessage, targetPath string, progress func(int64, int64)) (err error) {
 	contents := util.NewProgressReader(msg, progress, msg.TransferBytes)
 
 	if !c.OverwriteExisting {
-		if _, err := os.Stat(path); err == nil || os.IsExist(err) {
-			new, err := addFileIncrement(path)
+		if _, err := os.Stat(targetPath); err == nil || os.IsExist(err) {
+			targetPath, err = addFileIncrement(targetPath)
 			if err != nil {
 				fyne.LogError("Error on trying to create non-duplicate filename", err)
 				return bail(msg, err)
 			}
-
-			path = new
 		}
 	}
 
 	if msg.Type == wormhole.TransferFile {
 		var file *os.File
-		file, err = os.Create(path) // #nosec Path is cleaned by filepath.Join().
+		file, err = os.Create(targetPath) // #nosec Path is cleaned by filepath.Join().
 		if err != nil {
 			fyne.LogError("Error on creating file", err)
 			return bail(msg, err)
@@ -116,7 +104,7 @@ func (c *Client) SaveToDisk(msg *wormhole.IncomingMessage, path string, progress
 
 	err = zip.ExtractSafe(
 		util.NewProgressReaderAt(tmp, progress, contents.Max),
-		n, path, msg.UncompressedBytes, msg.FileCount,
+		n, targetPath, msg.UncompressedBytes, msg.FileCount,
 	)
 	if err != nil {
 		fyne.LogError("Error on unzipping contents", err)
@@ -128,6 +116,8 @@ func (c *Client) SaveToDisk(msg *wormhole.IncomingMessage, path string, progress
 	return
 }
 
+// addFileIncrement tries to add a number to the end of the filename if a duplicate exists.
+// If it fails to do so after five tries, it till return the given path and an error.
 func addFileIncrement(path string) (string, error) {
 	base := filepath.Dir(path)
 	ext := filepath.Ext(path)
@@ -149,5 +139,5 @@ func addFileIncrement(path string) (string, error) {
 		}
 	}
 
-	return "", errorTooManyDuplicates
+	return path, errorTooManyDuplicates
 }
