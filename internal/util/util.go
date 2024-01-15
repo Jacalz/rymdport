@@ -5,14 +5,13 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
-	"regexp"
+	"strings"
 
 	"fyne.io/fyne/v2"
 )
 
 //lint:ignore ST1005 The error is not printed to a terminal as usual but displayed to the user in the ui.
 var errInvalidCode = errors.New("Invalid code. Must begin with a number followed by groups of letters, separated with \"-\".")
-var codeRegexp = regexp.MustCompile(`^\d+(-(\w|\d)+)+$`)
 
 // CodeValidator provides a validator for wormhole codes.
 func CodeValidator(input string) error {
@@ -20,11 +19,46 @@ func CodeValidator(input string) error {
 		return nil // We don't want empty entry to report an error.
 	}
 
-	if !codeRegexp.MatchString(input) {
+	next := strings.IndexByte(input, '-')
+	if next == -1 {
 		return errInvalidCode
 	}
 
+	mailbox := strings.IndexFunc(input[:next], runeIsNotNumerical)
+	if mailbox != -1 {
+		return errInvalidCode
+	}
+
+	input = input[next+1:]
+	if input == "" {
+		return errInvalidCode
+	}
+
+	for input != "" {
+		next = strings.IndexByte(input, '-')
+		if next == -1 {
+			next += len(input)
+		} else if next == len(input)-1 || next == 0 {
+			return errInvalidCode
+		}
+
+		invalidChars := strings.IndexFunc(input[:next], runeIsNotAlphaNumerical)
+		if invalidChars != -1 {
+			return errInvalidCode
+		}
+
+		input = input[next+1:]
+	}
+
 	return nil
+}
+
+func runeIsNotAlphaNumerical(r rune) bool {
+	return (r < '0' || r > '9') && (r < 'a' || r > 'z') && (r < 'A' || r > 'Z')
+}
+
+func runeIsNotNumerical(r rune) bool {
+	return r < '0' || r > '9'
 }
 
 // UserDownloadsFolder returns the downloads folder corresponding to the current user.
