@@ -63,7 +63,7 @@ func (d *SendData) NewSendList() *widget.List {
 		UpdateItem: d.UpdateItem,
 		OnSelected: d.OnSelected,
 	}
-	d.setUpSendInfoDialog()
+	d.setUpInfoDialog()
 	return d.list
 }
 
@@ -261,7 +261,7 @@ func (d *SendData) NewSendFromFiles(uris []fyne.URI) {
 // SendText sends new text.
 func (d *SendData) SendText() {
 	go func() {
-		text := d.showTextSendWindow()
+		text := d.showTextWindow()
 		if text == "" {
 			return
 		}
@@ -359,7 +359,7 @@ func (d *SendData) remove(index int) {
 	d.deleting.Store(false)
 }
 
-func (d *SendData) setUpSendInfoDialog() {
+func (d *SendData) setUpInfoDialog() {
 	d.info.label = &widget.Label{Text: "This item can be removed.\nThe transfer has completed."}
 	d.info.button = &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.DangerImportance, Text: "Remove"}
 
@@ -414,7 +414,7 @@ func (s *textSendWindow) send() {
 	s.textEntry.SetText("")
 }
 
-func (d *SendData) createTextSendWindow() {
+func (d *SendData) createTextWindow() {
 	window := d.Client.App.NewWindow("Send Text")
 	window.SetCloseIntercept(d.textWindow.dismiss)
 
@@ -431,10 +431,10 @@ func (d *SendData) createTextSendWindow() {
 	window.Resize(fyne.NewSize(400, 300))
 }
 
-// showTextSendWindow opens a new window for setting up text to send.
-func (d *SendData) showTextSendWindow() string {
+// showTextWindow opens a new window for setting up text to send.
+func (d *SendData) showTextWindow() string {
 	if d.textWindow.window == nil {
-		d.createTextSendWindow()
+		d.createTextWindow()
 	} else if d.textWindow.window.Canvas().Content().Visible() {
 		d.textWindow.window.RequestFocus()
 		return ""

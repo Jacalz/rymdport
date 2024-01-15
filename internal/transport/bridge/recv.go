@@ -74,7 +74,7 @@ func (d *RecvData) NewRecvList() *widget.List {
 		UpdateItem: d.UpdateItem,
 		OnSelected: d.OnSelected,
 	}
-	d.setUpRecvInfoDialog()
+	d.setUpInfoDialog()
 	return d.list
 }
 
@@ -210,7 +210,7 @@ func (d *RecvData) remove(index int) {
 	d.deleting.Store(false)
 }
 
-func (d *RecvData) setUpRecvInfoDialog() {
+func (d *RecvData) setUpInfoDialog() {
 	d.info.label = &widget.Label{Text: "This item can be removed.\nThe transfer has completed."}
 	d.info.button = &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.DangerImportance, Text: "Remove"}
 	removeCard := &widget.Card{Content: container.NewVBox(d.info.label, d.info.button)}
