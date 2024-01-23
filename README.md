@@ -25,9 +25,13 @@ For Linux users, Rymdport is also avaliable as a Flatpak on [Flathub](https://fl
 
 <a href='https://flathub.org/apps/details/io.github.jacalz.rymdport'><img width='200' alt='Download on Flathub' src='https://dl.flathub.org/assets/badges/flathub-badge-en.svg'/></a>
 
+### Packages in repositories
+
 The following distributions also have binary packages available through their respective package managers:
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/rymdport.svg)](https://repology.org/project/rymdport/versions)
+
+For more information on how to build Rymdport for a distribution package, see [PACKAGING.md](PACKAGING.md).
 
 ### Running on macOS arm64 (M1/M2)
 
