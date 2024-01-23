@@ -21,11 +21,11 @@ The transfers are implemented using [wormhole-william](https://github.com/psanfo
 Please visit the [release page](https://github.com/Jacalz/rymdport/releases) to download the latest release.
 Pre-built binaries are available for FreeBSD, Linux, macOS (`x86-64` and `arm64`) and Windows (`x86-64`).
 
+### Packages in repositories
+
 For Linux users, Rymdport is also avaliable as a Flatpak on [Flathub](https://flathub.org/apps/details/io.github.jacalz.rymdport):
 
 <a href='https://flathub.org/apps/details/io.github.jacalz.rymdport'><img width='200' alt='Download on Flathub' src='https://dl.flathub.org/assets/badges/flathub-badge-en.svg'/></a>
-
-### Packages in repositories
 
 The following distributions also have binary packages available through their respective package managers:
 
