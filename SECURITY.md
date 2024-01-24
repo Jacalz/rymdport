@@ -9,8 +9,8 @@ If a new Go compiler version is released with security fixes, we will issue reco
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 3.5.x   | :white_check_mark: |
-| < 3.5.0 | :x:                |
+| 3.6.x   | :white_check_mark: |
+| < 3.6.0 | :x:                |
 
 ## Reporting a Vulnerability
 
