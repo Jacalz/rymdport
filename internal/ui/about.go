@@ -4,7 +4,6 @@ import (
 	"net/url"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/layout"
@@ -47,10 +46,9 @@ func newAboutTab(app fyne.App) *container.TabItem {
 }
 
 type clickableIcon struct {
-	widget.BaseWidget
-	app  fyne.App
-	url  *url.URL
-	icon *canvas.Image
+	widget.Icon
+	app fyne.App
+	url *url.URL
 }
 
 func (c *clickableIcon) Tapped(_ *fyne.PointEvent) {
@@ -64,15 +62,10 @@ func (c *clickableIcon) Cursor() desktop.Cursor {
 	return desktop.PointerCursor
 }
 
-func (c *clickableIcon) CreateRenderer() fyne.WidgetRenderer {
-	c.ExtendBaseWidget(c)
-	return widget.NewSimpleRenderer(c.icon)
-}
-
 func (c *clickableIcon) MinSize() fyne.Size {
 	return fyne.Size{Width: 256, Height: 256}
 }
 
 func newClickableIcon(res fyne.Resource, url *url.URL, app fyne.App) *clickableIcon {
-	return &clickableIcon{app: app, url: url, icon: canvas.NewImageFromResource(res)}
+	return &clickableIcon{Icon: widget.Icon{Resource: res}, app: app, url: url}
 }
