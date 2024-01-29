@@ -37,7 +37,7 @@ jobs:
       run: test -z $(gofumpt -d -e . | tee /dev/stderr)
 
     - name: Gocyclo
-      run: gocyclo -over 20 .
+      run: gocyclo -over 15 .
 
     - name: Staticcheck
       run: staticcheck ./...
