@@ -66,7 +66,7 @@ func (c *Client) SaveToDisk(msg *wormhole.IncomingMessage, targetPath string, pr
 	return writeToDirectory(targetPath, msg, contents, progress)
 }
 
-func writeToDirectory(targetPath string, msg *wormhole.IncomingMessage, contents *util.ProgressReader, progress func(int64, int64)) (err error) {
+func writeToDirectory(targetPath string, msg *wormhole.IncomingMessage, contents util.ProgressReader, progress func(int64, int64)) (err error) {
 	tmp, err := os.CreateTemp("", msg.Name+"-*.zip.tmp")
 	if err != nil {
 		fyne.LogError("Error on creating tempfile", err)
@@ -104,7 +104,7 @@ func writeToDirectory(targetPath string, msg *wormhole.IncomingMessage, contents
 	return
 }
 
-func writeToFile(destination string, msg *wormhole.IncomingMessage, contents *util.ProgressReader) (err error) {
+func writeToFile(destination string, msg *wormhole.IncomingMessage, contents util.ProgressReader) (err error) {
 	file, err := os.Create(destination) // #nosec Path is cleaned by filepath.Join().
 	if err != nil {
 		fyne.LogError("Error on creating file", err)
