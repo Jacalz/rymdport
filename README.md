@@ -74,12 +74,8 @@ We are grateful for the support received by the following organizations:
   </picture>
 </a>
 <br /><br />
-<a href='https://tutanota.com/'>
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://tutanota.com/resources/images/press/tutanota-red-gray-font-logo.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://tutanota.com/resources/images/press/tutanota-red-black-font-logo.svg">
-    <img alt="Sponsored by Tutanota" width='300' src="https://tutanota.com/resources/images/press/tutanota-red-gray-font-logo.svg">
-  </picture>
+<a href='https://tuta.com/'>
+  <img alt="Sponsored by Tutanota" width='300' src="https://raw.githubusercontent.com/rymdport/rymdport.github.io/main/assets/tuta_striped_black.svg">
 </a>
 
 
