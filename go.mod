@@ -9,7 +9,7 @@ require (
 	github.com/klauspost/compress v1.17.4
 	github.com/rymdport/go-qrcode v1.1.0
 	github.com/rymdport/wormhole v0.1.0
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 )
 
 require (
