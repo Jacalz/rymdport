@@ -38,8 +38,8 @@ cloud.google.com/go/storage v1.8.0/go.mod h1:Wv1Oy7z6Yz3DshWRJFhqM/UCfaWIRTdp0RX
 cloud.google.com/go/storage v1.10.0/go.mod h1:FLPqc6j+Ki4BU591ie1oL6qBQGu2Bl/tZ9ullr3+Kg0=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 fyne.io/fyne/v2 v2.1.4/go.mod h1:p+E/Dh+wPW8JwR2DVcsZ9iXgR9ZKde80+Y+40Is54AQ=
-fyne.io/fyne/v2 v2.4.3 h1:v2wncjEAcwXZ8UNmTCWTGL9+sGyPc5RuzBvM96GcC78=
-fyne.io/fyne/v2 v2.4.3/go.mod h1:1h3BKxmQYRJlr2g+RGVxedzr6vLVQ/AJmFWcF9CJnoQ=
+fyne.io/fyne/v2 v2.4.4 h1:4efSRpoikcGbqQN83yzC9WmF8UNq9olsaJQ/Ejme6Z8=
+fyne.io/fyne/v2 v2.4.4/go.mod h1:VyrxAOZ3NRZRWBvNIJbfqoKOG4DdbewoPk7ozqJKNPY=
 fyne.io/systray v1.10.1-0.20231115130155-104f5ef7839e h1:Hvs+kW2VwCzNToF3FmnIAzmivNgrclwPgoUdVSrjkP8=
 fyne.io/systray v1.10.1-0.20231115130155-104f5ef7839e/go.mod h1:oM2AQqGJ1AMo4nNqZFYU8xYygSBZkW2hmdJ7n4yjedE=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
@@ -124,9 +124,9 @@ github.com/go-playground/validator/v10 v10.2.0 h1:KgJ0snyC2R9VXYN2rneOtQcw5aHQB1
 github.com/go-playground/validator/v10 v10.2.0/go.mod h1:uOYAAleCW8F/7oMFd6aG0GOhaH6EGOAJShg8Id5JGkI=
 github.com/go-text/render v0.0.0-20230619120952-35bccb6164b8 h1:VkKnvzbvHqgEfm351rfr8Uclu5fnwq8HP2ximUzJsBM=
 github.com/go-text/render v0.0.0-20230619120952-35bccb6164b8/go.mod h1:h29xCucjNsDcYb7+0rJokxVwYAq+9kQ19WiFuBKkYtc=
-github.com/go-text/typesetting v0.0.0-20230616162802-9c17dd34aa4a h1:VjN8ttdfklC0dnAdKbZqGNESdERUxtE3l8a/4Grgarc=
-github.com/go-text/typesetting v0.0.0-20230616162802-9c17dd34aa4a/go.mod h1:evDBbvNR/KaVFZ2ZlDSOWWXIUKq0wCOEtzLxRM8SG3k=
-github.com/go-text/typesetting-utils v0.0.0-20230616150549-2a7df14b6a22 h1:LBQTFxP2MfsyEDqSKmUBZaDuDHN1vpqDyOZjcqS7MYI=
+github.com/go-text/typesetting v0.1.0 h1:vioSaLPYcHwPEPLT7gsjCGDCoYSbljxoHJzMnKwVvHw=
+github.com/go-text/typesetting v0.1.0/go.mod h1:d22AnmeKq/on0HNv73UFriMKc4Ez6EqZAofLhAzpSzI=
+github.com/go-text/typesetting-utils v0.0.0-20231211103740-d9332ae51f04 h1:zBx+p/W2aQYtNuyZNcTfinWvXBQwYtDfme051PR/lAY=
 github.com/gobwas/httphead v0.0.0-20180130184737-2c6c146eadee h1:s+21KNqlpePfkah2I+gwHF8xmJWRjooY+5248k6m4A0=
 github.com/gobwas/httphead v0.0.0-20180130184737-2c6c146eadee/go.mod h1:L0fX3K22YWvt/FAX9NnzrNzcI4wNYi9Yku4O0LKYflo=
 github.com/gobwas/pool v0.2.0 h1:QEmUOlnSjWtnpRGHF3SauEiOsy82Cup83Vf2LcMlnc8=
