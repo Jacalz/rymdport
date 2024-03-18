@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.5.3 - Dependency updates and mindor documentation improvements
+## 3.5.3 - Fixing Flathub review comments and updating dependencies
 - Updated icons, screenshots and appstream metadata to fix problems noted in Flathub review (see #139).
 - Updated `fyne` to [v2.4.4](https://github.com/fyne-io/fyne/releases/tag/v2.4.4).
   - This brings various bug fixes and some sizeable performance improvements.
