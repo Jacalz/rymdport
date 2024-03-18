@@ -51,6 +51,12 @@
     <kudo>Notifications</kudo>
   </kudos>
 
+  <!-- Needed to satisfy https://docs.flathub.org/docs/for-app-authors/metainfo-guidelines/quality-guidelines/#has-primary-brand-colors. -->
+  <branding>
+    <color type="primary" scheme_preference="light">#2b6bf3</color>
+    <color type="primary" scheme_preference="dark">#3660b9</color>
+  </branding>
+
   <releases>
     <release version="3.5.2" date="2024-01-03" type="stable">
       <description>
