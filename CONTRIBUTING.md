@@ -28,6 +28,7 @@ Follow the steps below to increase the chance of the changes being accepted quic
 We aim to maintain a very high standard of code through design, testing, and implementation.
 To manage this, we have various checks and processes in place that everyone should follow, including:
 
-* For a more strict standard Go format, we use [gofumpt](https://github.com/mvdan/gofumpt).
-* Imports should be ordered in accordance with the GoImports specification. Imports should be grouped by first- and third-party packages and listed alphabetically.
-* The code should pass the code quality checks by [staticcheck](https://staticcheck.io/) and [gosec](https://github.com/securego/gosec).
+- For a more strict standard Go format, we use [gofumpt](https://github.com/mvdan/gofumpt).
+- Imports should be ordered in accordance with the GoImports specification. Imports should be grouped by first- and third-party packages and listed alphabetically.
+- The code should pass the code quality checks by [staticcheck](https://staticcheck.io/) and [gosec](https://github.com/securego/gosec).
+- The cyclomatic complexity of each function should be below 15. 
