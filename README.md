@@ -13,7 +13,7 @@ The data is sent securely with end-to-end encryption using the same protocol as 
 The transfers are implemented using [wormhole-william](https://github.com/psanford/wormhole-william), a native [Go](https://go.dev/) implementation of magic-wormhole. As a result, Rymdport compiles into a single native binary with no runtime dependencies while also outperforming the reference implementation of magic-wormhole.
 
 <p align="center">
-  <img src="internal/assets/screenshot1.png" />
+  <img src="internal/assets/screenshot2.png" />
 </p>
 
 ## Downloads
