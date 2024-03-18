@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.5.3 - Dependency updates and mindor documentation improvements
+- Updated `fyne` to [v2.4.4](https://github.com/fyne-io/fyne/releases/tag/v2.4.4).
+  - This brings various bug fixes and some sizeable performance improvements.
+- Updated `compress` to [v1.17.7](https://github.com/klauspost/compress/releases/tag/v1.17.7).
+  - Decompression performance for directory transfers is improved slightly.
+- Update `fyneselfupdate` to [v0.1.1](https://github.com/fynelabs/fyneselfupdate/releases/tag/v0.1.1).
+  - This removes some usage of deprecated functions and cleans up the code. Nothing major.
+- Some improvements to documentation.
+  - Some incorrect wording and textual errors were fixed in [CONTRIBUTING.md](CONTRIBUTING.md). 
+  - Information on how to build distribution packages (for Linux repositories etc.) was added in a new [PACKAGING.md](PACKAGING.md) file.
+
 ## 3.5.2 - Updated Fyne UI toolkit dependency
 - Updated `fyne` to [v2.4.3](https://github.com/fyne-io/fyne/releases/tag/v2.4.3).
 
