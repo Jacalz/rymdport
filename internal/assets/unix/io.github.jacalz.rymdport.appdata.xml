@@ -58,6 +58,16 @@
   </branding>
 
   <releases>
+    <release version="3.5.3" date="2024-03-18" type="stable">
+      <description>
+        <ul>
+          <li>Improvements to the icons, sceenshots and metadata to fix issues noted in Flathub review.</li>
+          <li>Updated the fyne dependency to v2.4.4 for bug fixes and big performance improvements.</li>
+          <li>Updated the compress dependency to v1.17.7 for slightly improved decompression performance for directory transfers.</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.5.3</url>
+    </release>
     <release version="3.5.2" date="2024-01-03" type="stable">
       <description>
         <ul>
