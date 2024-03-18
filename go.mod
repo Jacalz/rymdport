@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	fyne.io/fyne/v2 v2.4.4
-	github.com/fynelabs/fyneselfupdate v0.1.0
+	github.com/fynelabs/fyneselfupdate v0.1.1
 	github.com/fynelabs/selfupdate v0.2.0
 	github.com/klauspost/compress v1.17.7
 	github.com/psanford/wormhole-william v1.0.7
