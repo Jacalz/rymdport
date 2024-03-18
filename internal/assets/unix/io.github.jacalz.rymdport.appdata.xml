@@ -23,11 +23,19 @@
   <screenshots>
     <screenshot type="default">
       <image>https://raw.githubusercontent.com/Jacalz/rymdport/main/internal/assets/screenshot1.png</image>
-      <caption>Sending Files</caption>
+      <caption>Sending content (light mode)</caption>
     </screenshot>
     <screenshot>
       <image>https://raw.githubusercontent.com/Jacalz/rymdport/main/internal/assets/screenshot2.png</image>
-      <caption>Receiving Files</caption>
+      <caption>Sending content (dark mode)</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/Jacalz/rymdport/main/internal/assets/screenshot3.png</image>
+      <caption>Receiving content (light mode)</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/Jacalz/rymdport/main/internal/assets/screenshot4.png</image>
+      <caption>Receiving content (dark mode)</caption>
     </screenshot>
   </screenshots>
 
