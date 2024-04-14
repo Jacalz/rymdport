@@ -3,7 +3,7 @@
 ## 3.6.0 - Performance and usability improvements
 - Added support to use custom codes when sending files and folders using drag and drop (see #108).
 - Added an option to save directory receives as a `.zip` file instead of automatically extracting (see #50).
-- Added options for more easily switching to Least Authoriy servers to communicate with [Winden](https://www.winden.app/s) and [Destiny](https://leastauthority.com/community-matters/destiny/) clients (see #125).
+- Added options for more easily switching to Least Authority servers to communicate with [Winden](https://www.winden.app/s) and [Destiny](https://leastauthority.com/community-matters/destiny/) clients (see #125).
 - Fixed an issue where deleting a sent or received item would not close the dialog (see #127).
 - Improved the rendering performance for long lists of sent and received items (see #99).
 - Use less CPU when dragging the options slider for selecting code components (see #79).
@@ -18,7 +18,7 @@
 - The magic-wormhole backend now uses [rymdport/wormhole](https://github.com/rymdport) instead of [psanford/wormhole-william](https://github.com/psanford/wormhole-william).
   - See [improvements-over-upstream](https://github.com/rymdport/wormhole?tab=readme-ov-file#improvements-over-upstream) for reasons.
 - Go 1.19 or later is now required for compiling the application.
-- Various minor refactorings and code cleanups.
+- Various other code refactoring and cleanup.
 
 ## 3.5.3 - Fixing Flathub review comments and updating dependencies
 - Updated icons, screenshots and appstream metadata to fix problems noted in Flathub review (see #139).

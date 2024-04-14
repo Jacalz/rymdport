@@ -63,7 +63,7 @@
         <ul>
           <li>Added support to use custom codes when sending files and folders using drag and drop.</li>
           <li>Added an option to save directory receives as a .zip file instead of automatically extracting.</li>
-          <li>Added options for more easily switching to Least Authoriy servers to communicate with Winden and Destiny clients.</li>
+          <li>Added options for more easily switching to Least Authority servers to communicate with Winden and Destiny clients.</li>
           <li>Fixed an issue where deleting a sent or received item would not close the dialog.</li>
           <li>Improved the rendering performance for long lists of sent and received items.</li>
           <li>Use less CPU when dragging the options slider for selecting code components.</li>
