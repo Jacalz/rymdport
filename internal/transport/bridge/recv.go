@@ -2,6 +2,7 @@ package bridge
 
 import (
 	"path/filepath"
+	"slices"
 	"sync/atomic"
 	"time"
 
@@ -191,12 +192,8 @@ func (d *RecvData) remove(index int) {
 	// Make sure that no updates happen while we modify the slice.
 	d.deleting.Store(true)
 
-	if index < len(d.items)-1 {
-		copy(d.items[index:], d.items[index+1:])
-	}
-
-	d.items[len(d.items)-1] = nil // Allow the GC to reclaim memory.
-	d.items = d.items[:len(d.items)-1]
+	d.items[index] = nil // TODO: Remove once we have Go 1.22 as the base.
+	d.items = slices.Delete(d.items, index, index+1)
 
 	// Update the moved items to have the correct index.
 	for j := index; j < len(d.items); j++ {
