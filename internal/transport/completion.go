@@ -5,58 +5,88 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"io"
+	"sort"
 	"strings"
 	"time"
 
-	"github.com/psanford/wormhole-william/rendezvous"
-	"github.com/psanford/wormhole-william/wordlist"
-	"github.com/psanford/wormhole-william/wormhole"
+	"github.com/rymdport/wormhole/rendezvous"
+	"github.com/rymdport/wormhole/wordlist"
+	"github.com/rymdport/wormhole/wormhole"
 )
 
-/* The code below is largely based on the following two files:
+/* The code below is an adapted and improved version based initially on the following two files:
 https://github.com/psanford/wormhole-william/blob/master/cmd/completion.go and
 https://github.com/psanford/wormhole-william/blob/master/internal/crypto/crypto.go.
 */
 
-// CompleteRecvCode returns completion suggestions for the receiver code.
-func (c *Client) CompleteRecvCode(toComplete string) []string {
-	parts := strings.Split(toComplete, "-")
-	if len(parts) < 2 {
-		nameplates, err := c.activeNameplates()
-		if err != nil {
-			return nil
-		} else if len(parts) == 0 {
-			return nameplates
-		}
-
-		var candidates []string
-		for _, nameplate := range nameplates {
-			if strings.HasPrefix(nameplate, parts[0]) {
-				candidates = append(candidates, nameplate+"-")
-			}
-		}
-
-		return candidates
+// GenerateCodeCompletion returns completion suggestions for the receiver code.
+func (c *Client) GenerateCodeCompletion(toComplete string) []string {
+	separators := strings.Count(toComplete, "-")
+	if separators == 0 {
+		return c.completeNameplates(toComplete)
 	}
 
-	currentCompletion := parts[len(parts)-1]
-	prefix := parts[:len(parts)-1]
+	lastPart := strings.LastIndexByte(toComplete, '-')
+	completionMatch := toComplete[lastPart+1:] // Word prefix to match completion against.
+	prefix := toComplete[:lastPart+1]          // Everything before the match prefix.
 
-	// Even/odd is based on just the number of words, slice off the mailbox
-	parts = parts[1:]
-	even := len(parts)%2 == 0
+	// Even/odd is based on just the number of words, ignore mailbox
+	even := (separators-1)%2 == 0
+
+	// Number of words in wordlist.
+	words := 256
+
+	// Fast path for matching everything. No binary search needed.
+	if len(completionMatch) == 0 {
+		words = 0
+	}
+
+	// Perform binary search for word prefix in alphabetically sorted word list.
+	index := sort.Search(words, func(i int) bool {
+		pair := wordlist.RawWords[byte(i)]
+		if even {
+			return pair.Even >= completionMatch
+		}
+
+		return pair.Odd >= completionMatch
+	})
 
 	var candidates []string
-	for _, pair := range wordlist.RawWords {
-		var candidateWord string
-		if even {
-			candidateWord = pair.Even
-		} else {
-			candidateWord = pair.Odd
+
+	// Search forward for the other prefix matches.
+	for i := index; i < 256; i++ {
+		candidate, match := lookupWordMatch(byte(i), completionMatch, even)
+		if !match {
+			break // Sorted in increasing alphabetical order. No more matches.
 		}
-		if strings.HasPrefix(candidateWord, currentCompletion) {
-			guessParts := append(prefix, candidateWord)
-			candidates = append(candidates, strings.Join(guessParts, "-"))
+
+		candidates = append(candidates, prefix+candidate)
+	}
+
+	return candidates
+}
+
+// lookupWordMatch looks up a word at a specific index and even/odd setting.
+// It also returns information about if the given word matches a completion prefix.
+func lookupWordMatch(index byte, prefix string, even bool) (string, bool) {
+	pair := wordlist.RawWords[index]
+	if even {
+		return pair.Even, strings.HasPrefix(pair.Even, prefix)
+	}
+
+	return pair.Odd, strings.HasPrefix(pair.Odd, prefix)
+}
+
+func (c *Client) completeNameplates(toComplete string) []string {
+	nameplates, err := c.activeNameplates()
+	if err != nil {
+		return nameplates
+	}
+
+	var candidates []string
+	for _, nameplate := range nameplates {
+		if strings.HasPrefix(nameplate, toComplete) {
+			candidates = append(candidates, nameplate+"-")
 		}
 	}
 
@@ -78,7 +108,6 @@ func (c *Client) activeNameplates() ([]string, error) {
 	}
 
 	client := rendezvous.NewClient(url, randSideID(), appID)
-
 	defer client.Close(ctx, rendezvous.Happy)
 
 	_, err := client.Connect(ctx)

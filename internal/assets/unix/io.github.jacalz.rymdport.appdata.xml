@@ -58,6 +58,25 @@
   </branding>
 
   <releases>
+     <release version="3.6.0" date="2024-04-14" type="stable">
+      <description>
+        <ul>
+          <li>Added support to use custom codes when sending files and folders using drag and drop.</li>
+          <li>Added an option to save directory receives as a .zip file instead of automatically extracting.</li>
+          <li>Added options for more easily switching to Least Authoriy servers to communicate with Winden and Destiny clients.</li>
+          <li>Fixed an issue where deleting a sent or received item would not close the dialog.</li>
+          <li>Improved the rendering performance for long lists of sent and received items.</li>
+          <li>Use less CPU when dragging the options slider for selecting code components.</li>
+          <li>Improved performance and memory usage when clicking on sent and received items.</li>
+          <li>Using tab completion when writing the receive code is now much faster.</li>
+          <li>Receiving items now has less startup delay and has a bit less overall cpu usage.</li>
+          <li>The highest setting for generated receive code components is now bumped from 6 to 9.</li>
+          <li>Performance improvements to the code validation that runs when starting a receive.</li>
+          <li>Various dependencies were updated to newer versions.</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.6.0</url>
+    </release>
     <release version="3.5.3" date="2024-03-18" type="stable">
       <description>
         <ul>

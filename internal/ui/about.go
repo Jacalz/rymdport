@@ -4,31 +4,24 @@ import (
 	"net/url"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	"github.com/Jacalz/rymdport/v3/internal/util"
 )
 
 func newAboutTab(app fyne.App) *container.TabItem {
-	const (
-		https   = "https"
-		github  = "github.com"
-		version = "v3.5.3"
-	)
+	const version = "v3.6.0"
 
-	repoURL := &url.URL{Scheme: https, Host: github, Path: "/jacalz/rymdport"}
+	repoURL := util.URLToGitHubProject("")
 	icon := newClickableIcon(app.Icon(), repoURL, app)
 
 	nameLabel := newBoldLabel("Rymdport")
 	spacerLabel := newBoldLabel("-")
 
-	releaseURL := &url.URL{
-		Scheme: https, Host: github,
-		Path: "/jacalz/rymdport/releases/tag/" + version,
-	}
+	releaseURL := util.URLToGitHubProject("/releases/tag/" + version)
 	hyperlink := &widget.Hyperlink{Text: version, URL: releaseURL, TextStyle: fyne.TextStyle{Bold: true}}
 
 	spacer := &layout.Spacer{}
@@ -53,10 +46,9 @@ func newAboutTab(app fyne.App) *container.TabItem {
 }
 
 type clickableIcon struct {
-	widget.BaseWidget
-	app  fyne.App
-	url  *url.URL
-	icon *canvas.Image
+	widget.Icon
+	app fyne.App
+	url *url.URL
 }
 
 func (c *clickableIcon) Tapped(_ *fyne.PointEvent) {
@@ -70,15 +62,10 @@ func (c *clickableIcon) Cursor() desktop.Cursor {
 	return desktop.PointerCursor
 }
 
-func (c *clickableIcon) CreateRenderer() fyne.WidgetRenderer {
-	c.ExtendBaseWidget(c)
-	return widget.NewSimpleRenderer(c.icon)
-}
-
 func (c *clickableIcon) MinSize() fyne.Size {
 	return fyne.Size{Width: 256, Height: 256}
 }
 
 func newClickableIcon(res fyne.Resource, url *url.URL, app fyne.App) *clickableIcon {
-	return &clickableIcon{app: app, url: url, icon: canvas.NewImageFromResource(res)}
+	return &clickableIcon{Icon: widget.Icon{Resource: res}, app: app, url: url}
 }

@@ -17,7 +17,7 @@ type send struct {
 	fileDialog      *dialog.FileDialog
 	directoryDialog *dialog.FileDialog
 
-	data *bridge.SendData
+	data bridge.SendData
 
 	client *transport.Client
 	window fyne.Window
@@ -39,19 +39,21 @@ func (s *send) buildUI(window fyne.Window) *fyne.Container {
 	fileChoice := &widget.Button{Text: "File", Icon: theme.FileIcon(), OnTapped: s.onFileSend}
 	directoryChoice := &widget.Button{Text: "Directory", Icon: theme.FolderOpenIcon(), OnTapped: s.onDirSend}
 	textChoice := &widget.Button{Text: "Text", Icon: theme.DocumentCreateIcon(), OnTapped: s.onTextSend}
-	codeChoice := &widget.Check{Text: "Use a custom code", OnChanged: s.onCustomCode}
-
+	codeChoice := &widget.Check{Text: "Use a custom code", OnChanged: s.onCustomCode, Checked: s.client.CustomCode}
 	choiceContent := container.NewGridWithColumns(1, fileChoice, directoryChoice, textChoice, codeChoice)
 	s.contentPicker = dialog.NewCustom("Pick a content type", "Cancel", choiceContent, window)
 
-	s.data = &bridge.SendData{Client: s.client, Window: window, Canvas: s.window.Canvas()}
-	contentToSend := &widget.Button{Text: "Add content to send", Icon: theme.ContentAddIcon(), OnTapped: s.contentPicker.Show}
+	s.data = bridge.SendData{Client: s.client, Window: window}
+	contentToSend := &widget.Button{Text: "Add content to send", Icon: theme.ContentAddIcon(), OnTapped: func() {
+		codeChoice.SetChecked(s.client.CustomCode)
+		s.contentPicker.Show()
+	}}
 
 	s.fileDialog = dialog.NewFileOpen(s.data.OnFileSelect, window)
 	s.directoryDialog = dialog.NewFolderOpen(s.data.OnDirSelect, window)
 
 	box := container.NewVBox(&widget.Separator{}, contentToSend, &widget.Separator{})
-	return container.NewBorder(box, nil, nil, nil, bridge.NewSendList(s.data))
+	return container.NewBorder(box, nil, nil, nil, s.data.NewSendList())
 }
 
 func (s *send) onFileSend() {

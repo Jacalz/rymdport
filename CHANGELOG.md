@@ -1,5 +1,25 @@
 # Changelog
 
+## 3.6.0 - Performance and usability improvements
+- Added support to use custom codes when sending files and folders using drag and drop (see #108).
+- Added an option to save directory receives as a `.zip` file instead of automatically extracting (see #50).
+- Added options for more easily switching to Least Authoriy servers to communicate with [Winden](https://www.winden.app/s) and [Destiny](https://leastauthority.com/community-matters/destiny/) clients (see #125).
+- Fixed an issue where deleting a sent or received item would not close the dialog (see #127).
+- Improved the rendering performance for long lists of sent and received items (see #99).
+- Use less CPU when dragging the options slider for selecting code components (see #79).
+- Improved performance and memory usage when clicking on sent and received items (see #129 and #117).
+- Using tab completion when writing the receive code is now much faster (see #136).
+  - Tab completions allocates a lot less memory and uses binary search to look up matches faster.
+- Receiving items now has less startup delay and has a bit less overall cpu usage.
+- The highest setting for generated receive code components is now bumped from 6 to 9.
+- Performance improvements to the code validation that runs when starting a receive.
+- QR codes are now generated with [rymdport/go-qrcode](https://github.com/rymdport/go-qrcode) instead of [skip2/go-qrcode](https://github.com/skip2/go-qrcode).
+  - The new dependency is a maintained fork with various modernisations, code cleanups and performance improvements.
+- The magic-wormhole backend now uses [rymdport/wormhole](https://github.com/rymdport) instead of [psanford/wormhole-william](https://github.com/psanford/wormhole-william).
+  - See [improvements-over-upstream](https://github.com/rymdport/wormhole?tab=readme-ov-file#improvements-over-upstream) for reasons.
+- Go 1.19 or later is now required for compiling the application.
+- Various minor refactorings and code cleanups.
+
 ## 3.5.3 - Fixing Flathub review comments and updating dependencies
 - Updated icons, screenshots and appstream metadata to fix problems noted in Flathub review (see #139).
 - Updated `fyne` to [v2.4.4](https://github.com/fyne-io/fyne/releases/tag/v2.4.4).

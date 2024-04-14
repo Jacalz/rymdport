@@ -2,6 +2,7 @@ package bridge
 
 import (
 	"path/filepath"
+	"sync/atomic"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -12,8 +13,8 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/Jacalz/rymdport/v3/internal/transport"
 	"github.com/Jacalz/rymdport/v3/internal/util"
-	"github.com/psanford/wormhole-william/wormhole"
-	"github.com/skip2/go-qrcode"
+	"github.com/rymdport/go-qrcode"
+	"github.com/rymdport/wormhole/wormhole"
 )
 
 // SendItem is the item that is being sent.
@@ -25,28 +26,45 @@ type SendItem struct {
 	Max    int64
 	Status func() string
 
-	list *widget.List
+	// Allow the list to only refresh a single object.
+	refresh func(int)
+	index   int
 }
 
 func (s *SendItem) update(sent, total int64) {
 	s.Value = sent
 	s.Max = total
-	s.list.Refresh()
+	s.refresh(s.index)
 }
 
 func (s *SendItem) failed() {
 	s.Status = func() string { return "Failed" }
-	s.list.Refresh()
+	s.refresh(s.index)
 }
 
 // SendData is a list of progress bars that track send progress.
 type SendData struct {
 	Client *transport.Client
 	Window fyne.Window
-	Canvas fyne.Canvas
 
-	items []*SendItem
-	list  *widget.List
+	items      []*SendItem
+	info       sendInfoDialog
+	textWindow textSendWindow
+
+	deleting atomic.Bool
+	list     *widget.List
+}
+
+// NewSendList greates a list of progress bars.
+func (d *SendData) NewSendList() *widget.List {
+	d.list = &widget.List{
+		Length:     d.Length,
+		CreateItem: d.CreateItem,
+		UpdateItem: d.UpdateItem,
+		OnSelected: d.OnSelected,
+	}
+	d.setUpInfoDialog()
+	return d.list
 }
 
 // Length returns the length of the data.
@@ -92,48 +110,41 @@ func (d *SendData) OnSelected(i int) {
 
 	code.BackgroundColor = theme.OverlayBackgroundColor()
 	code.ForegroundColor = theme.ForegroundColor()
+	d.info.image.Image = code.Image(100)
+	d.info.image.Resource = nil
+	d.info.image.ScaleMode = canvas.ImageScalePixels
+	d.info.image.Refresh()
 
-	qrcode := canvas.NewImageFromImage(code.Image(100))
-	qrcode.FillMode = canvas.ImageFillOriginal
-	qrcode.ScaleMode = canvas.ImageScalePixels
-	qrcode.SetMinSize(fyne.NewSize(100, 100))
-
-	qrCodeInfo := widget.NewRichTextFromMarkdown("A list of supported apps can be found [here](https://github.com/Jacalz/rymdport/wiki/Supported-clients).")
-	qrCard := &widget.Card{Image: qrcode, Content: container.NewCenter(qrCodeInfo)}
-
-	removeLabel := &widget.Label{Text: "This item can be removed.\nThe transfer has completed."}
-	removeButton := &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.DangerImportance, Text: "Remove", OnTapped: func() {
-		if i < len(d.items)-1 {
-			copy(d.items[i:], d.items[i+1:])
-		}
-
-		d.items[len(d.items)-1] = nil // Allow the GC to reclaim memory.
-		d.items = d.items[:len(d.items)-1]
-
-		d.list.Refresh()
-	}}
-
-	// Only allow failed or completed items to be removed.
-	if d.items[i].Value < d.items[i].Max && d.items[i].Status == nil {
-		removeLabel.Text = "This item can not be removed yet.\nThe transfer needs to complete first."
-		removeButton.Disable()
-	} else {
-		qrcode.Image = nil
-		qrcode.Resource = theme.InfoIcon()
-		qrcode.ScaleMode = canvas.ImageScaleSmooth
-		qrcode.Refresh()
-
-		qrCard.Content = &widget.Label{Text: "This transfer is not active.\nCan't show a QR code."}
+	d.info.button.OnTapped = func() {
+		d.remove(i)
+		d.info.dialog.Hide()
 	}
 
-	removeCard := &widget.Card{Content: container.NewVBox(removeLabel, removeButton)}
+	if d.info.button.Disabled() {
+		d.info.label.Text = "This item can be removed.\nThe transfer has completed."
+		d.info.button.Enable()
+	}
 
-	dialog.ShowCustom("Information", "Close", container.NewGridWithColumns(2, qrCard, removeCard), d.Window)
+	// Only allow failed or completed items to be removed.
+	item := d.items[i]
+	if item.Value < item.Max && item.Status == nil {
+		d.info.label.Text = "This item can't be removed yet.\nThe transfer needs to complete first."
+		d.info.button.Disable()
+	} else {
+		d.info.image.Image = nil
+		d.info.image.Resource = theme.BrokenImageIcon()
+		d.info.image.ScaleMode = canvas.ImageScaleSmooth
+		d.info.image.Refresh()
+
+		// TODO: Display something like: "This transfer is not active.\nCan't show a QR code.".
+	}
+
+	d.info.dialog.Show()
 }
 
 // NewSend adds data about a new send to the list and then returns the item.
 func (d *SendData) NewSend(uri fyne.URI) *SendItem {
-	item := &SendItem{Code: "Waiting for code...", URI: uri, list: d.list, Max: 1}
+	item := &SendItem{Code: "Waiting for code...", URI: uri, Max: 1, refresh: d.refresh, index: len(d.items)}
 	d.items = append(d.items, item)
 	return item
 }
@@ -169,7 +180,7 @@ func (d *SendData) OnFileSelect(file fyne.URIReadCloser, err error) {
 		}
 
 		item.Code = code
-		d.list.Refresh()
+		d.refresh(item.index)
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending file", res.Error)
@@ -205,7 +216,7 @@ func (d *SendData) OnDirSelect(dir fyne.ListableURI, err error) {
 		}
 
 		item.Code = code
-		d.list.Refresh()
+		d.refresh(item.index)
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending directory", res.Error)
@@ -234,7 +245,7 @@ func (d *SendData) NewSendFromFiles(uris []fyne.URI) {
 		}
 
 		item.Code = code
-		d.list.Refresh()
+		d.refresh(item.index)
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending directory", res.Error)
@@ -250,7 +261,7 @@ func (d *SendData) NewSendFromFiles(uris []fyne.URI) {
 // SendText sends new text.
 func (d *SendData) SendText() {
 	go func() {
-		text := d.Client.ShowTextSendWindow()
+		text := d.showTextWindow()
 		if text == "" {
 			return
 		}
@@ -268,7 +279,7 @@ func (d *SendData) SendText() {
 		}
 
 		item.Code = code
-		d.list.Refresh()
+		d.refresh(item.index)
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending text", res.Error)
@@ -309,22 +320,131 @@ func (d *SendData) getCustomCode() string {
 
 		close(code)
 	}, d.Window)
-	form.Resize(fyne.Size{Width: d.Canvas.Size().Width * 0.8})
+	form.Resize(fyne.Size{Width: d.Window.Canvas().Size().Width * 0.8})
 	codeEntry.OnSubmitted = func(_ string) { form.Submit() }
 	form.Show()
-	d.Canvas.Focus(codeEntry)
+	d.Window.Canvas().Focus(codeEntry)
 
 	return <-code
 }
 
-// NewSendList greates a list of progress bars.
-func NewSendList(data *SendData) *widget.List {
-	list := &widget.List{
-		Length:     data.Length,
-		CreateItem: data.CreateItem,
-		UpdateItem: data.UpdateItem,
-		OnSelected: data.OnSelected,
+func (d *SendData) refresh(index int) {
+	if d.deleting.Load() {
+		return // Don't update if we are deleting.
 	}
-	data.list = list
-	return list
+
+	d.list.RefreshItem(index)
+}
+
+func (d *SendData) remove(index int) {
+	// Make sure that no updates happen while we modify the slice.
+	d.deleting.Store(true)
+
+	if index < len(d.items)-1 {
+		copy(d.items[index:], d.items[index+1:])
+	}
+
+	d.items[len(d.items)-1] = nil // Allow the GC to reclaim memory.
+	d.items = d.items[:len(d.items)-1]
+
+	// Update the moved items to have the correct index.
+	for j := index; j < len(d.items); j++ {
+		d.items[j].index = j
+	}
+
+	// Refresh the whole list.
+	d.list.Refresh()
+
+	// Allow individual objects to be refreshed again.
+	d.deleting.Store(false)
+}
+
+func (d *SendData) setUpInfoDialog() {
+	d.info.label = &widget.Label{Text: "This item can be removed.\nThe transfer has completed."}
+	d.info.button = &widget.Button{Icon: theme.DeleteIcon(), Importance: widget.DangerImportance, Text: "Remove"}
+
+	image := &canvas.Image{}
+	image.FillMode = canvas.ImageFillOriginal
+	image.ScaleMode = canvas.ImageScalePixels
+	image.SetMinSize(fyne.NewSize(100, 100))
+	d.info.image = image
+
+	supportedClientsURL := util.URLToGitHubProject("/wiki/Supported-clients")
+	qrCodeInfo := widget.NewRichText(&widget.TextSegment{
+		Style: widget.RichTextStyleInline,
+		Text:  "A list of supported apps can be found ",
+	}, &widget.HyperlinkSegment{
+		Text: "here",
+		URL:  supportedClientsURL,
+	}, &widget.TextSegment{
+		Style: widget.RichTextStyleInline,
+		Text:  ".",
+	})
+	qrCard := &widget.Card{Image: image, Content: container.NewCenter(qrCodeInfo)}
+
+	removeCard := &widget.Card{Content: container.NewVBox(d.info.label, d.info.button)}
+
+	content := container.NewGridWithColumns(2, qrCard, removeCard)
+	d.info.dialog = dialog.NewCustom("Information", "Close", content, d.Window)
+}
+
+type sendInfoDialog struct {
+	dialog *dialog.CustomDialog
+	button *widget.Button
+	label  *widget.Label
+	image  *canvas.Image
+}
+
+type textSendWindow struct {
+	textEntry                *widget.Entry
+	cancelButton, sendButton *widget.Button
+	window                   fyne.Window
+	text                     chan string
+}
+
+func (s *textSendWindow) dismiss() {
+	s.text <- ""
+	s.window.Hide()
+	s.textEntry.SetText("")
+}
+
+func (s *textSendWindow) send() {
+	s.text <- s.textEntry.Text
+	s.window.Hide()
+	s.textEntry.SetText("")
+}
+
+func (d *SendData) createTextWindow() {
+	window := d.Client.App.NewWindow("Send Text")
+	window.SetCloseIntercept(d.textWindow.dismiss)
+
+	d.textWindow = textSendWindow{
+		window:       window,
+		textEntry:    &widget.Entry{MultiLine: true, Wrapping: fyne.TextWrapWord, OnSubmitted: func(_ string) { d.textWindow.send() }},
+		cancelButton: &widget.Button{Text: "Cancel", Icon: theme.CancelIcon(), OnTapped: d.textWindow.dismiss},
+		sendButton:   &widget.Button{Text: "Send", Icon: theme.MailSendIcon(), Importance: widget.HighImportance, OnTapped: d.textWindow.send},
+		text:         make(chan string),
+	}
+
+	actionContainer := container.NewGridWithColumns(2, d.textWindow.cancelButton, d.textWindow.sendButton)
+	window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, d.textWindow.textEntry))
+	window.Resize(fyne.NewSize(400, 300))
+}
+
+// showTextWindow opens a new window for setting up text to send.
+func (d *SendData) showTextWindow() string {
+	if d.textWindow.window == nil {
+		d.createTextWindow()
+	} else if d.textWindow.window.Canvas().Content().Visible() {
+		d.textWindow.window.RequestFocus()
+		return ""
+	}
+
+	win := d.textWindow.window
+
+	win.Show()
+	win.RequestFocus()
+	win.Canvas().Focus(d.textWindow.textEntry)
+
+	return <-d.textWindow.text
 }

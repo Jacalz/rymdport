@@ -9,7 +9,7 @@ The following distributions also have binary packages available through their re
 ## Requirements
 
 Rymdport compiles into a statically linked binary with no explicit runtime dependencies.
-Compiling requires a [Go](https://go.dev) compiler (aversion 1.18 or later is required) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
+Compiling requires a [Go](https://go.dev) compiler (aversion 1.20 or later is required) and the [prerequisites for Fyne](https://developer.fyne.io/started/).
 
 ## Downloading the source
 

@@ -1,15 +1,15 @@
 module github.com/Jacalz/rymdport/v3
 
-go 1.18
+go 1.19
 
 require (
 	fyne.io/fyne/v2 v2.4.4
 	github.com/fynelabs/fyneselfupdate v0.1.1
 	github.com/fynelabs/selfupdate v0.2.0
-	github.com/klauspost/compress v1.17.7
-	github.com/psanford/wormhole-william v1.0.7
-	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
-	github.com/stretchr/testify v1.8.4
+	github.com/klauspost/compress v1.17.4
+	github.com/rymdport/go-qrcode v1.1.0
+	github.com/rymdport/wormhole v0.1.0
+	github.com/stretchr/testify v1.9.0
 )
 
 require (
@@ -32,14 +32,14 @@ require (
 	github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef // indirect
 	github.com/tevino/abool v1.2.0 // indirect
 	github.com/yuin/goldmark v1.5.5 // indirect
-	golang.org/x/crypto v0.14.0 // indirect
+	golang.org/x/crypto v0.18.0 // indirect
 	golang.org/x/image v0.11.0 // indirect
 	golang.org/x/mobile v0.0.0-20230531173138-3c911d8e3eda // indirect
 	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/sys v0.13.0 // indirect
-	golang.org/x/text v0.13.0 // indirect
+	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	honnef.co/go/js/dom v0.0.0-20210725211120-f030747120f2 // indirect
-	nhooyr.io/websocket v1.8.7 // indirect
+	nhooyr.io/websocket v1.8.10 // indirect
 	salsa.debian.org/vasudev/gospake2 v0.0.0-20210510093858-d91629950ad1 // indirect
 )

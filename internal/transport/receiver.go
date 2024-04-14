@@ -11,7 +11,7 @@ import (
 	"fyne.io/fyne/v2"
 	"github.com/Jacalz/rymdport/v3/internal/util"
 	"github.com/Jacalz/rymdport/v3/zip"
-	"github.com/psanford/wormhole-william/wormhole"
+	"github.com/rymdport/wormhole/wormhole"
 )
 
 var errorTooManyDuplicates = errors.New("too many duplicates found. Stopped trying to add new numbers to end")
@@ -27,72 +27,46 @@ func bail(msg *wormhole.IncomingMessage, err error) error {
 }
 
 // NewReceive runs a receive using wormhole-william and handles types accordingly.
-func (c *Client) NewReceive(code string, pathname chan string, progress func(int64, int64)) (err error) {
+func (c *Client) NewReceive(code string) (*wormhole.IncomingMessage, error) {
 	msg, err := c.Receive(context.Background(), code)
 	if err != nil {
-		pathname <- "" // We want to always send a URI, even on fail, in order to not block goroutines.
 		fyne.LogError("Error on receiving data", err)
-		return bail(msg, err)
+		return nil, bail(msg, err)
 	}
 
-	contents := util.NewProgressReader(msg, progress, msg.TransferBytes64)
+	return msg, nil
+}
 
-	if msg.Type == wormhole.TransferText {
-		pathname <- "Text Snippet"
+// SaveToDisk saves the incomming file or directory transfer to the disk.
+func (c *Client) SaveToDisk(msg *wormhole.IncomingMessage, targetPath string, progress func(int64, int64)) (err error) {
+	contents := util.NewProgressReader(msg, progress, msg.TransferBytes)
 
-		text := make([]byte, int(msg.TransferBytes64))
-		_, err := io.ReadFull(contents, text)
-		if err != nil {
-			fyne.LogError("Could read the received text", err)
-			return err
-		}
-
-		c.showTextReceiveWindow(text)
-		return nil
+	if msg.Type == wormhole.TransferDirectory && c.NoExtractDirectory {
+		targetPath += ".zip" // We are saving the zip-file and not extracting.
 	}
-
-	path := filepath.Join(c.DownloadPath, msg.Name)
-	pathname <- path
 
 	if !c.OverwriteExisting {
-		if _, err := os.Stat(path); err == nil || os.IsExist(err) {
-			new, err := addFileIncrement(path)
+		_, err := os.Stat(targetPath)
+		if err == nil || os.IsExist(err) {
+			targetPath, err = addFileIncrement(targetPath)
 			if err != nil {
 				fyne.LogError("Error on trying to create non-duplicate filename", err)
 				return bail(msg, err)
 			}
-
-			path = new
 		}
 	}
 
-	if msg.Type == wormhole.TransferFile {
-		var file *os.File
-		file, err = os.Create(path) // #nosec Path is cleaned by filepath.Join().
-		if err != nil {
-			fyne.LogError("Error on creating file", err)
-			return bail(msg, err)
-		}
-
-		defer func() {
-			if cerr := file.Close(); cerr != nil {
-				fyne.LogError("Error on closing file", err)
-				err = cerr
-			}
-		}()
-
-		_, err = io.Copy(file, contents)
-		if err != nil {
-			fyne.LogError("Error on copying contents to file", err)
-			return err
-		}
-
-		return
+	if msg.Type == wormhole.TransferFile || c.NoExtractDirectory {
+		return writeToFile(targetPath, msg, contents)
 	}
 
 	// We are reading the transferred bytes twice. First from msg to temp file and then from temp.
 	contents.Max *= 2
 
+	return writeToDirectory(targetPath, msg, contents, progress)
+}
+
+func writeToDirectory(targetPath string, msg *wormhole.IncomingMessage, contents util.ProgressReader, progress func(int64, int64)) (err error) {
 	tmp, err := os.CreateTemp("", msg.Name+"-*.zip.tmp")
 	if err != nil {
 		fyne.LogError("Error on creating tempfile", err)
@@ -111,19 +85,18 @@ func (c *Client) NewReceive(code string, pathname chan string, progress func(int
 		}
 	}()
 
-	n, err := io.Copy(tmp, contents)
+	var n int64
+	n, err = io.Copy(tmp, contents)
 	if err != nil {
 		fyne.LogError("Error on copying contents to file", err)
-		return err
+		return
 	}
 
-	err = zip.ExtractSafe(
-		util.NewProgressReaderAt(tmp, progress, contents.Max),
-		n, path, msg.UncompressedBytes64, msg.FileCount,
-	)
+	err = zip.ExtractSafe(util.NewProgressReaderAt(tmp, progress, contents.Max),
+		n, targetPath, msg.UncompressedBytes, msg.FileCount)
 	if err != nil {
 		fyne.LogError("Error on unzipping contents", err)
-		return err
+		return
 	}
 
 	progress(0, 1) // Workaround for progress sometimes stopping at 99%.
@@ -131,6 +104,31 @@ func (c *Client) NewReceive(code string, pathname chan string, progress func(int
 	return
 }
 
+func writeToFile(destination string, msg *wormhole.IncomingMessage, contents util.ProgressReader) (err error) {
+	file, err := os.Create(destination) // #nosec Path is cleaned by filepath.Join().
+	if err != nil {
+		fyne.LogError("Error on creating file", err)
+		return bail(msg, err)
+	}
+
+	defer func() {
+		if cerr := file.Close(); cerr != nil {
+			fyne.LogError("Error on closing file", err)
+			err = cerr
+		}
+	}()
+
+	_, err = io.Copy(file, contents)
+	if err != nil {
+		fyne.LogError("Error on copying contents to file", err)
+		return
+	}
+
+	return
+}
+
+// addFileIncrement tries to add a number to the end of the filename if a duplicate exists.
+// If it fails to do so after five tries, it till return the given path and an error.
 func addFileIncrement(path string) (string, error) {
 	base := filepath.Dir(path)
 	ext := filepath.Ext(path)
@@ -152,5 +150,5 @@ func addFileIncrement(path string) (string, error) {
 		}
 	}
 
-	return "", errorTooManyDuplicates
+	return path, errorTooManyDuplicates
 }

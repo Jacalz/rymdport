@@ -13,9 +13,9 @@ jobs:
     - uses: actions/checkout@v4
       with:
         persist-credentials: false
-    - uses: WillAbides/setup-go-faster@v1.13.0
+    - uses: WillAbides/setup-go-faster@v1
       with:
-        go-version: '1.21.x'
+        go-version: 'stable'
 
     - name: Install build dependencies
       run: |
@@ -24,11 +24,11 @@ jobs:
         
     - name: Install static analysis tools
       run: |
-        go install github.com/securego/gosec/v2/cmd/gosec@v2.18.2
+        go install github.com/securego/gosec/v2/cmd/gosec@latest
         go install golang.org/x/vuln/cmd/govulncheck@latest
-        go install github.com/fzipp/gocyclo/cmd/gocyclo@v0.6.0
-        go install honnef.co/go/tools/cmd/staticcheck@v0.4.6
-        go install mvdan.cc/gofumpt@v0.5.0
+        go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
+        go install honnef.co/go/tools/cmd/staticcheck@latest
+        go install mvdan.cc/gofumpt@latest
 
     - name: Vet
       run: go vet ./...
@@ -37,7 +37,7 @@ jobs:
       run: test -z $(gofumpt -d -e . | tee /dev/stderr)
 
     - name: Gocyclo
-      run: gocyclo -over 20 .
+      run: gocyclo -over 15 .
 
     - name: Staticcheck
       run: staticcheck ./...

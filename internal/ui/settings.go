@@ -14,34 +14,35 @@ import (
 	"github.com/Jacalz/rymdport/v3/internal/transport"
 	"github.com/Jacalz/rymdport/v3/internal/updater"
 	"github.com/Jacalz/rymdport/v3/internal/util"
-	"github.com/psanford/wormhole-william/wormhole"
+	"github.com/rymdport/wormhole/wormhole"
 )
 
 type settings struct {
 	downloadPathEntry *widget.Entry
 	overwriteFiles    *widget.RadioGroup
 	notificationRadio *widget.RadioGroup
+	extractRadio      *widget.RadioGroup
 	checkUpdatesRadio *widget.RadioGroup
 
 	componentSlider     *widget.Slider
 	componentLabel      *widget.Label
 	verifyRadio         *widget.RadioGroup
-	appID               *widget.Entry
-	rendezvousURL       *widget.Entry
-	transitRelayAddress *widget.Entry
+	appID               *widget.SelectEntry
+	rendezvousURL       *widget.SelectEntry
+	transitRelayAddress *widget.SelectEntry
 
 	client      *transport.Client
 	preferences fyne.Preferences
 	window      fyne.Window
 }
 
-func newSettingsTab(a fyne.App, w fyne.Window, c *transport.Client) *container.TabItem {
-	settings := &settings{window: w, client: c, preferences: a.Preferences()}
+func newSettingsTab(w fyne.Window, c *transport.Client) *container.TabItem {
+	settings := &settings{window: w, client: c, preferences: c.App.Preferences()}
 
 	return &container.TabItem{
 		Text:    "Settings",
 		Icon:    theme.SettingsIcon(),
-		Content: settings.buildUI(a),
+		Content: settings.buildUI(c.App),
 	}
 }
 
@@ -109,14 +110,22 @@ func (s *settings) onNotificationsChanged(selected string) {
 	s.preferences.SetBool("Notifications", s.client.Notifications)
 }
 
+func (s *settings) onExtractChanged(selected string) {
+	s.client.NoExtractDirectory = selected == "Off" // UI representation is flipped.
+	s.preferences.SetBool("NoExtractDirectory", s.client.NoExtractDirectory)
+}
+
 func (s *settings) onCheckUpdatesChanged(selected string) {
 	s.preferences.SetBool("CheckUpdates", selected == "On")
 }
 
 func (s *settings) onComponentsChange(value float64) {
-	s.client.PassPhraseComponentLength = int(value)
-	s.preferences.SetInt("ComponentLength", s.client.PassPhraseComponentLength)
 	s.componentLabel.SetText(string('0' + byte(value)))
+}
+
+func (s *settings) onComponentsChangeEnded(value float64) {
+	s.client.PassPhraseComponentLength = int(value)
+	s.preferences.SetInt("ComponentLength", int(value))
 }
 
 func (s *settings) onAppIDChanged(appID string) {
@@ -168,6 +177,9 @@ func (s *settings) getPreferences(app fyne.App) {
 	s.client.Notifications = s.preferences.BoolWithFallback("Notifications", true)
 	s.notificationRadio.Selected = onOrOff(s.client.Notifications)
 
+	s.client.NoExtractDirectory = s.preferences.Bool("NoExtractDirectory")
+	s.extractRadio.Selected = onOrOff(!s.client.NoExtractDirectory)
+
 	checkUpdates := s.preferences.BoolWithFallback("CheckUpdates", true)
 	if !updater.Enabled {
 		checkUpdates = false
@@ -208,17 +220,28 @@ func (s *settings) buildUI(app fyne.App) *container.Scroll {
 
 	s.notificationRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onNotificationsChanged}
 
+	s.extractRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onExtractChanged}
+
 	s.checkUpdatesRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onCheckUpdatesChanged}
 
 	s.verifyRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onVerifyChanged}
 
-	s.componentSlider, s.componentLabel = &widget.Slider{Min: 2.0, Max: 6.0, Step: 1, OnChanged: s.onComponentsChange}, &widget.Label{}
+	s.componentSlider = &widget.Slider{Min: 2.0, Max: 9.0, Step: 1, OnChanged: s.onComponentsChange, OnChangeEnded: s.onComponentsChangeEnded}
+	s.componentLabel = &widget.Label{}
 
-	s.appID = &widget.Entry{PlaceHolder: wormhole.WormholeCLIAppID, OnChanged: s.onAppIDChanged}
+	s.appID = widget.NewSelectEntry([]string{wormhole.WormholeCLIAppID})
+	s.appID.PlaceHolder = wormhole.WormholeCLIAppID
+	s.appID.OnChanged = s.onAppIDChanged
 
-	s.rendezvousURL = &widget.Entry{PlaceHolder: wormhole.DefaultRendezvousURL, OnChanged: s.onRendezvousURLChange}
+	const leastAuthorityRendzvousURL = "wss://mailbox.mw.leastauthority.com/v1"
+	s.rendezvousURL = widget.NewSelectEntry([]string{wormhole.DefaultRendezvousURL, leastAuthorityRendzvousURL})
+	s.rendezvousURL.PlaceHolder = wormhole.DefaultRendezvousURL
+	s.rendezvousURL.OnChanged = s.onRendezvousURLChange
 
-	s.transitRelayAddress = &widget.Entry{PlaceHolder: wormhole.DefaultTransitRelayAddress, OnChanged: s.onTransitAdressChange}
+	const leastAuthorityTransitRelayAddress = "relay.mw.leastauthority.com:4001"
+	s.transitRelayAddress = widget.NewSelectEntry([]string{wormhole.DefaultTransitRelayAddress, leastAuthorityTransitRelayAddress})
+	s.transitRelayAddress.PlaceHolder = wormhole.DefaultTransitRelayAddress
+	s.transitRelayAddress.OnChanged = s.onTransitAdressChange
 
 	s.getPreferences(app)
 
@@ -228,6 +251,7 @@ func (s *settings) buildUI(app fyne.App) *container.Scroll {
 		newBoldLabel("Save files to"), s.downloadPathEntry,
 		newBoldLabel("Overwrite files"), s.overwriteFiles,
 		newBoldLabel("Notifications"), s.notificationRadio,
+		newBoldLabel("Extract received directory"), s.extractRadio,
 		newBoldLabel("Check for updates"), s.checkUpdatesRadio,
 	)
 
