@@ -31,7 +31,7 @@ func newRecvTab(w fyne.Window, c *transport.Client) *container.TabItem {
 }
 
 func (r *recv) buildUI(client *transport.Client) *fyne.Container {
-	r.codeEntry = newCompletionEntry(client, r.window.Canvas())
+	r.codeEntry = newCompletionEntry(client, r.window.Canvas(), client.App)
 	r.codeEntry.OnSubmitted = func(_ string) { r.onRecv() }
 
 	codeButton := &widget.Button{Text: "Receive", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
@@ -54,9 +54,9 @@ func (r *recv) onRecv() {
 
 type completionEntry struct {
 	widget.Entry
-	canvas    fyne.Canvas
-	backwards bool
-	complete  completion.TabCompleter
+	driver   desktop.Driver
+	canvas   fyne.Canvas
+	complete completion.TabCompleter
 }
 
 // AcceptsTab overrides tab handling to allow tabs as input.
@@ -69,12 +69,12 @@ func (c *completionEntry) TypedKey(key *fyne.KeyEvent) {
 	switch key.Name {
 	case desktop.KeyShiftLeft, desktop.KeyShiftRight:
 	case fyne.KeyTab:
-		if c.backwards {
-			c.previous()
+		if c.driver.CurrentKeyModifiers()&fyne.KeyModifierShift != 0 {
+			c.setCompletion(c.complete.Previous)
 			return
 		}
 
-		c.next()
+		c.setCompletion(c.complete.Next)
 	case fyne.KeyEscape:
 		c.canvas.Unfocus()
 	default:
@@ -83,39 +83,16 @@ func (c *completionEntry) TypedKey(key *fyne.KeyEvent) {
 	}
 }
 
-// KeyDown handles pressing of shift for going backwards in completion.
-func (c *completionEntry) KeyDown(key *fyne.KeyEvent) {
-	if key.Name == desktop.KeyShiftLeft || key.Name == desktop.KeyShiftRight {
-		c.backwards = true
-	}
-
-	c.Entry.KeyDown(key)
+func (c *completionEntry) setCompletion(lookup func(string) string) {
+	text := lookup(c.Text)
+	c.CursorColumn = len(text)
+	c.SetText(text)
 }
 
-// KeyUp handles releasing of shift for going backwards in completion.
-func (c *completionEntry) KeyUp(key *fyne.KeyEvent) {
-	if key.Name == desktop.KeyShiftLeft || key.Name == desktop.KeyShiftRight {
-		c.backwards = false
-	}
-
-	c.Entry.KeyDown(key)
-}
-
-func (c *completionEntry) previous() {
-	previous := c.complete.Previous(c.Text)
-	c.CursorColumn = len(previous)
-	c.SetText(previous)
-}
-
-func (c *completionEntry) next() {
-	next := c.complete.Next(c.Text)
-	c.CursorColumn = len(next)
-	c.SetText(next)
-}
-
-func newCompletionEntry(client *transport.Client, canvas fyne.Canvas) *completionEntry {
+func newCompletionEntry(client *transport.Client, canvas fyne.Canvas, app fyne.App) *completionEntry {
 	entry := &completionEntry{
 		canvas: canvas,
+		driver: app.Driver().(desktop.Driver),
 		Entry: widget.Entry{
 			PlaceHolder: "Enter code", Scroll: container.ScrollHorizontalOnly, Validator: util.CodeValidator,
 		},
