@@ -221,20 +221,19 @@ type recvInfoDialog struct {
 }
 
 type textRecvWindow struct {
-	textEntry              *widget.Entry
+	textLabel              *widget.Label
 	copyButton, saveButton *widget.Button
 	window                 fyne.Window
-	received               string
 	fileSaveDialog         *dialog.FileDialog
 }
 
 func (r *textRecvWindow) copy() {
-	r.window.Clipboard().SetContent(string(r.received))
+	r.window.Clipboard().SetContent(r.textLabel.Text)
 }
 
 func (r *textRecvWindow) interceptClose() {
 	r.window.Hide()
-	r.textEntry.SetText("")
+	r.textLabel.SetText("")
 }
 
 func (r *textRecvWindow) saveFileToDisk(file fyne.URIWriteCloser, err error) {
@@ -246,7 +245,7 @@ func (r *textRecvWindow) saveFileToDisk(file fyne.URIWriteCloser, err error) {
 		return
 	}
 
-	if _, err := file.Write([]byte(r.received)); err != nil {
+	if _, err := file.Write([]byte(r.textLabel.Text)); err != nil {
 		fyne.LogError("Error on writing text to the file", err)
 		dialog.ShowError(err, r.window)
 	}
@@ -270,14 +269,14 @@ func (d *RecvData) createTextWindow() {
 
 	d.textWindow = textRecvWindow{
 		window:         window,
-		textEntry:      &widget.Entry{MultiLine: true, Wrapping: fyne.TextWrapWord},
+		textLabel:      &widget.Label{},
 		copyButton:     &widget.Button{Text: "Copy", Icon: theme.ContentCopyIcon(), OnTapped: d.textWindow.copy},
 		saveButton:     &widget.Button{Text: "Save", Icon: theme.DocumentSaveIcon(), OnTapped: d.textWindow.save},
 		fileSaveDialog: dialog.NewFileSave(d.textWindow.saveFileToDisk, window),
 	}
 
 	actionContainer := container.NewGridWithColumns(2, d.textWindow.copyButton, d.textWindow.saveButton)
-	window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, d.textWindow.textEntry))
+	window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, container.NewScroll(d.textWindow.textLabel)))
 	window.Resize(fyne.NewSize(400, 300))
 }
 
@@ -287,11 +286,9 @@ func (d *RecvData) showTextWindow(received string) {
 		d.createTextWindow()
 	}
 
-	d.textWindow.received = received
-	d.textWindow.textEntry.SetText(received)
+	d.textWindow.textLabel.SetText(received)
 
 	win := d.textWindow.window
 	win.Show()
 	win.RequestFocus()
-	win.Canvas().Focus(d.textWindow.textEntry)
 }
