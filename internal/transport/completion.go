@@ -5,7 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"io"
-	"sort"
+	"slices"
 	"strings"
 	"time"
 
@@ -30,26 +30,22 @@ func (c *Client) GenerateCodeCompletion(toComplete string) []string {
 	completionMatch := toComplete[lastPart+1:] // Word prefix to match completion against.
 	prefix := toComplete[:lastPart+1]          // Everything before the match prefix.
 
-	// Even/odd is based on just the number of words, ignore mailbox
+	// Even/odd is based on just the number of words, ignore mailbox.
 	even := (separators-1)%2 == 0
 
-	// Number of words in wordlist.
-	words := 256
-
-	// Fast path for matching everything. No binary search needed.
-	if len(completionMatch) == 0 {
-		words = 0
+	words := wordlist.Odd
+	if even {
+		words = wordlist.Even
 	}
 
-	// Perform binary search for word prefix in alphabetically sorted word list.
-	index := sort.Search(words, func(i int) bool {
-		pair := wordlist.RawWords[byte(i)]
-		if even {
-			return pair.Even >= completionMatch
-		}
+	// Default is to match everything. No binary search needed.
+	index := 0
 
-		return pair.Odd >= completionMatch
-	})
+	// Perform binary search for word prefix in alphabetically sorted word list
+	// only if there is a completion to look for.
+	if len(completionMatch) > 0 {
+		index, _ = slices.BinarySearch(words[:], completionMatch)
+	}
 
 	var candidates []string
 
@@ -69,12 +65,12 @@ func (c *Client) GenerateCodeCompletion(toComplete string) []string {
 // lookupWordMatch looks up a word at a specific index and even/odd setting.
 // It also returns information about if the given word matches a completion prefix.
 func lookupWordMatch(index byte, prefix string, even bool) (string, bool) {
-	pair := wordlist.RawWords[index]
+	word := wordlist.Odd[index]
 	if even {
-		return pair.Even, strings.HasPrefix(pair.Even, prefix)
+		word = wordlist.Even[index]
 	}
 
-	return pair.Odd, strings.HasPrefix(pair.Odd, prefix)
+	return word, strings.HasPrefix(word, prefix)
 }
 
 func (c *Client) completeNameplates(toComplete string) []string {

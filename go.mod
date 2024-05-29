@@ -8,7 +8,7 @@ require (
 	github.com/fynelabs/selfupdate v0.2.0
 	github.com/klauspost/compress v1.17.4
 	github.com/rymdport/go-qrcode v1.1.0
-	github.com/rymdport/wormhole v0.1.0
+	github.com/rymdport/wormhole v0.1.1-0.20240529103205-fe4391eddd4b
 	github.com/stretchr/testify v1.9.0
 )
 
@@ -40,6 +40,6 @@ require (
 	golang.org/x/text v0.14.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	honnef.co/go/js/dom v0.0.0-20210725211120-f030747120f2 // indirect
-	nhooyr.io/websocket v1.8.10 // indirect
+	nhooyr.io/websocket v1.8.11 // indirect
 	salsa.debian.org/vasudev/gospake2 v0.0.0-20210510093858-d91629950ad1 // indirect
 )
