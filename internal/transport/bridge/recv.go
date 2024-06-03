@@ -3,6 +3,7 @@ package bridge
 import (
 	"path/filepath"
 	"slices"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -20,7 +21,6 @@ import (
 // RecvItem is the item that is being received
 type RecvItem struct {
 	URI  fyne.URI
-	Name string
 	Code string
 
 	Value  int64
@@ -48,12 +48,6 @@ func (r *RecvItem) failed() {
 	r.refresh(r.index)
 }
 
-func (r *RecvItem) setPath(path string) {
-	r.URI = storage.NewFileURI(path)
-	r.Name = r.URI.Name()
-	r.refresh(r.index)
-}
-
 // RecvData is a list of progress bars that track send progress.
 type RecvData struct {
 	Client *transport.Client
@@ -64,6 +58,7 @@ type RecvData struct {
 	textWindow textRecvWindow
 
 	deleting atomic.Bool
+	lock     sync.Mutex
 	list     *widget.List
 }
 
@@ -99,7 +94,7 @@ func (d *RecvData) UpdateItem(i int, object fyne.CanvasObject) {
 	item := d.items[i]
 	container := object.(*fyne.Container)
 	container.Objects[0].(*widget.FileIcon).SetURI(item.URI)
-	container.Objects[1].(*widget.Label).SetText(item.Name)
+	container.Objects[1].(*widget.Label).SetText(item.URI.Name())
 	container.Objects[2].(*widget.Label).SetText(item.Code)
 
 	progress := container.Objects[3].(*widget.ProgressBar)
@@ -133,29 +128,54 @@ func (d *RecvData) OnSelected(i int) {
 	d.info.dialog.Show()
 }
 
-// NewRecv creates a new send item and adds it to the items.
-func (d *RecvData) NewRecv(code string) *RecvItem {
-	item := &RecvItem{Name: "Waiting for filename...", Code: code, Max: 1, refresh: d.refresh, index: len(d.items)}
+func (d *RecvData) NewFailedRecv(code string) {
+	d.lock.Lock()
+	item := &RecvItem{URI: storage.NewFileURI("Failed"), Code: code, Max: 1, refresh: d.refresh, index: len(d.items)}
+	item.Status = func() string { return "failed" }
 	d.items = append(d.items, item)
-	return item
+	d.lock.Unlock()
+
+	d.list.Refresh()
+}
+
+// NewRecv creates a new item to be displayed and returns it plus the path to the file.
+// A text receive will have a path of an empty string.
+func (d *RecvData) NewRecv(code string, msg *wormhole.IncomingMessage) (item *RecvItem, path string) {
+	d.lock.Lock()
+	item = &RecvItem{Code: code, Max: 1, refresh: d.refresh, index: len(d.items)}
+
+	if msg.Type == wormhole.TransferText {
+		item.URI = storage.NewFileURI("Text Snippet")
+	} else {
+		path = filepath.Join(d.Client.DownloadPath, msg.Name)
+		item.URI = storage.NewFileURI(path)
+
+		if msg.Type == wormhole.TransferDirectory {
+			item.URI = &folderURI{item.URI}
+		}
+	}
+
+	d.items = append(d.items, item)
+	d.lock.Unlock()
+
+	d.list.Refresh()
+	return item, path
 }
 
 // NewReceive adds data about a new send to the list and then returns the channel to update the code.
 func (d *RecvData) NewReceive(code string) {
-	item := d.NewRecv(code)
-	d.list.Refresh()
-
 	go func(code string) {
 		msg, err := d.Client.NewReceive(code)
 		if err != nil {
 			d.Client.ShowNotification("Receive failed", "An error occurred when receiving the data.")
-			item.failed()
+			d.NewFailedRecv(code)
 			dialog.ShowError(err, d.Window)
 			return
 		}
 
+		item, path := d.NewRecv(code, msg)
+
 		if msg.Type == wormhole.TransferText {
-			item.setPath("Text Snippet")
 			d.showTextWindow(msg.ReadText())
 
 			d.Client.ShowNotification("Receive completed", "The text was received successfully.")
@@ -163,9 +183,6 @@ func (d *RecvData) NewReceive(code string) {
 			item.done()
 			return
 		}
-
-		path := filepath.Join(d.Client.DownloadPath, msg.Name)
-		item.setPath(path)
 
 		err = d.Client.SaveToDisk(msg, path, item.update)
 		if err != nil {
@@ -291,4 +308,16 @@ func (d *RecvData) showTextWindow(received string) {
 	win := d.textWindow.window
 	win.Show()
 	win.RequestFocus()
+}
+
+var _ fyne.URIWithIcon = (*folderURI)(nil)
+
+// folderURI is used to force folders to use an icon even before the actual folder is created.
+// This avoids issues with the icon initially appearing as a file.
+type folderURI struct {
+	fyne.URI
+}
+
+func (c *folderURI) Icon() fyne.Resource {
+	return theme.FolderIcon()
 }
