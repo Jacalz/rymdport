@@ -177,17 +177,16 @@ func (d *RecvData) NewReceive(code string) {
 
 		if msg.Type == wormhole.TransferText {
 			d.showTextWindow(msg.ReadText())
+			item.done()
 
 			d.Client.ShowNotification("Receive completed", "The text was received successfully.")
-			item.update(0, 1) // Make sure that text updates progress.
-			item.done()
 			return
 		}
 
 		err = d.Client.SaveToDisk(msg, path, item.update)
 		if err != nil {
-			d.Client.ShowNotification("Receive failed", "An error occurred when receiving the data.")
 			item.failed()
+			d.Client.ShowNotification("Receive failed", "An error occurred when receiving the data.")
 			dialog.ShowError(err, d.Window)
 			return
 		}
