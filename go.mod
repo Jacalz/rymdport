@@ -6,7 +6,7 @@ require (
 	fyne.io/fyne/v2 v2.4.6-0.20240603133300-d41f1e22dc25
 	github.com/fynelabs/fyneselfupdate v0.1.1
 	github.com/fynelabs/selfupdate v0.2.0
-	github.com/klauspost/compress v1.17.4
+	github.com/klauspost/compress v1.17.9
 	github.com/rymdport/go-qrcode v1.1.0
 	github.com/rymdport/wormhole v0.1.1-0.20240529103205-fe4391eddd4b
 	github.com/stretchr/testify v1.9.0
