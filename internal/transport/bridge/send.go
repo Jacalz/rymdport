@@ -109,8 +109,8 @@ func (d *SendData) OnSelected(i int) {
 		return
 	}
 
-	code.BackgroundColor = theme.OverlayBackgroundColor()
-	code.ForegroundColor = theme.ForegroundColor()
+	code.BackgroundColor = theme.Color(theme.ColorNameOverlayBackground)
+	code.ForegroundColor = theme.Color(theme.ColorNameForeground)
 	d.info.image.Image = code.Image(100)
 	d.info.image.Resource = nil
 	d.info.image.ScaleMode = canvas.ImageScalePixels
