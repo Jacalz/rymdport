@@ -3,6 +3,7 @@ package transport
 import (
 	"context"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -23,10 +24,17 @@ func (c *Client) NewDirSend(dir fyne.ListableURI, progress wormhole.SendOption, 
 	prefix := len(prefixStr) // Where the prefix ends. Doing it this way is faster and works when paths don't use same separator (\ or /).
 
 	var files []wormhole.DirectoryEntry
-	if err := filepath.Walk(dir.Path(), func(path string, info os.FileInfo, err error) error {
+	if err := filepath.WalkDir(dir.Path(), func(path string, entry fs.DirEntry, err error) error {
 		if err != nil {
 			return err
-		} else if info.IsDir() || !info.Mode().IsRegular() {
+		} else if entry.IsDir() {
+			return nil
+		}
+
+		info, err := entry.Info()
+		if err != nil {
+			return err
+		} else if !info.Mode().IsRegular() {
 			return nil
 		}
 
@@ -34,7 +42,7 @@ func (c *Client) NewDirSend(dir fyne.ListableURI, progress wormhole.SendOption, 
 			Path: path[prefix:], // Instead of strings.TrimPrefix. Paths don't need match (e.g. "C:/home/dir" == "C:\home\dir").
 			Mode: info.Mode(),
 			Reader: func() (io.ReadCloser, error) {
-				return os.Open(path) // #nosec - path is already cleaned by filepath.Walk
+				return os.Open(path) // #nosec - path is already cleaned by filepath.WalkDir
 			},
 		})
 
@@ -75,17 +83,24 @@ func (c *Client) NewMultipleFileSend(uris []fyne.URI, progress wormhole.SendOpti
 				Path: path[prefix:], // Instead of strings.TrimPrefix. Paths don't need match separators (e.g. "C:/home/dir" == "C:\home\dir").
 				Mode: info.Mode(),
 				Reader: func() (io.ReadCloser, error) {
-					return os.Open(path) // #nosec - path is already cleaned by filepath.Walk
+					return os.Open(filepath.Clean(path))
 				},
 			})
 
 			continue
 		}
 
-		if err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+		if err := filepath.WalkDir(path, func(path string, entry fs.DirEntry, err error) error {
 			if err != nil {
 				return err
-			} else if info.IsDir() || !info.Mode().IsRegular() {
+			} else if entry.IsDir() {
+				return nil
+			}
+
+			info, err := entry.Info()
+			if err != nil {
+				return err
+			} else if !info.Mode().IsRegular() {
 				return nil
 			}
 
@@ -93,7 +108,7 @@ func (c *Client) NewMultipleFileSend(uris []fyne.URI, progress wormhole.SendOpti
 				Path: path[prefix:], // Instead of strings.TrimPrefix. Paths don't need match separators (e.g. "C:/home/dir" == "C:\home\dir").
 				Mode: info.Mode(),
 				Reader: func() (io.ReadCloser, error) {
-					return os.Open(path) // #nosec - path is already cleaned by filepath.Walk
+					return os.Open(path) // #nosec - path is already cleaned by filepath.WalkDIr
 				},
 			})
 
