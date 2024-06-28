@@ -20,34 +20,12 @@ func (c *Client) NewFileSend(file fyne.URIReadCloser, progress wormhole.SendOpti
 
 // NewDirSend takes a listable URI and sends it using wormhole-william.
 func (c *Client) NewDirSend(dir fyne.ListableURI, progress wormhole.SendOption, code string) (string, chan wormhole.SendResult, error) {
-	prefixStr, _ := filepath.Split(dir.Path())
+	path := dir.Path()
+	prefixStr, _ := filepath.Split(path)
 	prefix := len(prefixStr) // Where the prefix ends. Doing it this way is faster and works when paths don't use same separator (\ or /).
 
-	var files []wormhole.DirectoryEntry
-	if err := filepath.WalkDir(dir.Path(), func(path string, entry fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		} else if entry.IsDir() {
-			return nil
-		}
-
-		info, err := entry.Info()
-		if err != nil {
-			return err
-		} else if !info.Mode().IsRegular() {
-			return nil
-		}
-
-		files = append(files, wormhole.DirectoryEntry{
-			Path: path[prefix:], // Instead of strings.TrimPrefix. Paths don't need match (e.g. "C:/home/dir" == "C:\home\dir").
-			Mode: info.Mode(),
-			Reader: func() (io.ReadCloser, error) {
-				return os.Open(path) // #nosec - path is already cleaned by filepath.WalkDir
-			},
-		})
-
-		return nil
-	}); err != nil {
+	files, err := appendFilesFromPath([]wormhole.DirectoryEntry{}, path, prefix)
+	if err != nil {
 		return "", nil, err
 	}
 
@@ -90,30 +68,8 @@ func (c *Client) NewMultipleFileSend(uris []fyne.URI, progress wormhole.SendOpti
 			continue
 		}
 
-		if err := filepath.WalkDir(path, func(path string, entry fs.DirEntry, err error) error {
-			if err != nil {
-				return err
-			} else if entry.IsDir() {
-				return nil
-			}
-
-			info, err := entry.Info()
-			if err != nil {
-				return err
-			} else if !info.Mode().IsRegular() {
-				return nil
-			}
-
-			files = append(files, wormhole.DirectoryEntry{
-				Path: path[prefix:], // Instead of strings.TrimPrefix. Paths don't need match separators (e.g. "C:/home/dir" == "C:\home\dir").
-				Mode: info.Mode(),
-				Reader: func() (io.ReadCloser, error) {
-					return os.Open(path) // #nosec - path is already cleaned by filepath.WalkDIr
-				},
-			})
-
-			return nil
-		}); err != nil {
+		files, err = appendFilesFromPath(files, path, prefix)
+		if err != nil {
 			return "", nil, err
 		}
 	}
@@ -124,4 +80,33 @@ func (c *Client) NewMultipleFileSend(uris []fyne.URI, progress wormhole.SendOpti
 // NewTextSend takes a text input and sends the text using wormhole-william.
 func (c *Client) NewTextSend(text string, progress wormhole.SendOption, code string) (string, chan wormhole.SendResult, error) {
 	return c.SendText(context.Background(), text, progress, wormhole.WithCode(code))
+}
+
+func appendFilesFromPath(files []wormhole.DirectoryEntry, path string, prefixLength int) ([]wormhole.DirectoryEntry, error) {
+	err := filepath.WalkDir(path, func(path string, entry fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		} else if entry.IsDir() {
+			return nil
+		}
+
+		info, err := entry.Info()
+		if err != nil {
+			return err
+		} else if !info.Mode().IsRegular() {
+			return nil
+		}
+
+		files = append(files, wormhole.DirectoryEntry{
+			Path: path[prefixLength:], // Instead of strings.TrimPrefix. Paths don't need match separators (e.g. "C:/home/dir" == "C:\home\dir").
+			Mode: info.Mode(),
+			Reader: func() (io.ReadCloser, error) {
+				return os.Open(path) // #nosec - path is already cleaned by filepath.WalkDIr
+			},
+		})
+
+		return nil
+	})
+
+	return files, err
 }
