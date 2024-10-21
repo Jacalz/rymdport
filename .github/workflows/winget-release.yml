@@ -20,7 +20,7 @@ jobs:
       - name: Submit package to Windows Package Manager Community Repository
         uses: vedantmgoyal2009/winget-releaser@v2
         with:
-          identifier: Jacalz.rymdport
+          identifier: Jacalz.Rymdport
           installers-regex: '\-windows\-\w*\.zip$' 
           version: ${{ env.WINGET_TAG_NAME }}
           token: ${{ secrets.WINGET_TOKEN }}
