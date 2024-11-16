@@ -8,13 +8,14 @@ require (
 	github.com/fynelabs/selfupdate v0.2.0
 	github.com/klauspost/compress v1.17.9
 	github.com/rymdport/go-qrcode v1.1.0
-	github.com/rymdport/wormhole v0.1.1-0.20240529103205-fe4391eddd4b
+	github.com/rymdport/wormhole v0.1.1-0.20241116102455-47bdda5f91b6
 	github.com/stretchr/testify v1.9.0
 )
 
 require (
 	fyne.io/systray v1.11.0 // indirect
 	github.com/BurntSushi/toml v1.4.0 // indirect
+	github.com/coder/websocket v1.8.12 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fredbi/uri v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
@@ -42,6 +43,5 @@ require (
 	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	nhooyr.io/websocket v1.8.11 // indirect
 	salsa.debian.org/vasudev/gospake2 v0.0.0-20210510093858-d91629950ad1 // indirect
 )
