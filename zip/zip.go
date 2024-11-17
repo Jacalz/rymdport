@@ -42,7 +42,7 @@ func ExtractSafe(source io.ReaderAt, length int64, target string, uncompressedBy
 	for _, f := range reader.File {
 		actualUncompressedSize += f.FileHeader.UncompressedSize64
 	}
-	if uncompressedBytes < int64(actualUncompressedSize) {
+	if uncompressedBytes < 0 || actualUncompressedSize > uint64(uncompressedBytes) {
 		return ErrorSizeMismatch
 	}
 
