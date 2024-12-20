@@ -58,7 +58,20 @@
   </branding>
 
   <releases>
-     <release version="3.6.0" date="2024-04-14" type="stable">
+    <release version="3.7.0" date="2024-12-20" type="stable">
+      <description>
+        <ul>
+          <li>The received text is now read-only.</li>
+          <li>Received items are now not shown until after the download starts.</li>
+          <li>Fixed a bug where the folder icon did not display until the receive completed.</li>
+          <li>Cleaned up and optimized various code paths.</li>
+          <li>Updated fyne to v2.5.3.</li>
+          <li>Updated many other dependencies for various fixes and improvements.</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.7.0</url>
+    </release>
+    <release version="3.6.0" date="2024-04-14" type="stable">
       <description>
         <ul>
           <li>Added support to use custom codes when sending files and folders using drag and drop.</li>

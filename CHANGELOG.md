@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.7.0 - Code cleanups and various small improvements
+- The received text is now read-only.
+- Received items are now not shown until after the download starts.
+- Fixed a bug where the folder icon did not display until the receive completed.
+- Cleaned up and optimized various code paths.
+- Bump to Go 1.21 as lowest supported compiler version.
+- Updated `fyne` to [v2.5.3](https://github.com/fyne-io/fyne/releases/tag/v2.5.3).
+- Updated many other dependencies for various fixes and improvements.
+
 ## 3.6.0 - Performance and usability improvements
 - Added support to use custom codes when sending files and folders using drag and drop (see #108).
 - Added an option to save directory receives as a `.zip` file instead of automatically extracting (see #50).
