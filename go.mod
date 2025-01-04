@@ -7,7 +7,6 @@ require (
 	fyne.io/x/fyne v0.0.0-20241224222935-5be10b3dd763
 	github.com/fynelabs/fyneselfupdate v0.1.1
 	github.com/fynelabs/selfupdate v0.2.0
-	github.com/klauspost/compress v1.17.11
 	github.com/rymdport/wormhole v0.1.1-0.20241116103349-4e36e05aff6c
 	github.com/stretchr/testify v1.9.0
 )
@@ -30,6 +29,7 @@ require (
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
 	github.com/jeandeaual/go-locale v0.0.0-20240223122105-ce5225dcaa49 // indirect
 	github.com/jsummers/gobmp v0.0.0-20151104160322-e2ba15ffa76e // indirect
+	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/nicksnyder/go-i18n/v2 v2.4.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rymdport/portal v0.3.0 // indirect
