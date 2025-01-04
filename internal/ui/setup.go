@@ -15,7 +15,7 @@ func Create(a fyne.App, w fyne.Window) fyne.CanvasObject {
 	dropdown := &widget.Button{Icon: theme.MenuIcon(), Importance: widget.LowImportance}
 	dropdown.OnTapped = func() {
 		widget.ShowPopUpMenuAtRelativePosition(
-			&fyne.Menu{Items: []*fyne.MenuItem{{Label: "About", Icon: theme.InfoIcon(), Action: func() {
+			&fyne.Menu{Items: []*fyne.MenuItem{{Label: "Settings", Icon: theme.SettingsIcon()}, {Label: "About", Icon: theme.InfoIcon(), Action: func() {
 				links := []*widget.Hyperlink{
 					{Text: "Repository", URL: util.URLToGitHubProject("")},
 					{Text: "Issue Tracker", URL: util.URLToGitHubProject("/issues")},
@@ -24,7 +24,7 @@ func Create(a fyne.App, w fyne.Window) fyne.CanvasObject {
 				abwin := dialog.NewAboutWindow("Easy encrypted file, folder, and text sharing between devices.", links, a)
 				abwin.Resize(fyne.NewSize(500, 300))
 				abwin.Show()
-			}}}}, w.Canvas(), fyne.Position{Y: dropdown.Size().Height}, dropdown)
+			}}}}, w.Canvas(), fyne.Position{Y: dropdown.Size().Height + theme.Padding()}, dropdown)
 	}
 
 	tabs := &container.AppTabs{
