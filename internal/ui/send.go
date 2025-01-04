@@ -13,15 +13,13 @@ func createSendPage(_ fyne.App, _ fyne.Window) fyne.CanvasObject {
 	icon.FillMode = canvas.ImageFillContain
 	icon.SetMinSize(fyne.NewSquareSize(200))
 
-	title := &widget.Label{Text: "Send Data", Alignment: fyne.TextAlignCenter, TextStyle: fyne.TextStyle{Bold: true}}
-	description := &widget.Label{Text: "Select data type below or drop files here", Alignment: fyne.TextAlignCenter}
+	description := &widget.Label{Text: "Select data type below or drop files here.", Alignment: fyne.TextAlignCenter}
 
-	// Buttons for starting sends.
-	file := &widget.Button{Icon: theme.FileTextIcon(), Text: "Send File"}
-	folder := &widget.Button{Icon: theme.FolderIcon(), Text: "Send Folder"}
-	text := &widget.Button{Icon: theme.DocumentIcon(), Text: "Send Text"}
+	file := &widget.Button{Icon: theme.FileTextIcon(), Text: "Send File", Importance: widget.HighImportance}
+	folder := &widget.Button{Icon: theme.FolderIcon(), Text: "Send Folder", Importance: widget.HighImportance}
+	text := &widget.Button{Icon: theme.DocumentIcon(), Text: "Send Text", Importance: widget.HighImportance}
 
-	buttons := container.NewVBox(icon, &widget.Separator{}, title, description, &widget.Separator{}, file, folder, text)
-
-	return container.NewCenter(buttons)
+	buttons := container.NewCenter(container.NewHBox(file, &widget.Separator{}, folder, &widget.Separator{}, text))
+	content := container.NewVBox(icon, description, &widget.Separator{}, buttons)
+	return container.NewCenter(content)
 }
