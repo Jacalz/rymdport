@@ -30,7 +30,6 @@ func (n *StackNavigator) Next() {
 // This allows viewes to move backwards through views without recreating each time.
 func (n *StackNavigator) Previous() {
 	if n.current == 0 || len(n.stack) < 1 {
-
 	}
 
 	n.current--
