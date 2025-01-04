@@ -4,6 +4,7 @@ go 1.21
 
 require (
 	fyne.io/fyne/v2 v2.5.3
+	fyne.io/x/fyne v0.0.0-20241224222935-5be10b3dd763
 	github.com/fynelabs/fyneselfupdate v0.1.1
 	github.com/fynelabs/selfupdate v0.2.0
 	github.com/klauspost/compress v1.17.11
