@@ -10,6 +10,7 @@ import (
 
 func createSendPage(_ fyne.App, _ fyne.Window) fyne.CanvasObject {
 	icon := canvas.NewImageFromResource(theme.UploadIcon())
+	icon.FillMode = canvas.ImageFillContain
 	icon.SetMinSize(fyne.NewSquareSize(200))
 
 	title := &widget.Label{Text: "Send Data", Alignment: fyne.TextAlignCenter, TextStyle: fyne.TextStyle{Bold: true}}
