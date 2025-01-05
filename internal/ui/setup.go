@@ -5,26 +5,15 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"github.com/Jacalz/rymdport/v3/internal/util"
-
-	"fyne.io/x/fyne/dialog"
 )
 
 // Create sets up the user interface for the application.
 func Create(a fyne.App, w fyne.Window) fyne.CanvasObject {
+	menu := buildApplicationMenu(a)
 	dropdown := &widget.Button{Icon: theme.MenuIcon(), Importance: widget.LowImportance}
 	dropdown.OnTapped = func() {
-		widget.ShowPopUpMenuAtRelativePosition(
-			&fyne.Menu{Items: []*fyne.MenuItem{{Label: "Settings", Icon: theme.SettingsIcon()}, {Label: "About", Icon: theme.InfoIcon(), Action: func() {
-				links := []*widget.Hyperlink{
-					{Text: "Repository", URL: util.URLToGitHubProject("")},
-					{Text: "Issue Tracker", URL: util.URLToGitHubProject("/issues")},
-					{Text: "Wiki", URL: util.URLToGitHubProject("/wiki")},
-				}
-				abwin := dialog.NewAboutWindow("Easy encrypted file, folder, and text sharing between devices.", links, a)
-				abwin.Resize(fyne.NewSize(500, 300))
-				abwin.Show()
-			}}}}, w.Canvas(), fyne.Position{Y: dropdown.Size().Height + theme.Padding()}, dropdown)
+		offset := fyne.Position{Y: dropdown.Size().Height + theme.Padding()}
+		widget.ShowPopUpMenuAtRelativePosition(menu, w.Canvas(), offset, dropdown)
 	}
 
 	tabs := &container.AppTabs{
