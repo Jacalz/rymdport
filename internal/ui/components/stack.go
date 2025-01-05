@@ -2,7 +2,6 @@ package components
 
 import (
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
@@ -64,9 +63,10 @@ func (n *StackNavigator) CreateRenderer() fyne.WidgetRenderer {
 		},
 	}
 
-	renderer.backButton.Hidden = len(n.stack) == 1
-	renderer.titleLabel.Hidden = renderer.backButton.Hidden
-	renderer.separator.Hidden = renderer.backButton.Hidden
+	hideNavbar := len(n.stack) == 1
+	renderer.backButton.Hidden = hideNavbar
+	renderer.titleLabel.Hidden = hideNavbar
+	renderer.separator.Hidden = hideNavbar
 
 	renderer.objects = []fyne.CanvasObject{&renderer.backButton, &renderer.titleLabel, &renderer.separator, n.stack[len(n.stack)-1]}
 	return renderer
@@ -83,8 +83,7 @@ type stackNavigatorRenderer struct {
 	separator  widget.Separator
 }
 
-func (r *stackNavigatorRenderer) Destroy() {
-}
+func (r *stackNavigatorRenderer) Destroy() {}
 
 // Layout is a hook that is called if the widget needs to be laid out.
 // This should never call [Refresh].
@@ -128,17 +127,17 @@ func (r *stackNavigatorRenderer) Objects() []fyne.CanvasObject {
 // Refresh is a hook that is called if the widget has updated and needs to be redrawn.
 // This might trigger a [Layout].
 func (r *stackNavigatorRenderer) Refresh() {
+	hideNavbar := len(r.parent.stack) == 1
+
 	r.titleLabel.Text = r.parent.titles[len(r.parent.titles)-1]
-	r.titleLabel.Hidden = len(r.parent.stack) == 1
+	r.titleLabel.Hidden = hideNavbar
 	r.titleLabel.Refresh()
 
-	r.backButton.Hidden = r.titleLabel.Hidden
+	r.backButton.Hidden = hideNavbar
 	r.backButton.Refresh()
 
-	r.separator.Hidden = r.titleLabel.Hidden
+	r.separator.Hidden = hideNavbar
 	r.separator.Refresh()
 
 	r.objects[3] = r.parent.stack[len(r.parent.stack)-1]
-
-	canvas.Refresh(r.parent)
 }
