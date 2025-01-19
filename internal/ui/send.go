@@ -19,6 +19,7 @@ func buildSendView(nav *components.StackNavigator) fyne.CanvasObject {
 		fyne.LogError("Failed to encode qr code", err)
 	}
 
+	qr.DisableBorder = true
 	qr.BackgroundColor = theme.Color(theme.ColorNameBackground)
 	qr.ForegroundColor = theme.Color(theme.ColorNameForeground)
 
