@@ -11,24 +11,65 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func buildRecvView() fyne.CanvasObject {
-	return widget.NewLabel("Receiving will be implemented soon...")
+func buildRecvView(nav *components.StackNavigator, code string) fyne.CanvasObject {
+	image := &canvas.Image{FillMode: canvas.ImageFillContain}
+	image.SetMinSize(fyne.NewSquareSize(150))
+
+	recvType := 0
+	switch recvType {
+	case 0:
+		image.Resource = theme.FileImageIcon()
+	case 1:
+		image.Resource = theme.FolderIcon()
+	case 2:
+		image.Resource = theme.DocumentIcon()
+	}
+
+	name := "Something"
+
+	codeStyle := widget.RichTextStyleSubHeading
+	codeStyle.Alignment = fyne.TextAlignCenter
+	nameStyle := widget.RichTextStyleInline
+	nameStyle.Alignment = fyne.TextAlignCenter
+	text := widget.NewRichText(&widget.TextSegment{Style: codeStyle, Text: code}, &widget.TextSegment{Style: nameStyle, Text: name})
+
+	progress := widget.NewProgressBar()
+	progress.SetValue(0.5)
+
+	cancel := &widget.Button{Text: "Cancel", OnTapped: nav.Pop, Importance: widget.WarningImportance}
+
+	return container.NewCenter(
+		container.NewVBox(
+			image,
+			text,
+			progress,
+			&widget.Separator{},
+			container.NewCenter(cancel),
+		),
+	)
 }
 
-func createRecvPage(navigator *components.StackNavigator) fyne.CanvasObject {
+func createRecvPage(nav *components.StackNavigator) fyne.CanvasObject {
 	icon := canvas.NewImageFromResource(theme.DownloadIcon())
 	icon.FillMode = canvas.ImageFillContain
 	icon.SetMinSize(fyne.NewSquareSize(200))
 
 	description := &widget.Label{Text: "Enter a code below to start receiving data.", Alignment: fyne.TextAlignCenter}
 
-	recvView := buildRecvView()
 	code := &widget.Entry{PlaceHolder: "Code from sender", Validator: util.CodeValidator}
+	code.OnSubmitted = func(input string) {
+		if code.Validator(input) != nil {
+			return
+		}
+
+		nav.Push(buildRecvView(nav, input), "Receiving Data")
+	}
+
 	start := &widget.Button{
 		Text:       "Start Receive",
 		Icon:       theme.DownloadIcon(),
 		Importance: widget.HighImportance,
-		OnTapped:   func() { navigator.Push(recvView, "Receiving Data") },
+		OnTapped:   func() { code.OnSubmitted(code.Text) },
 	}
 
 	content := container.NewVBox(icon, description, &widget.Separator{}, code, &widget.Separator{}, container.NewCenter(start))
