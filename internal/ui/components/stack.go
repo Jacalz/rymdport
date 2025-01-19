@@ -13,7 +13,9 @@ type StackNavigator struct {
 	widget.BaseWidget
 	stack  []fyne.CanvasObject
 	titles []string
-	OnBack func()
+
+	HideBackButton bool
+	OnBack         func()
 }
 
 // NewNavigator creates a new Navigator instance.
@@ -64,7 +66,7 @@ func (n *StackNavigator) CreateRenderer() fyne.WidgetRenderer {
 	}
 
 	hideNavbar := len(n.stack) == 1
-	renderer.backButton.Hidden = hideNavbar
+	renderer.backButton.Hidden = hideNavbar || n.HideBackButton
 	renderer.titleLabel.Hidden = hideNavbar
 	renderer.separator.Hidden = hideNavbar
 
@@ -133,7 +135,7 @@ func (r *stackNavigatorRenderer) Refresh() {
 	r.titleLabel.Hidden = hideNavbar
 	r.titleLabel.Refresh()
 
-	r.backButton.Hidden = hideNavbar
+	r.backButton.Hidden = hideNavbar || r.parent.HideBackButton
 	r.backButton.Refresh()
 
 	r.separator.Hidden = hideNavbar

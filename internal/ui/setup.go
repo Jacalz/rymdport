@@ -18,16 +18,16 @@ func Create(a fyne.App, w fyne.Window) fyne.CanvasObject {
 		widget.ShowPopUpMenuAtRelativePosition(menu, w.Canvas(), offset, dropdown)
 	}
 
-	navigator := &components.StackNavigator{}
-	navigator.OnBack = navigator.Pop
+	nav := &components.StackNavigator{HideBackButton: true}
+	nav.OnBack = nav.Pop
 	tabs := &container.AppTabs{
 		Items: []*container.TabItem{
-			{Text: "Send", Icon: theme.UploadIcon(), Content: createSendPage(navigator)},
-			{Text: "Receive", Icon: theme.DownloadIcon(), Content: createRecvPage(navigator)},
+			{Text: "Send", Icon: theme.UploadIcon(), Content: createSendPage(nav)},
+			{Text: "Receive", Icon: theme.DownloadIcon(), Content: createRecvPage(nav)},
 		},
 	}
 
 	upperRightCorner := container.NewBorder(container.NewBorder(nil, nil, nil, dropdown), nil, nil, nil)
-	navigator.Push(container.NewStack(tabs, upperRightCorner), "")
-	return navigator
+	nav.Push(container.NewStack(tabs, upperRightCorner), "")
+	return nav
 }
