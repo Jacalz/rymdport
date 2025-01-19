@@ -1,4 +1,4 @@
-package transport
+package wormhole
 
 import (
 	"testing"
@@ -13,7 +13,7 @@ func BenchmarkNameplateCompletion(b *testing.B) {
 
 	local := []string{}
 
-	for i := 0; i < b.N; i++ {
+	for range b.N {
 		local = c.GenerateCodeCompletion("1-letterhead-be")
 	}
 

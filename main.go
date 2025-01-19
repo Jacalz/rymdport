@@ -14,7 +14,7 @@ func main() {
 	w := a.NewWindow("Rymdport")
 
 	w.SetContent(ui.Create(a, w))
-	w.Resize(fyne.NewSize(700, 400))
+	w.Resize(fyne.NewSize(600, 400))
 	w.SetMaster()
 	w.ShowAndRun()
 }

@@ -3,9 +3,6 @@ package util
 
 import (
 	"errors"
-	"fmt"
-	"os"
-	"path/filepath"
 	"strings"
 
 	"fyne.io/fyne/v2"
@@ -34,8 +31,6 @@ func CodeValidator(input string) error {
 	if input == "" {
 		return errInvalidCode
 	}
-
-	fmt.Printf("Next input is: \"%s\"\n", input)
 
 	for input != "" {
 		next = strings.IndexByte(input, '-')
@@ -68,16 +63,6 @@ func runeIsNotAlphaNumerical(r rune) bool {
 
 func runeIsNotNumerical(r rune) bool {
 	return r < '0' || r > '9'
-}
-
-// UserDownloadsFolder returns the downloads folder corresponding to the current user.
-func UserDownloadsFolder() string {
-	dir, err := os.UserHomeDir()
-	if err != nil {
-		fyne.LogError("Could not get home dir", err)
-	}
-
-	return filepath.Join(dir, "Downloads")
 }
 
 // WindowSizeToDialog scales the window size to a suitable dialog size.

@@ -26,6 +26,5 @@ func Enable(a fyne.App, w fyne.Window) {
 	_, err := selfupdate.Manage(config)
 	if err != nil {
 		fyne.LogError("Error while setting up update manager: ", err)
-		return
 	}
 }

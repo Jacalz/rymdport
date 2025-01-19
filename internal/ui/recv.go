@@ -1,103 +1,82 @@
 package ui
 
 import (
+	"github.com/Jacalz/rymdport/v3/internal/ui/components"
+	"github.com/Jacalz/rymdport/v3/internal/util"
+	"github.com/Jacalz/rymdport/v3/internal/wormhole"
+
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"github.com/Jacalz/rymdport/v3/completion"
-	"github.com/Jacalz/rymdport/v3/internal/transport"
-	"github.com/Jacalz/rymdport/v3/internal/transport/bridge"
-	"github.com/Jacalz/rymdport/v3/internal/util"
 )
 
-type recv struct {
-	codeEntry *completionEntry
-	data      bridge.RecvData
+func buildRecvView(_ *wormhole.Client, nav *components.StackNavigator, code string) fyne.CanvasObject {
+	image := &canvas.Image{FillMode: canvas.ImageFillContain}
+	image.SetMinSize(fyne.NewSquareSize(150))
 
-	window fyne.Window
-}
-
-func newRecvTab(w fyne.Window, c *transport.Client) *container.TabItem {
-	recv := &recv{window: w}
-
-	return &container.TabItem{
-		Text:    "Receive",
-		Icon:    theme.DownloadIcon(),
-		Content: recv.buildUI(c),
-	}
-}
-
-func (r *recv) buildUI(client *transport.Client) *fyne.Container {
-	r.codeEntry = newCompletionEntry(client, r.window.Canvas(), client.App)
-	r.codeEntry.OnSubmitted = func(_ string) { r.onRecv() }
-
-	codeButton := &widget.Button{Text: "Receive", Icon: theme.DownloadIcon(), OnTapped: r.onRecv}
-
-	r.data = bridge.RecvData{Client: client, Window: r.window}
-
-	box := container.NewVBox(&widget.Separator{}, container.NewGridWithColumns(2, r.codeEntry, codeButton), &widget.Separator{})
-	return container.NewBorder(box, nil, nil, nil, r.data.NewRecvList())
-}
-
-func (r *recv) onRecv() {
-	if err := r.codeEntry.Validate(); err != nil || r.codeEntry.Text == "" {
-		dialog.ShowInformation("Invalid code", "The code is invalid. Please try again.", r.window)
-		return
+	recvType := 0
+	switch recvType {
+	case 0:
+		image.Resource = theme.FileImageIcon()
+	case 1:
+		image.Resource = theme.FolderIcon()
+	case 2:
+		image.Resource = theme.DocumentIcon()
 	}
 
-	r.data.NewReceive(r.codeEntry.Text)
-	r.codeEntry.SetText("")
+	name := "Something"
+
+	codeStyle := widget.RichTextStyleSubHeading
+	codeStyle.Alignment = fyne.TextAlignCenter
+	nameStyle := widget.RichTextStyleInline
+	nameStyle.Alignment = fyne.TextAlignCenter
+	text := widget.NewRichText(&widget.TextSegment{Style: codeStyle, Text: code}, &widget.TextSegment{Style: nameStyle, Text: name})
+
+	progress := widget.NewProgressBar()
+	progress.SetValue(0.5)
+
+	cancel := &widget.Button{Text: "Cancel", OnTapped: nav.Pop, Importance: widget.WarningImportance}
+
+	return container.NewCenter(
+		container.NewVBox(
+			image,
+			text,
+			progress,
+			&widget.Separator{},
+			container.NewCenter(cancel),
+		),
+	)
 }
 
-type completionEntry struct {
-	widget.Entry
-	driver   desktop.Driver
-	canvas   fyne.Canvas
-	complete completion.TabCompleter
-}
+func createRecvPage(a fyne.App, client *wormhole.Client, nav *components.StackNavigator) fyne.CanvasObject {
+	icon := canvas.NewImageFromResource(theme.DownloadIcon())
+	icon.FillMode = canvas.ImageFillContain
+	icon.SetMinSize(fyne.NewSquareSize(200))
 
-// AcceptsTab overrides tab handling to allow tabs as input.
-func (c *completionEntry) AcceptsTab() bool {
-	return true
-}
+	description := &widget.Label{Text: "Enter a code below to start receiving data.", Alignment: fyne.TextAlignCenter}
 
-// TypedKey adapts the key inputs to handle tab completion.
-func (c *completionEntry) TypedKey(key *fyne.KeyEvent) {
-	switch key.Name {
-	case desktop.KeyShiftLeft, desktop.KeyShiftRight:
-	case fyne.KeyTab:
-		if c.driver.CurrentKeyModifiers()&fyne.KeyModifierShift != 0 {
-			c.setCompletion(c.complete.Previous)
+	code := components.NewCompletionEntry(a.Driver().(desktop.Driver), client.GenerateCodeCompletion)
+	code.PlaceHolder = "Code from sender"
+	code.Validator = util.CodeValidator
+	code.OnSubmitted = func(input string) {
+		if code.Validator(input) != nil {
 			return
 		}
 
-		c.setCompletion(c.complete.Next)
-	case fyne.KeyEscape:
-		c.canvas.Unfocus()
-	default:
-		c.complete.Reset()
-		c.Entry.TypedKey(key)
+		nav.Push(buildRecvView(client, nav, input), "Receiving Data")
 	}
-}
 
-func (c *completionEntry) setCompletion(lookup func(string) string) {
-	text := lookup(c.Text)
-	c.CursorColumn = len(text)
-	c.SetText(text)
-}
-
-func newCompletionEntry(client *transport.Client, canvas fyne.Canvas, app fyne.App) *completionEntry {
-	entry := &completionEntry{
-		canvas: canvas,
-		driver: app.Driver().(desktop.Driver),
-		Entry: widget.Entry{
-			PlaceHolder: "Enter code", Scroll: container.ScrollHorizontalOnly, Validator: util.CodeValidator,
-		},
+	start := &widget.Button{
+		Text:       "Start Receive",
+		Icon:       theme.DownloadIcon(),
+		Importance: widget.HighImportance,
+		OnTapped:   func() { code.OnSubmitted(code.Text) },
 	}
-	entry.complete.Generate = client.GenerateCodeCompletion
-	entry.ExtendBaseWidget(entry)
-	return entry
+
+	content := container.NewVBox(icon, description, &widget.Separator{}, code, &widget.Separator{}, container.NewCenter(start))
+
+	return container.NewCenter(content)
 }
