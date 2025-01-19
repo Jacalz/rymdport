@@ -1,4 +1,4 @@
-package transport
+package wormhole
 
 import (
 	"context"
@@ -93,12 +93,12 @@ func (c *Client) activeNameplates() ([]string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
 	defer cancel()
 
-	url := c.RendezvousURL
+	url := c.connection.RendezvousURL
 	if url == "" {
 		url = wormhole.DefaultRendezvousURL
 	}
 
-	appID := c.AppID
+	appID := c.connection.AppID
 	if appID == "" {
 		appID = wormhole.WormholeCLIAppID
 	}

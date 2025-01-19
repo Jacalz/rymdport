@@ -3,15 +3,17 @@ package ui
 import (
 	"github.com/Jacalz/rymdport/v3/internal/ui/components"
 	"github.com/Jacalz/rymdport/v3/internal/util"
+	"github.com/Jacalz/rymdport/v3/internal/wormhole"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
 
-func buildRecvView(nav *components.StackNavigator, code string) fyne.CanvasObject {
+func buildRecvView(_ *wormhole.Client, nav *components.StackNavigator, code string) fyne.CanvasObject {
 	image := &canvas.Image{FillMode: canvas.ImageFillContain}
 	image.SetMinSize(fyne.NewSquareSize(150))
 
@@ -49,20 +51,22 @@ func buildRecvView(nav *components.StackNavigator, code string) fyne.CanvasObjec
 	)
 }
 
-func createRecvPage(nav *components.StackNavigator) fyne.CanvasObject {
+func createRecvPage(a fyne.App, client *wormhole.Client, nav *components.StackNavigator) fyne.CanvasObject {
 	icon := canvas.NewImageFromResource(theme.DownloadIcon())
 	icon.FillMode = canvas.ImageFillContain
 	icon.SetMinSize(fyne.NewSquareSize(200))
 
 	description := &widget.Label{Text: "Enter a code below to start receiving data.", Alignment: fyne.TextAlignCenter}
 
-	code := &widget.Entry{PlaceHolder: "Code from sender", Validator: util.CodeValidator}
+	code := components.NewCompletionEntry(a.Driver().(desktop.Driver), client.GenerateCodeCompletion)
+	code.PlaceHolder = "Code from sender"
+	code.Validator = util.CodeValidator
 	code.OnSubmitted = func(input string) {
 		if code.Validator(input) != nil {
 			return
 		}
 
-		nav.Push(buildRecvView(nav, input), "Receiving Data")
+		nav.Push(buildRecvView(client, nav, input), "Receiving Data")
 	}
 
 	start := &widget.Button{

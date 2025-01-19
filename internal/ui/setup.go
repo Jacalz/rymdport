@@ -2,6 +2,7 @@ package ui
 
 import (
 	"github.com/Jacalz/rymdport/v3/internal/ui/components"
+	"github.com/Jacalz/rymdport/v3/internal/wormhole"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -18,12 +19,14 @@ func Create(a fyne.App, w fyne.Window) fyne.CanvasObject {
 		widget.ShowPopUpMenuAtRelativePosition(menu, w.Canvas(), offset, dropdown)
 	}
 
+	client := wormhole.NewClient()
+
 	nav := &components.StackNavigator{}
 	nav.OnBack = nav.Pop
 	tabs := &container.AppTabs{
 		Items: []*container.TabItem{
 			{Text: "Send", Icon: theme.UploadIcon(), Content: createSendPage(w, nav)},
-			{Text: "Receive", Icon: theme.DownloadIcon(), Content: createRecvPage(nav)},
+			{Text: "Receive", Icon: theme.DownloadIcon(), Content: createRecvPage(a, client, nav)},
 		},
 	}
 
