@@ -3,6 +3,7 @@ package util
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -20,7 +21,7 @@ func CodeValidator(input string) error {
 	}
 
 	next := strings.IndexByte(input, '-')
-	if next == -1 {
+	if next == -1 || next == 0 {
 		return errInvalidCode
 	}
 
@@ -34,17 +35,25 @@ func CodeValidator(input string) error {
 		return errInvalidCode
 	}
 
+	fmt.Printf("Next input is: \"%s\"\n", input)
+
 	for input != "" {
 		next = strings.IndexByte(input, '-')
-		if next == -1 {
-			next += len(input)
-		} else if next == len(input)-1 || next == 0 {
+		if next == len(input)-1 || next == 0 {
 			return errInvalidCode
+		}
+
+		if next == -1 {
+			next = len(input)
 		}
 
 		invalidChars := strings.IndexFunc(input[:next], runeIsNotAlphaNumerical)
 		if invalidChars != -1 {
 			return errInvalidCode
+		}
+
+		if next == len(input) {
+			return nil
 		}
 
 		input = input[next+1:]

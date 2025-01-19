@@ -1,6 +1,7 @@
 package util
 
 import (
+	"regexp"
 	"testing"
 
 	"fyne.io/fyne/v2"
@@ -19,42 +20,54 @@ func BenchmarkCodeValidator(b *testing.B) {
 	globalValidationError = local
 }
 
+var codeValidatorTestcases = []struct {
+	in   string
+	want error
+}{
+	{"", nil}, // Do not report invalid when empty.
+	{"invalid-code", errInvalidCode},
+	{"IOI-", errInvalidCode},
+	{"126-", errInvalidCode},
+	{"126--almost--valid", errInvalidCode},
+	{"126-almost--valid", errInvalidCode},
+	{"126-almost-valid-", errInvalidCode},
+	{"15", errInvalidCode},
+	{"15-valid", nil},
+	{"15-valid-", errInvalidCode},
+	{"15-valid-code", nil},
+	{"15-v", nil},
+	{"15-^a", errInvalidCode},
+
+	// Cases found by fuzzing:
+	{"-0", errInvalidCode},
+	{"0- ", errInvalidCode},
+}
+
 func TestCodeValidator(t *testing.T) {
-	validate := CodeValidator
+	for _, tc := range codeValidatorTestcases {
+		out := CodeValidator(tc.in)
+		if out != tc.want {
+			t.Errorf("CodeValidator with input \"%s\" returned: %v, want \"%v\"", tc.in, out, tc.want)
+		}
+	}
+}
 
-	// This is so that the Entry doesn't report invalid when empty.
-	valid := validate("")
-	assert.NoError(t, valid)
+func FuzzCodeValidator(f *testing.F) {
+	for _, tc := range codeValidatorTestcases {
+		f.Add(tc.in)
+	}
 
-	valid = validate("invalid-code")
-	assert.Error(t, valid)
+	isValidCode := regexp.MustCompile(`(^\d+(-[a-zA-Z0-9]+)+$)|(^$)`)
+	f.Fuzz(func(t *testing.T, input string) {
+		reportedValid := CodeValidator(input) == nil
+		appearsCorrect := isValidCode.MatchString(input)
 
-	valid = validate("IOI-")
-	assert.Error(t, valid)
-
-	valid = validate("126-")
-	assert.Error(t, valid)
-
-	valid = validate("126--almost--valid")
-	assert.Error(t, valid)
-
-	valid = validate("126-almost--valid")
-	assert.Error(t, valid)
-
-	valid = validate("126-almost-valid--")
-	assert.Error(t, valid)
-
-	valid = validate("15")
-	assert.Error(t, valid)
-
-	valid = validate("15-valid")
-	assert.NoError(t, valid)
-
-	valid = validate("15-valid-")
-	assert.Error(t, valid)
-
-	valid = validate("15-valid-code")
-	assert.NoError(t, valid)
+		if reportedValid && !appearsCorrect {
+			t.Errorf("Code validator returned no error but input seems invalid")
+		} else if !reportedValid && appearsCorrect {
+			t.Errorf("Code validator returned error but input seems correct")
+		}
+	})
 }
 
 func TestWindowSizeToDialog(t *testing.T) {
