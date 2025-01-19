@@ -18,11 +18,11 @@ func Create(a fyne.App, w fyne.Window) fyne.CanvasObject {
 		widget.ShowPopUpMenuAtRelativePosition(menu, w.Canvas(), offset, dropdown)
 	}
 
-	nav := &components.StackNavigator{HideBackButton: true}
+	nav := &components.StackNavigator{}
 	nav.OnBack = nav.Pop
 	tabs := &container.AppTabs{
 		Items: []*container.TabItem{
-			{Text: "Send", Icon: theme.UploadIcon(), Content: createSendPage(nav)},
+			{Text: "Send", Icon: theme.UploadIcon(), Content: createSendPage(w, nav)},
 			{Text: "Receive", Icon: theme.DownloadIcon(), Content: createRecvPage(nav)},
 		},
 	}

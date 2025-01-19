@@ -7,11 +7,12 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
 
-func buildSendView(nav *components.StackNavigator) fyne.CanvasObject {
+func buildSendView(nav *components.StackNavigator, name string) fyne.CanvasObject {
 	code := "123-example-code"
 
 	qr, err := qrcode.New("wormhole-transfer:"+code, qrcode.High)
@@ -27,16 +28,21 @@ func buildSendView(nav *components.StackNavigator) fyne.CanvasObject {
 	image := &canvas.Image{Image: qr.Image(size), FillMode: canvas.ImageFillOriginal, ScaleMode: canvas.ImageScalePixels}
 	image.SetMinSize(fyne.NewSquareSize(float32(size)))
 
-	codeLabel := &widget.Label{Text: code, TextStyle: fyne.TextStyle{Bold: true}, Alignment: fyne.TextAlignCenter}
+	codeStyle := widget.RichTextStyleSubHeading
+	codeStyle.Alignment = fyne.TextAlignCenter
+	nameStyle := widget.RichTextStyleInline
+	nameStyle.Alignment = fyne.TextAlignCenter
+	text := widget.NewRichText(&widget.TextSegment{Style: codeStyle, Text: code}, &widget.TextSegment{Style: nameStyle, Text: name})
 
-	progress := &widget.ProgressBar{Max: 100}
+	progress := widget.NewProgressBar()
+	progress.SetValue(0.5)
 
-	cancel := &widget.Button{Text: "Cancel", OnTapped: func() { nav.Pop() }}
+	cancel := &widget.Button{Text: "Cancel", OnTapped: nav.Pop, Importance: widget.WarningImportance}
 
 	return container.NewCenter(
 		container.NewVBox(
 			image,
-			codeLabel,
+			text,
 			progress,
 			&widget.Separator{},
 			container.NewCenter(cancel),
@@ -44,7 +50,7 @@ func buildSendView(nav *components.StackNavigator) fyne.CanvasObject {
 	)
 }
 
-func createSendPage(nav *components.StackNavigator) fyne.CanvasObject {
+func createSendPage(w fyne.Window, nav *components.StackNavigator) fyne.CanvasObject {
 	icon := canvas.NewImageFromResource(theme.UploadIcon())
 	icon.FillMode = canvas.ImageFillContain
 	icon.SetMinSize(fyne.NewSquareSize(200))
@@ -55,19 +61,44 @@ func createSendPage(nav *components.StackNavigator) fyne.CanvasObject {
 		Icon:       theme.FileTextIcon(),
 		Text:       "Send File",
 		Importance: widget.HighImportance,
-		OnTapped:   func() { nav.Push(buildSendView(nav), "Sending File") },
+		OnTapped: func() {
+			dialog.ShowFileOpen(func(reader fyne.URIReadCloser, err error) {
+				if reader == nil {
+					return
+				} else if err != nil {
+					dialog.ShowError(err, w)
+					return
+				}
+				defer reader.Close()
+
+				nav.Push(buildSendView(nav, reader.URI().Name()), "Sending File")
+			}, w)
+		},
 	}
 	folder := &widget.Button{
 		Icon:       theme.FolderIcon(),
 		Text:       "Send Folder",
 		Importance: widget.HighImportance,
-		OnTapped:   func() { nav.Push(buildSendView(nav), "Sending Folder") },
+		OnTapped: func() {
+			dialog.ShowFolderOpen(func(lu fyne.ListableURI, err error) {
+				if lu == nil {
+					return
+				} else if err != nil {
+					dialog.ShowError(err, w)
+					return
+				}
+
+				nav.Push(buildSendView(nav, lu.Name()), "Sending Folder")
+			}, w)
+		},
 	}
 	text := &widget.Button{
 		Icon:       theme.DocumentIcon(),
 		Text:       "Send Text",
 		Importance: widget.HighImportance,
-		OnTapped:   func() { nav.Push(buildSendView(nav), "Sending Text") },
+		OnTapped: func() {
+			nav.Push(buildSendView(nav, ""), "Sending Text")
+		},
 	}
 
 	buttons := container.NewCenter(container.NewHBox(file, &widget.Separator{}, folder, &widget.Separator{}, text))
