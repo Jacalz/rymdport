@@ -259,8 +259,8 @@ github.com/rogpeppe/fastuuid v1.2.0/go.mod h1:jVj6XXZzXRy/MSR5jhDC/2q6DgLz+nrA6L
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/russross/blackfriday/v2 v2.0.1/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/ryanuber/columnize v0.0.0-20160712163229-9b3edd62028f/go.mod h1:sm1tb6uqfes/u+d4ooFouqFdy9/2g9QGwK3SQygK0Ts=
-github.com/rymdport/go-qrcode v1.1.0 h1:FBbvYA4pHGO+C22QmIx5wNVnlHQOGKOlXg9s6syskps=
-github.com/rymdport/go-qrcode v1.1.0/go.mod h1:/DWqWDSfM/AcbuUr+/nNZev3SjO4bdZYqatpTpB9Js4=
+github.com/rymdport/go-qrcode v1.2.0 h1:a5zPzZXyLOv+x4qS4cRnkFvCuQZwo6RzasL8J9Xa/WM=
+github.com/rymdport/go-qrcode v1.2.0/go.mod h1:YtAU/XEqwBhl7WJmMP5hQweCnl7LSPknC0INZNG+jdM=
 github.com/rymdport/portal v0.3.0 h1:QRHcwKwx3kY5JTQcsVhmhC3TGqGQb9LFghVNUy8AdB8=
 github.com/rymdport/portal v0.3.0/go.mod h1:kFF4jslnJ8pD5uCi17brj/ODlfIidOxlgUDTO5ncnC4=
 github.com/rymdport/wormhole v0.1.1-0.20241116103349-4e36e05aff6c h1:PEoCBrif+0g6CvQb9yXZefHqgJJn+W7gM8P3ksb5E9w=
