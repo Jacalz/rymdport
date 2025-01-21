@@ -10,7 +10,6 @@ jobs:
       fail-fast: false
       matrix:
         go-version: ['', 'stable']
-        go-version-file: 'go.mod'
 
     steps:
     - uses: actions/checkout@v4
@@ -19,6 +18,7 @@ jobs:
     - uses: actions/setup-go@v5
       with:
         go-version: ${{ matrix.go-version }}
+        go-version-file: 'go.mod'
 
     - name: Install build dependencies
       run: |
