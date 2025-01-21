@@ -9,7 +9,7 @@ require (
 	github.com/fynelabs/selfupdate v0.2.0
 	github.com/klauspost/compress v1.17.11
 	github.com/rymdport/go-qrcode v1.2.0
-	github.com/rymdport/wormhole v0.1.1-0.20241116103349-4e36e05aff6c
+	github.com/rymdport/wormhole v0.2.0
 )
 
 require (
