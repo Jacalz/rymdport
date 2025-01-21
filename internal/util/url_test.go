@@ -2,8 +2,9 @@ package util
 
 import (
 	"net/url"
-	"reflect"
 	"testing"
+
+	"github.com/alecthomas/assert/v2"
 )
 
 func TestURLToGitHubProject(t *testing.T) {
@@ -22,14 +23,10 @@ func TestURLToGitHubProject(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			path := basepath + tt.subpath
 			want, err := url.Parse(path)
-			if err != nil {
-				t.Errorf("Failed to parse the path %s: %v", path, err)
-				return
-			}
+			assert.NoError(t, err)
 
-			if got := URLToGitHubProject(tt.subpath); !reflect.DeepEqual(got, want) {
-				t.Errorf("URLToGitHubProject() = %v, want %v", got, want)
-			}
+			got := URLToGitHubProject(tt.subpath)
+			assert.Equal(t, want, got)
 		})
 	}
 }

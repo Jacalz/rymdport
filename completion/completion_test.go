@@ -3,7 +3,7 @@ package completion
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/alecthomas/assert/v2"
 )
 
 func generator(match string) []string {
@@ -40,7 +40,7 @@ func TestTabCompleter_Next(t *testing.T) {
 	cmpl.Reset()
 
 	next = cmpl.Next("")
-	assert.Empty(t, next)
+	assert.Equal(t, "", next)
 
 	num = "none"
 	next = cmpl.Next("none")
@@ -77,7 +77,7 @@ func TestTabCompleter_Previous(t *testing.T) {
 	cmpl.Reset()
 
 	prev = cmpl.Previous("")
-	assert.Empty(t, prev)
+	assert.Equal(t, "", prev)
 
 	num = "none"
 	prev = cmpl.Previous("none")

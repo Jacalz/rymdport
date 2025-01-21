@@ -5,7 +5,8 @@ import (
 	"testing"
 
 	"fyne.io/fyne/v2"
-	"github.com/stretchr/testify/assert"
+
+	"github.com/alecthomas/assert/v2"
 )
 
 var globalValidationError error
@@ -46,9 +47,7 @@ var codeValidatorTestcases = []struct {
 func TestCodeValidator(t *testing.T) {
 	for _, tc := range codeValidatorTestcases {
 		out := CodeValidator(tc.in)
-		if out != tc.want {
-			t.Errorf("CodeValidator with input \"%s\" returned: %v, want \"%v\"", tc.in, out, tc.want)
-		}
+		assert.Equal(t, tc.want, out)
 	}
 }
 
