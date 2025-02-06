@@ -34,6 +34,11 @@ func CodeValidator(input string) error {
 		return errInvalidCode
 	}
 
+	invalidChars := strings.IndexFunc(input, runeIsInvalid)
+	if invalidChars != -1 {
+		return errInvalidCode
+	}
+
 	for input != "" {
 		next = strings.IndexByte(input, '-')
 		if next == len(input)-1 || next == 0 {
@@ -42,11 +47,6 @@ func CodeValidator(input string) error {
 
 		if next == -1 {
 			next = len(input)
-		}
-
-		invalidChars := strings.IndexFunc(input[:next], runeIsNotAlphaNumerical)
-		if invalidChars != -1 {
-			return errInvalidCode
 		}
 
 		if next == len(input) {
@@ -59,8 +59,8 @@ func CodeValidator(input string) error {
 	return nil
 }
 
-func runeIsNotAlphaNumerical(r rune) bool {
-	return (r < '0' || r > '9') && (r < 'a' || r > 'z') && (r < 'A' || r > 'Z')
+func runeIsInvalid(r rune) bool {
+	return (r < '0' || r > '9') && (r < 'a' || r > 'z') && (r < 'A' || r > 'Z') && r != '-'
 }
 
 func runeIsNotNumerical(r rune) bool {
