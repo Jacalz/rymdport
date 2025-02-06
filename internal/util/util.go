@@ -3,7 +3,6 @@ package util
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -34,8 +33,6 @@ func CodeValidator(input string) error {
 	if input == "" {
 		return errInvalidCode
 	}
-
-	fmt.Printf("Next input is: \"%s\"\n", input)
 
 	for input != "" {
 		next = strings.IndexByte(input, '-')
