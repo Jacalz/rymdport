@@ -41,15 +41,11 @@ func CodeValidator(input string) error {
 
 	for input != "" {
 		next = strings.IndexByte(input, '-')
-		if next == len(input)-1 || next == 0 {
+		if next == 0 || next == len(input)-1 {
 			return errInvalidCode
 		}
 
 		if next == -1 {
-			next = len(input)
-		}
-
-		if next == len(input) {
 			return nil
 		}
 
