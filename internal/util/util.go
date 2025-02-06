@@ -20,36 +20,27 @@ func CodeValidator(input string) error {
 	}
 
 	next := strings.IndexByte(input, '-')
-	if next == -1 || next == 0 {
+	if next <= 0 || next == len(input)-1 {
 		return errInvalidCode
 	}
 
-	mailbox := strings.IndexFunc(input[:next], runeIsNotNumerical)
-	if mailbox != -1 {
+	invalidNameplate := strings.IndexFunc(input[:next], runeIsNotNumerical) != -1
+	if invalidNameplate {
 		return errInvalidCode
 	}
 
-	input = input[next+1:]
-	if input == "" {
+	invalidChars := strings.IndexFunc(input[next+1:], runeIsInvalid) != -1
+	if invalidChars {
 		return errInvalidCode
 	}
 
-	invalidChars := strings.IndexFunc(input, runeIsInvalid)
-	if invalidChars != -1 {
-		return errInvalidCode
-	}
+	for next != -1 {
+		input = input[next+1:]
 
-	for input != "" {
 		next = strings.IndexByte(input, '-')
 		if next == 0 || next == len(input)-1 {
 			return errInvalidCode
 		}
-
-		if next == -1 {
-			return nil
-		}
-
-		input = input[next+1:]
 	}
 
 	return nil
