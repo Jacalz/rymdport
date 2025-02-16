@@ -41,7 +41,12 @@
 
   <url type="bugtracker">https://github.com/Jacalz/rymdport/issues</url>
   <url type="donation">https://github.com/sponsors/Jacalz</url>
-  <url type="homepage">https://github.com/Jacalz/rymdport</url>
+  <url type="homepage">https://rymdport.github.io/</url>
+  <url type="vcs-browser">https://github.com/Jacalz/rymdport</url>
+  <url type="help">https://github.com/Jacalz/rymdport/wiki</url>
+  <url type="contact">https://github.com/Jacalz/rymdport/discussions</url>
+  <url type="contribute">https://github.com/Jacalz/rymdport/blob/main/CONTRIBUTING.md</url>
+  <url type="faq">https://github.com/Jacalz/rymdport/wiki/FAQ</url>
 
   <content_rating type="oars-1.1" />
 
