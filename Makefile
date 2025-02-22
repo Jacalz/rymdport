@@ -4,13 +4,13 @@ NAME = rymdport
 # If PREFIX isn't provided, default to /usr.
 PREFIX ?= /usr
 
-debug:
-	go build -tags no_emoji,no_metadata -trimpath -o $(NAME)
-.PHONY: debug
-
 release:
 	go build -tags no_emoji,no_metadata -trimpath -ldflags="-s -w" -buildvcs=false -o $(NAME)
 .PHONY: release
+
+debug:
+	go build -tags no_emoji,no_metadata -trimpath -o $(NAME)
+.PHONY: debug
 
 install:
 	install -Dm00755 $(NAME) $(DESTDIR)$(PREFIX)/bin/$(NAME)
