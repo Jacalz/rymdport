@@ -11,6 +11,7 @@
 - Multiple other dependencies have been updated for various improvements and fixes.
 - The appinfo metadata now contains more project links.
 - The project now requires Go 1.22 or later to build.
+- Release binaries for 64-bit Windows ARM are now available.
 
 ## 3.7.0 - Code cleanups and various small improvements
 - The received text is now read-only.
