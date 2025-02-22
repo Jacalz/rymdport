@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.8.0
+- Fixed a few minor bugs in the code validation of receives.
+  - The edge cases were found by newly added fuzz tests.
+- Optimised the code validation to be even faster.
+- The `Makefile` now disables runtime metadata lookup when compiling.
+  - Distribution packages on Linux and BSD systems should see slightly smaller binaries and faster startup times.
+- Updated `fyne` to [v2.5.4](https://github.com/fyne-io/fyne/releases/tag/v2.5.4).
+  - Most notable here is a fix for the progress bar lacking text sometimes.
+- Multiple other dependencies have been updated for various improvements and fixes.
+- The appinfo metadata now contains more project links.
+- The project now requires Go 1.22 or later to build.
+
 ## 3.7.0 - Code cleanups and various small improvements
 - The received text is now read-only.
 - Received items are now not shown until after the download starts.
@@ -38,16 +50,16 @@
 - Update `fyneselfupdate` to [v0.1.1](https://github.com/fynelabs/fyneselfupdate/releases/tag/v0.1.1).
   - This removes some usage of deprecated functions and cleans up the code. Nothing major.
 - Some improvements to documentation.
-  - Some incorrect wording and textual errors were fixed in [CONTRIBUTING.md](CONTRIBUTING.md). 
+  - Some incorrect wording and textual errors were fixed in [CONTRIBUTING.md](CONTRIBUTING.md).
   - Information on how to build distribution packages (for Linux repositories etc.) was added in a new [PACKAGING.md](PACKAGING.md) file.
 
 ## 3.5.2 - Updated Fyne UI toolkit dependency
 - Updated `fyne` to [v2.4.3](https://github.com/fyne-io/fyne/releases/tag/v2.4.3).
 
 ## 3.5.1 - Bug fixes and improved performance
-- The `Makefile` now includes `.PHONY` targets to avoid problems with targets having the same name as local files. 
+- The `Makefile` now includes `.PHONY` targets to avoid problems with targets having the same name as local files.
 - The `Makefile` no longer updates the icon cache (per request from Linux package maintainers).
-  - A user installing locally should manually run `make update-icon-cache` afterwards instead. 
+  - A user installing locally should manually run `make update-icon-cache` afterwards instead.
 - Updated `fyne` to [v2.4.1](https://github.com/fyne-io/fyne/releases/tag/v2.4.1).
   - File names inside the file dialog grid view are now shown on two lines and with better truncation.
   - Various other improvements and bug fixes.
@@ -74,7 +86,7 @@
   - Icons are now installed in more sizes to look better in more places.
   - The icon cache is now automatically updated after installing files.
 - Release bianries now install Rymdport with a capital R.
-- Go 1.18 or later is now required for compiling the application. 
+- Go 1.18 or later is now required for compiling the application.
 - Updated `fyne` to [v2.4.0](https://github.com/fyne-io/fyne/releases/tag/v2.4.0).
   - Added an option to disable animations (which can be found within our Settings tab).
   - Rectangles now use OpenGL hardware-acceleration for improved rendering performance.
@@ -109,16 +121,16 @@
 ## 3.3.4 - Add missing AppStream metadata for v3.3.3
 - Fixed the AppStream metadata not containing the v3.3.3 release information.
 
-## 3.3.3 - Better Apple M2 support and improved rendering 
+## 3.3.3 - Better Apple M2 support and improved rendering
 - Updated `selfupdate` to [v0.2.0](https://github.com/fynelabs/selfupdate/releases/tag/v0.2.0).
-  - This fixes update notifications showing when there were no new releases (issue #76). 
-- Updated `fyne` to [v2.3.3](https://github.com/fyne-io/fyne/releases/tag/v2.3.3). 
+  - This fixes update notifications showing when there were no new releases (issue #76).
+- Updated `fyne` to [v2.3.3](https://github.com/fyne-io/fyne/releases/tag/v2.3.3).
   - Many improvements when running on Apple M2 devices.
   - Performance and memory improvements for text rendering.
   - Faster performance when resizing the window on Linux/BSD.
   - Fixed letters being cropped in some cases.
   - Other minor fixes and improvements.
-- Updated indirect dependencies for some minor security fixes. 
+- Updated indirect dependencies for some minor security fixes.
 
 ## 3.3.2 - Performance improvements and bug fixes
 - Minor performance improvements to the list of sent/received items.
@@ -201,7 +213,7 @@
 - Fixed an issue where sending with received text open would remove the text.
 - Removed support for removing completed sends and receives (see #32).
   - This has been broken broken a long time. Will be introduced again in a later version.
-- The filename when saving received text now also contains the current time. 
+- The filename when saving received text now also contains the current time.
 - Many improvements to the contents of the appstream metadata.
 - Various minor performance improvements and race condition fixes.
 - Updated `wormhole-william` to [v1.0.6](https://github.com/psanford/wormhole-william/releases/tag/v1.0.6).
@@ -233,14 +245,14 @@
 - Release binaries are now available for FreeBSD and macOS (M1) on the arm64 architecture.
 - Release binaries for macOS are now called that instead of `darwin` for clarity.
 - Release binaries are now built with `Go 1.16.7`.
-  - Fixes a couple security issues and contains a few bug fixes. 
+  - Fixes a couple security issues and contains a few bug fixes.
 - Updated `compress` to [v1.13.3](https://github.com/klauspost/compress/releases/tag/v1.13.3).
   - Better and faster zip compression and decompression (brings faster directory sends and receives).
 - Updated `fyne` to [v2.0.4](https://github.com/fyne-io/fyne/releases/tag/v2.0.4).
   - The title bar on Windows 10 now matches the system theme (light or dark theme).
   - Fixed the Windows 10 notifications view showing the text "app-id" as application name.
   - Fixed a couple issues when running in fullscreen.
-  - Improved performance when drawing transparent rectangles or whitespace strings.  
+  - Improved performance when drawing transparent rectangles or whitespace strings.
 
 ## 2.2.2 - A small hotfix release
 - Fixed the receive code validation being too strict in some cases.

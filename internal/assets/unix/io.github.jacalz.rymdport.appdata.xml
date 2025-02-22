@@ -63,6 +63,16 @@
   </branding>
 
   <releases>
+    <release version="3.8.0" date="2025-02-22" type="stable">
+      <description>
+        <ul>
+          <li>The code validation of receives is now even faster than before.</li>
+          <li>A few bugs caught by fuzzing have been fixed in the code validation.</li>
+          <li>Multiple dependencies have been updated for various fixes and improvements.</li>
+        </ul>
+      </description>
+      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.8.0</url>
+    </release>
     <release version="3.7.0" date="2024-12-20" type="stable">
       <description>
         <ul>
