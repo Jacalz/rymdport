@@ -1,13 +1,13 @@
 module github.com/Jacalz/rymdport/v3
 
-go 1.21.0
+go 1.22
 
 require (
 	fyne.io/fyne/v2 v2.5.4
 	github.com/alecthomas/assert/v2 v2.11.0
 	github.com/fynelabs/fyneselfupdate v0.1.1
 	github.com/fynelabs/selfupdate v0.2.0
-	github.com/klauspost/compress v1.17.11
+	github.com/klauspost/compress v1.18.0
 	github.com/rymdport/go-qrcode v1.2.0
 	github.com/rymdport/wormhole v0.2.0
 )
