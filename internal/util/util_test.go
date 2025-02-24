@@ -14,7 +14,7 @@ var globalValidationError error
 func BenchmarkCodeValidator(b *testing.B) {
 	local := error(nil)
 
-	for i := 0; i < b.N; i++ {
+	for range b.N {
 		local = CodeValidator("125-upset-universe-mistake")
 	}
 

@@ -136,8 +136,8 @@ func addFileIncrement(path string) (string, error) {
 	name = name[:len(name)-len(ext)]
 
 	// Add number at the end. Cap it to avoid doing checks forever.
-	for i := 1; i <= 5; i++ {
-		nr := strconv.Itoa(i)
+	for i := range 5 {
+		nr := strconv.Itoa(i + 1)
 		incremented := filepath.Join(base, name+"("+nr+")"+ext)
 
 		_, err := os.Stat(incremented)

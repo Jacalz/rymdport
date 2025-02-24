@@ -19,7 +19,7 @@ func BenchmarkCreate(b *testing.B) {
 	b.StartTimer()
 
 	b.ReportAllocs()
-	for i := 0; i < b.N; i++ {
+	for range b.N {
 		tabs = Create(a, w)
 	}
 

@@ -21,7 +21,7 @@ func generator(match string) []string {
 func TestTabCompleter_Next(t *testing.T) {
 	cmpl := &TabCompleter{Generate: generator}
 
-	for i := 0; i <= 9; i++ {
+	for i := range 10 {
 		num := string('0' + rune(i))
 		next := cmpl.Next(num)
 		assert.Equal(t, num, next)
