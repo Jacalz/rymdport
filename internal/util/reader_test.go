@@ -18,7 +18,7 @@ func TestProgressReader(t *testing.T) {
 	}, size)
 
 	temp := [1]byte{}
-	for i := int64(0); i < size; i++ {
+	for i := range size {
 		_, err := teeReader.Read(temp[:])
 		if err != nil {
 			t.Fatal(err)
