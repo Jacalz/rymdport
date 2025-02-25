@@ -244,10 +244,6 @@ type textRecvWindow struct {
 	fileSaveDialog         *dialog.FileDialog
 }
 
-func (r *textRecvWindow) copy() {
-	r.window.Clipboard().SetContent(r.textLabel.Text)
-}
-
 func (r *textRecvWindow) interceptClose() {
 	r.window.Hide()
 	r.textLabel.SetText("")
@@ -283,7 +279,7 @@ func (r *textRecvWindow) save() {
 func (d *RecvData) createTextWindow() {
 	d.textWindow = textRecvWindow{
 		textLabel:  &widget.Label{},
-		copyButton: &widget.Button{Text: "Copy", Icon: theme.ContentCopyIcon(), OnTapped: d.textWindow.copy},
+		copyButton: &widget.Button{Text: "Copy", Icon: theme.ContentCopyIcon(), OnTapped: func() { d.Client.App.Clipboard().SetContent(d.textWindow.textLabel.Text) }},
 		saveButton: &widget.Button{Text: "Save", Icon: theme.DocumentSaveIcon(), OnTapped: d.textWindow.save},
 	}
 
