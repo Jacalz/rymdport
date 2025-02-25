@@ -433,7 +433,6 @@ func (d *SendData) createTextWindow() {
 
 		d.textWindow.window = window
 	})
-
 }
 
 // showTextWindow opens a new window for setting up text to send.
