@@ -1,6 +1,6 @@
 module github.com/Jacalz/rymdport/v3
 
-go 1.23
+go 1.23.0
 
 require (
 	fyne.io/fyne/v2 v2.6.0-alpha1
@@ -9,7 +9,7 @@ require (
 	github.com/fynelabs/selfupdate v0.2.0
 	github.com/klauspost/compress v1.18.0
 	github.com/rymdport/go-qrcode v1.2.0
-	github.com/rymdport/wormhole v0.2.0
+	github.com/rymdport/wormhole v0.3.0
 )
 
 require (
@@ -40,7 +40,7 @@ require (
 	github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef // indirect
 	github.com/stretchr/testify v1.10.0 // indirect
 	github.com/yuin/goldmark v1.7.8 // indirect
-	golang.org/x/crypto v0.31.0 // indirect
+	golang.org/x/crypto v0.35.0 // indirect
 	golang.org/x/image v0.24.0 // indirect
 	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
