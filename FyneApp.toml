@@ -7,6 +7,9 @@ Website = "https://rymdport.github.io/"
   Version = "3.8.0"
   Build = 30
 
+[Migrations]
+  fyneDo = true
+
 [LinuxAndBSD]
   GenericName = "File Transfer"
   Categories = ["Network", "FileTransfer", "P2P", "Utility"]
