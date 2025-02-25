@@ -5,7 +5,7 @@ NAME = rymdport
 PREFIX ?= /usr
 
 release:
-	go build -tags no_emoji,no_metadata -trimpath -ldflags="-s -w" -buildvcs=false -o $(NAME)
+	go build -tags no_emoji,no_metadata,migrate_fynedo -trimpath -ldflags="-s -w" -buildvcs=false -o $(NAME)
 .PHONY: release
 
 debug:

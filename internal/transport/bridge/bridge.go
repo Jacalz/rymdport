@@ -10,20 +10,23 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func newCodeDisplay(window fyne.Window) *fyne.Container {
+func newCodeDisplay(app fyne.App) *fyne.Container {
 	codeLabel := &widget.Label{Text: "Waiting for code...", Truncation: fyne.TextTruncateEllipsis}
 	copyButton := &widget.Button{Icon: theme.ContentCopyIcon(), Importance: widget.LowImportance}
 
 	copyButton.OnTapped = func() {
 		if codeLabel.Text != "Waiting for code..." {
 			copyButton.SetIcon(theme.ConfirmIcon())
-			window.Clipboard().SetContent(codeLabel.Text)
+			app.Clipboard().SetContent(codeLabel.Text)
 		} else {
 			copyButton.SetIcon(theme.CancelIcon())
 		}
 
-		time.Sleep(500 * time.Millisecond)
-		copyButton.SetIcon(theme.ContentCopyIcon())
+		time.AfterFunc(500*time.Millisecond, func() {
+			fyne.Do(func() {
+				copyButton.SetIcon(theme.ContentCopyIcon())
+			})
+		})
 	}
 
 	return container.New(codeLayout{}, codeLabel, copyButton)

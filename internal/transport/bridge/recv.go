@@ -158,7 +158,7 @@ func (d *RecvData) NewRecv(code string, msg *wormhole.IncomingMessage) (item *Re
 	d.items = append(d.items, item)
 	d.lock.Unlock()
 
-	d.list.Refresh()
+	fyne.Do(d.list.Refresh)
 	return item, path
 }
 
@@ -201,7 +201,9 @@ func (d *RecvData) refresh(index int) {
 		return // Don't update if we are deleting.
 	}
 
-	d.list.RefreshItem(index)
+	fyne.Do(func() {
+		d.list.RefreshItem(index)
+	})
 }
 
 func (d *RecvData) remove(index int) {
@@ -279,20 +281,24 @@ func (r *textRecvWindow) save() {
 }
 
 func (d *RecvData) createTextWindow() {
-	window := d.Client.App.NewWindow("Received Text")
-	window.SetCloseIntercept(d.textWindow.interceptClose)
-
 	d.textWindow = textRecvWindow{
-		window:         window,
-		textLabel:      &widget.Label{},
-		copyButton:     &widget.Button{Text: "Copy", Icon: theme.ContentCopyIcon(), OnTapped: d.textWindow.copy},
-		saveButton:     &widget.Button{Text: "Save", Icon: theme.DocumentSaveIcon(), OnTapped: d.textWindow.save},
-		fileSaveDialog: dialog.NewFileSave(d.textWindow.saveFileToDisk, window),
+		textLabel:  &widget.Label{},
+		copyButton: &widget.Button{Text: "Copy", Icon: theme.ContentCopyIcon(), OnTapped: d.textWindow.copy},
+		saveButton: &widget.Button{Text: "Save", Icon: theme.DocumentSaveIcon(), OnTapped: d.textWindow.save},
 	}
 
 	actionContainer := container.NewGridWithColumns(2, d.textWindow.copyButton, d.textWindow.saveButton)
-	window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, container.NewScroll(d.textWindow.textLabel)))
-	window.Resize(fyne.NewSize(400, 300))
+	content := container.NewBorder(nil, actionContainer, nil, nil, container.NewScroll(d.textWindow.textLabel))
+
+	fyne.DoAndWait(func() {
+		window := d.Client.App.NewWindow("Received Text")
+		window.SetCloseIntercept(d.textWindow.interceptClose)
+		window.SetContent(content)
+		window.Resize(fyne.NewSize(400, 300))
+
+		d.textWindow.window = window
+		d.textWindow.fileSaveDialog = dialog.NewFileSave(d.textWindow.saveFileToDisk, window)
+	})
 }
 
 // showTextWindow handles the creation of a window for displaying text content.
@@ -301,11 +307,12 @@ func (d *RecvData) showTextWindow(received string) {
 		d.createTextWindow()
 	}
 
-	d.textWindow.textLabel.SetText(received)
-
-	win := d.textWindow.window
-	win.Show()
-	win.RequestFocus()
+	fyne.Do(func() {
+		d.textWindow.textLabel.SetText(received)
+		win := d.textWindow.window
+		win.Show()
+		win.RequestFocus()
+	})
 }
 
 var _ fyne.URIWithIcon = (*folderURI)(nil)

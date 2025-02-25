@@ -78,7 +78,7 @@ func (d *SendData) CreateItem() fyne.CanvasObject {
 	return container.New(listLayout{},
 		&widget.FileIcon{},
 		&widget.Label{Text: "Waiting for filename...", Truncation: fyne.TextTruncateEllipsis},
-		newCodeDisplay(d.Window),
+		newCodeDisplay(d.Client.App),
 		&widget.ProgressBar{},
 	)
 }
@@ -267,9 +267,11 @@ func (d *SendData) SendText() {
 			return
 		}
 
-		d.Window.RequestFocus() // Refocus the main window
 		item := d.NewSend(storage.NewFileURI("Text Snippet"))
-		d.list.Refresh()
+		fyne.Do(func() {
+			d.list.Refresh()
+			d.Window.RequestFocus()
+		})
 
 		code, result, err := d.Client.NewTextSend(text, wormhole.WithProgress(item.update), d.getCustomCode())
 		if err != nil {
@@ -334,7 +336,9 @@ func (d *SendData) refresh(index int) {
 		return // Don't update if we are deleting.
 	}
 
-	d.list.RefreshItem(index)
+	fyne.Do(func() {
+		d.list.RefreshItem(index)
+	})
 }
 
 func (d *SendData) remove(index int) {
@@ -411,36 +415,51 @@ func (s *textSendWindow) send() {
 }
 
 func (d *SendData) createTextWindow() {
-	window := d.Client.App.NewWindow("Send Text")
-	window.SetCloseIntercept(d.textWindow.dismiss)
-
 	d.textWindow = textSendWindow{
-		window:       window,
 		textEntry:    &widget.Entry{MultiLine: true, Wrapping: fyne.TextWrapWord, OnSubmitted: func(_ string) { d.textWindow.send() }},
 		cancelButton: &widget.Button{Text: "Cancel", Icon: theme.CancelIcon(), OnTapped: d.textWindow.dismiss},
 		sendButton:   &widget.Button{Text: "Send", Icon: theme.MailSendIcon(), Importance: widget.HighImportance, OnTapped: d.textWindow.send},
-		text:         make(chan string),
+		text:         make(chan string, 1),
 	}
 
 	actionContainer := container.NewGridWithColumns(2, d.textWindow.cancelButton, d.textWindow.sendButton)
-	window.SetContent(container.NewBorder(nil, actionContainer, nil, nil, d.textWindow.textEntry))
-	window.Resize(fyne.NewSize(400, 300))
+	contents := container.NewBorder(nil, actionContainer, nil, nil, d.textWindow.textEntry)
+
+	fyne.DoAndWait(func() {
+		window := d.Client.App.NewWindow("Send Text")
+		window.SetCloseIntercept(d.textWindow.dismiss)
+		window.SetContent(contents)
+		window.Resize(fyne.NewSize(400, 300))
+
+		d.textWindow.window = window
+	})
+
 }
 
 // showTextWindow opens a new window for setting up text to send.
 func (d *SendData) showTextWindow() string {
 	if d.textWindow.window == nil {
 		d.createTextWindow()
-	} else if d.textWindow.window.Canvas().Content().Visible() {
-		d.textWindow.window.RequestFocus()
-		return ""
+	} else {
+		visible := false
+		fyne.DoAndWait(func() {
+			visible = d.textWindow.window.Canvas().Content().Visible()
+			if visible {
+				d.textWindow.window.RequestFocus()
+			}
+		})
+		if visible {
+			return ""
+		}
 	}
 
-	win := d.textWindow.window
+	fyne.Do(func() {
+		win := d.textWindow.window
 
-	win.Show()
-	win.RequestFocus()
-	win.Canvas().Focus(d.textWindow.textEntry)
+		win.Show()
+		win.RequestFocus()
+		win.Canvas().Focus(d.textWindow.textEntry)
+	})
 
 	return <-d.textWindow.text
 }
