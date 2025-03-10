@@ -33,7 +33,7 @@ The following distributions also have binary packages available through their re
 
 For more information on how to build Rymdport for a distribution package, see [PACKAGING.md](PACKAGING.md).
 
-### Running on macOS arm64 (M1/M2)
+### Running on macOS arm64 (Apple Silicon)
 
 Binaries that are not signed with an official Apple certificate and downloaded from the web are put into quarantine by macOS (Apple computers with Intel CPUs do not exhibit this behavior). To solve this, you need to remove the quarantine attribute from the application (replacing `<path to .app>` with the application path):
 ```
