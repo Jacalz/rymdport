@@ -77,7 +77,7 @@ We are grateful for the support received by the following organizations:
 </a>
 <br /><br />
 <a href='https://tuta.com/'>
-  <img alt="Sponsored by Tutanota" width='300' src="https://raw.githubusercontent.com/rymdport/rymdport.github.io/main/assets/tuta_striped_black.svg">
+  <img alt="Sponsored by Tutanota" width='250' src="https://raw.githubusercontent.com/rymdport/rymdport.github.io/main/assets/tuta_logo.svg">
 </a>
 
 
