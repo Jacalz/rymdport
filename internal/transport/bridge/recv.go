@@ -278,7 +278,7 @@ func (r *textRecvWindow) save() {
 
 func (d *RecvData) createTextWindow() {
 	d.textWindow = textRecvWindow{
-		textLabel:  &widget.Label{},
+		textLabel:  &widget.Label{Selectable: true},
 		copyButton: &widget.Button{Text: "Copy", Icon: theme.ContentCopyIcon(), OnTapped: func() { d.Client.App.Clipboard().SetContent(d.textWindow.textLabel.Text) }},
 		saveButton: &widget.Button{Text: "Save", Icon: theme.DocumentSaveIcon(), OnTapped: d.textWindow.save},
 	}
