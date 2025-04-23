@@ -3,7 +3,9 @@
   <id>io.github.jacalz.rymdport</id>
 
   <name>Rymdport</name>
-  <developer_name>Jacalz</developer_name>
+  <developer>
+    <name>Jacalz</name>
+  </developer>
   <summary>Fast, encrypted file transfers</summary>
 
   <metadata_license>MIT</metadata_license>

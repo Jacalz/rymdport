@@ -6,44 +6,45 @@ permissions:
 jobs:
   static_analysis:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        persist-credentials: false
-    - uses: actions/setup-go@v5
-      with:
-        go-version: 'stable'
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
 
-    - name: Install build dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install --no-install-recommends clang libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev libx11-dev xorg-dev
-        
-    - name: Install static analysis tools
-      run: |
-        go install github.com/securego/gosec/v2/cmd/gosec@latest
-        go install golang.org/x/vuln/cmd/govulncheck@latest
-        go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
-        go install honnef.co/go/tools/cmd/staticcheck@latest
-        go install mvdan.cc/gofumpt@latest
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends clang libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev libx11-dev xorg-dev
 
-    - name: Vet
-      run: go vet ./...
+      - name: Install static analysis tools
+        run: |
+          go install github.com/securego/gosec/v2/cmd/gosec@latest
+          go install golang.org/x/vuln/cmd/govulncheck@latest
+          go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
+          go install honnef.co/go/tools/cmd/staticcheck@latest
+          go install mvdan.cc/gofumpt@latest
 
-    - name: Gofumpt
-      run: test -z $(gofumpt -d -e . | tee /dev/stderr)
+      - name: Vet
+        run: go vet ./...
 
-    - name: Gocyclo
-      run: gocyclo -over 15 .
+      - name: Gofumpt
+        run: test -z $(gofumpt -d -e . | tee /dev/stderr)
 
-    - name: Staticcheck
-      run: staticcheck ./...
+      - name: Gocyclo
+        run: gocyclo -over 15 .
 
-    - name: Gosec
-      run: gosec ./...
+      - name: Staticcheck
+        run: staticcheck ./...
 
-    - name: Vulncheck
-      run: govulncheck ./...
+      - name: Gosec
+        run: gosec ./...
+
+      - name: Vulncheck
+        run: govulncheck ./...
+
+      - name: Validate appstream metadata
+        run: appstreamcli validate --explain --pedantic assets/xdg/io.github.jacalz.hegelmote.appdata.xml
