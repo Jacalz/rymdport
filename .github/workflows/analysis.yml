@@ -47,4 +47,4 @@ jobs:
         run: govulncheck ./...
 
       - name: Validate appstream metadata
-        run: appstreamcli validate --explain --pedantic assets/xdg/io.github.jacalz.hegelmote.appdata.xml
+        run: appstreamcli validate --explain --pedantic internal/assets/unix/io.github.jacalz.rymdport.appdata.xml
