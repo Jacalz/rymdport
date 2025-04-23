@@ -3,7 +3,7 @@
   <id>io.github.jacalz.rymdport</id>
 
   <name>Rymdport</name>
-  <developer>
+  <developer id="github.io">
     <name>Jacalz</name>
   </developer>
   <summary>Fast, encrypted file transfers</summary>
