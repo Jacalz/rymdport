@@ -32,7 +32,7 @@ jobs:
         run: go vet ./...
 
       - name: Gofumpt
-        run: test -z $(gofumpt -d -e . | tee /dev/stderr)
+        run: gofumpt -d -e .
 
       - name: Gocyclo
         run: gocyclo -over 15 .
