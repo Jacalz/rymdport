@@ -13,7 +13,7 @@ import (
 )
 
 func newAboutTab(app fyne.App) *container.TabItem {
-	const version = "v3.8.0"
+	const version = "v3.9.0"
 
 	repoURL := util.URLToGitHubProject("")
 	icon := newClickableIcon(app.Icon(), repoURL, app)
