@@ -3,7 +3,6 @@ package bridge
 import (
 	"path/filepath"
 	"slices"
-	"sync/atomic"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -33,14 +32,18 @@ type SendItem struct {
 }
 
 func (s *SendItem) update(sent, total int64) {
-	s.Value = sent
-	s.Max = total
-	s.refresh(s.index)
+	fyne.Do(func() {
+		s.Value = sent
+		s.Max = total
+		s.refresh(s.index)
+	})
 }
 
 func (s *SendItem) failed() {
-	s.Status = func() string { return "Failed" }
-	s.refresh(s.index)
+	fyne.Do(func() {
+		s.Status = func() string { return "Failed" }
+		s.refresh(s.index)
+	})
 }
 
 // SendData is a list of progress bars that track send progress.
@@ -52,8 +55,7 @@ type SendData struct {
 	info       sendInfoDialog
 	textWindow textSendWindow
 
-	deleting atomic.Bool
-	list     *widget.List
+	list *widget.List
 }
 
 // NewSendList greates a list of progress bars.
@@ -332,19 +334,12 @@ func (d *SendData) getCustomCode() string {
 }
 
 func (d *SendData) refresh(index int) {
-	if d.deleting.Load() {
-		return // Don't update if we are deleting.
-	}
-
 	fyne.Do(func() {
 		d.list.RefreshItem(index)
 	})
 }
 
 func (d *SendData) remove(index int) {
-	// Make sure that no updates happen while we modify the slice.
-	d.deleting.Store(true)
-
 	d.items = slices.Delete(d.items, index, index+1)
 
 	// Update the moved items to have the correct index.
@@ -354,9 +349,6 @@ func (d *SendData) remove(index int) {
 
 	// Refresh the whole list.
 	d.list.Refresh()
-
-	// Allow individual objects to be refreshed again.
-	d.deleting.Store(false)
 }
 
 func (d *SendData) setUpInfoDialog() {

@@ -3,8 +3,6 @@ package bridge
 import (
 	"path/filepath"
 	"slices"
-	"sync"
-	"sync/atomic"
 	"time"
 
 	"fyne.io/fyne/v2"
@@ -33,19 +31,25 @@ type RecvItem struct {
 }
 
 func (r *RecvItem) update(delta, total int64) {
-	r.Value += delta
-	r.Max = total
-	r.refresh(r.index)
+	fyne.Do(func() {
+		r.Value += delta
+		r.Max = total
+		r.refresh(r.index)
+	})
 }
 
 func (r *RecvItem) done() {
-	r.Value = r.Max
-	r.refresh(r.index)
+	fyne.Do(func() {
+		r.Value = r.Max
+		r.refresh(r.index)
+	})
 }
 
 func (r *RecvItem) failed() {
-	r.Status = func() string { return "Failed" }
-	r.refresh(r.index)
+	fyne.Do(func() {
+		r.Status = func() string { return "Failed" }
+		r.refresh(r.index)
+	})
 }
 
 // RecvData is a list of progress bars that track send progress.
@@ -57,9 +61,7 @@ type RecvData struct {
 	info       recvInfoDialog
 	textWindow textRecvWindow
 
-	deleting atomic.Bool
-	lock     sync.Mutex
-	list     *widget.List
+	list *widget.List
 }
 
 // NewRecvList greates a list of progress bars.
@@ -129,36 +131,34 @@ func (d *RecvData) OnSelected(i int) {
 }
 
 func (d *RecvData) NewFailedRecv(code string) {
-	d.lock.Lock()
-	item := &RecvItem{URI: storage.NewFileURI("Failed"), Code: code, Max: 1, refresh: d.refresh, index: len(d.items)}
-	item.Status = func() string { return "failed" }
-	d.items = append(d.items, item)
-	d.lock.Unlock()
-
-	d.list.Refresh()
+	fyne.DoAndWait(func() {
+		item := &RecvItem{URI: storage.NewFileURI("Failed"), Code: code, Max: 1, refresh: d.refresh, index: len(d.items)}
+		item.Status = func() string { return "failed" }
+		d.items = append(d.items, item)
+		d.list.Refresh()
+	})
 }
 
 // NewRecv creates a new item to be displayed and returns it plus the path to the file.
 // A text receive will have a path of an empty string.
 func (d *RecvData) NewRecv(code string, msg *wormhole.IncomingMessage) (item *RecvItem, path string) {
-	d.lock.Lock()
-	item = &RecvItem{Code: code, Max: 1, refresh: d.refresh, index: len(d.items)}
+	fyne.DoAndWait(func() {
+		item = &RecvItem{Code: code, Max: 1, refresh: d.refresh, index: len(d.items)}
 
-	if msg.Type == wormhole.TransferText {
-		item.URI = storage.NewFileURI("Text Snippet")
-	} else {
-		path = filepath.Join(d.Client.DownloadPath, msg.Name)
-		item.URI = storage.NewFileURI(path)
+		if msg.Type == wormhole.TransferText {
+			item.URI = storage.NewFileURI("Text Snippet")
+		} else {
+			path = filepath.Join(d.Client.DownloadPath, msg.Name)
+			item.URI = storage.NewFileURI(path)
 
-		if msg.Type == wormhole.TransferDirectory {
-			item.URI = &folderURI{item.URI}
+			if msg.Type == wormhole.TransferDirectory {
+				item.URI = &folderURI{item.URI}
+			}
 		}
-	}
 
-	d.items = append(d.items, item)
-	d.lock.Unlock()
-
-	fyne.Do(d.list.Refresh)
+		d.items = append(d.items, item)
+		d.list.Refresh()
+	})
 	return item, path
 }
 
@@ -197,19 +197,12 @@ func (d *RecvData) NewReceive(code string) {
 }
 
 func (d *RecvData) refresh(index int) {
-	if d.deleting.Load() {
-		return // Don't update if we are deleting.
-	}
-
 	fyne.Do(func() {
 		d.list.RefreshItem(index)
 	})
 }
 
 func (d *RecvData) remove(index int) {
-	// Make sure that no updates happen while we modify the slice.
-	d.deleting.Store(true)
-
 	d.items = slices.Delete(d.items, index, index+1)
 
 	// Update the moved items to have the correct index.
@@ -219,9 +212,6 @@ func (d *RecvData) remove(index int) {
 
 	// Refresh the whole list.
 	d.list.Refresh()
-
-	// Allow individual objects to be refreshed again.
-	d.deleting.Store(false)
 }
 
 func (d *RecvData) setUpInfoDialog() {
