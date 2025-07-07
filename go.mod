@@ -3,13 +3,13 @@ module github.com/Jacalz/rymdport/v3
 go 1.23.0
 
 require (
-	fyne.io/fyne/v2 v2.6.0
+	fyne.io/fyne/v2 v2.6.1
 	github.com/alecthomas/assert/v2 v2.11.0
-	github.com/fynelabs/fyneselfupdate v0.1.1
-	github.com/fynelabs/selfupdate v0.2.0
+	github.com/fynelabs/fyneselfupdate v0.1.2
+	github.com/fynelabs/selfupdate v0.2.1
 	github.com/klauspost/compress v1.18.0
-	github.com/rymdport/go-qrcode v1.2.0
-	github.com/rymdport/wormhole v0.3.0
+	github.com/rymdport/go-qrcode v1.2.1
+	github.com/rymdport/wormhole v0.4.0
 )
 
 require (
@@ -43,11 +43,11 @@ require (
 	github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef // indirect
 	github.com/stretchr/testify v1.10.0 // indirect
 	github.com/yuin/goldmark v1.7.12 // indirect
-	golang.org/x/crypto v0.37.0 // indirect
+	golang.org/x/crypto v0.39.0 // indirect
 	golang.org/x/image v0.24.0 // indirect
 	golang.org/x/net v0.39.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
-	golang.org/x/text v0.24.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.26.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	salsa.debian.org/vasudev/gospake2 v0.0.0-20210510093858-d91629950ad1 // indirect
 )
