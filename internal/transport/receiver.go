@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"fyne.io/fyne/v2"
 	"github.com/Jacalz/rymdport/v3/internal/util"
 	"github.com/Jacalz/rymdport/v3/zip"
 	"github.com/rymdport/wormhole/wormhole"
@@ -30,7 +29,6 @@ func bail(msg *wormhole.IncomingMessage, err error) error {
 func (c *Client) NewReceive(code string) (*wormhole.IncomingMessage, error) {
 	msg, err := c.Receive(context.Background(), code)
 	if err != nil {
-		fyne.LogError("Error on receiving data", err)
 		return nil, bail(msg, err)
 	}
 
@@ -50,7 +48,6 @@ func (c *Client) SaveToDisk(msg *wormhole.IncomingMessage, targetPath string, pr
 		if err == nil || os.IsExist(err) {
 			targetPath, err = addFileIncrement(targetPath)
 			if err != nil {
-				fyne.LogError("Error on trying to create non-duplicate filename", err)
 				return bail(msg, err)
 			}
 		}
@@ -66,65 +63,41 @@ func (c *Client) SaveToDisk(msg *wormhole.IncomingMessage, targetPath string, pr
 	return writeToDirectory(targetPath, msg, contents, progress)
 }
 
-func writeToDirectory(targetPath string, msg *wormhole.IncomingMessage, contents util.ProgressReader, progress func(int64, int64)) (err error) {
+func writeToDirectory(targetPath string, msg *wormhole.IncomingMessage, contents util.ProgressReader, progress func(int64, int64)) error {
 	tmp, err := os.CreateTemp("", msg.Name+"-*.zip.tmp")
 	if err != nil {
-		fyne.LogError("Error on creating tempfile", err)
 		return bail(msg, err)
 	}
 
-	defer func() {
-		if cerr := tmp.Close(); cerr != nil {
-			fyne.LogError("Error on closing file", err)
-			err = cerr
-		}
-
-		if rerr := os.Remove(tmp.Name()); rerr != nil {
-			fyne.LogError("Error on removing temp file", err)
-			err = rerr
-		}
-	}()
+	defer tmp.Close()
+	defer os.Remove(tmp.Name())
 
 	var n int64
 	n, err = io.Copy(tmp, contents)
 	if err != nil {
-		fyne.LogError("Error on copying contents to file", err)
-		return
+		return err
 	}
 
 	err = zip.ExtractSafe(util.NewProgressReaderAt(tmp, progress, contents.Max),
 		n, targetPath, msg.UncompressedBytes, msg.FileCount)
 	if err != nil {
-		fyne.LogError("Error on unzipping contents", err)
-		return
+		return err
 	}
 
 	progress(0, 1) // Workaround for progress sometimes stopping at 99%.
-
-	return
+	return nil
 }
 
-func writeToFile(destination string, msg *wormhole.IncomingMessage, contents util.ProgressReader) (err error) {
+func writeToFile(destination string, msg *wormhole.IncomingMessage, contents util.ProgressReader) error {
 	file, err := os.Create(destination) // #nosec Path is cleaned by filepath.Join().
 	if err != nil {
-		fyne.LogError("Error on creating file", err)
 		return bail(msg, err)
 	}
 
-	defer func() {
-		if cerr := file.Close(); cerr != nil {
-			fyne.LogError("Error on closing file", err)
-			err = cerr
-		}
-	}()
+	defer file.Close()
 
 	_, err = io.Copy(file, contents)
-	if err != nil {
-		fyne.LogError("Error on copying contents to file", err)
-		return
-	}
-
-	return
+	return err
 }
 
 // addFileIncrement tries to add a number to the end of the filename if a duplicate exists.
