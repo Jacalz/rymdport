@@ -147,8 +147,9 @@ func (d *SendData) OnSelected(i int) {
 
 // NewSend adds data about a new send to the list and then returns the item.
 func (d *SendData) NewSend(uri fyne.URI) *SendItem {
-	item := &SendItem{Code: "Waiting for code...", URI: uri, Max: 1, refresh: d.refresh, index: len(d.items)}
+	item := &SendItem{Code: "Waiting for code...", URI: uri, Max: 1, refresh: d.list.RefreshItem, index: len(d.items)}
 	d.items = append(d.items, item)
+	d.list.Refresh()
 	return item
 }
 
@@ -163,7 +164,7 @@ func (d *SendData) OnFileSelect(file fyne.URIReadCloser, err error) {
 	}
 
 	item := d.NewSend(file.URI())
-	d.list.Refresh()
+	customCode := d.showCustomCodeDialog()
 
 	go func() {
 		// We want to catch close errors for security reasons.
@@ -174,21 +175,20 @@ func (d *SendData) OnFileSelect(file fyne.URIReadCloser, err error) {
 			}
 		}()
 
-		code, result, err := d.Client.NewFileSend(file, wormhole.WithProgress(item.update), d.getCustomCode())
+		code, result, err := d.Client.NewFileSend(file, wormhole.WithProgress(item.update), <-customCode)
 		if err != nil {
 			fyne.LogError("Error on sending file", err)
 			item.failed()
-			dialog.ShowError(err, d.Window)
+			showError(err, d.Window)
 			return
 		}
 
-		item.Code = code
-		d.refresh(item.index)
+		d.setItemCode(item, code)
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending file", res.Error)
 			item.failed()
-			dialog.ShowError(res.Error, d.Window)
+			showError(err, d.Window)
 			d.Client.ShowNotification("File send failed", "An error occurred when sending the file.")
 		} else if res.OK {
 			d.Client.ShowNotification("File send completed", "The file was sent successfully.")
@@ -207,24 +207,23 @@ func (d *SendData) OnDirSelect(dir fyne.ListableURI, err error) {
 	}
 
 	item := d.NewSend(dir)
-	d.list.Refresh()
+	customCode := d.showCustomCodeDialog()
 
 	go func() {
-		code, result, err := d.Client.NewDirSend(dir, wormhole.WithProgress(item.update), d.getCustomCode())
+		code, result, err := d.Client.NewDirSend(dir, wormhole.WithProgress(item.update), d.waitForCustomCode(customCode))
 		if err != nil {
 			fyne.LogError("Error on sending directory", err)
 			item.failed()
-			dialog.ShowError(err, d.Window)
+			showError(err, d.Window)
 			return
 		}
 
-		item.Code = code
-		d.refresh(item.index)
+		d.setItemCode(item, code)
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending directory", res.Error)
 			item.failed()
-			dialog.ShowError(res.Error, d.Window)
+			showError(err, d.Window)
 			d.Client.ShowNotification("Directory send failed", "An error occurred when sending the directory.")
 		} else if res.OK {
 			d.Client.ShowNotification("Directory send completed", "The directory was sent successfully.")
@@ -236,24 +235,23 @@ func (d *SendData) OnDirSelect(dir fyne.ListableURI, err error) {
 func (d *SendData) NewSendFromFiles(uris []fyne.URI) {
 	parentDir := storage.NewFileURI(filepath.Dir(uris[0].Path()))
 	item := d.NewSend(parentDir)
-	d.list.Refresh()
+	customCode := d.showCustomCodeDialog()
 
 	go func() {
-		code, result, err := d.Client.NewMultipleFileSend(uris, wormhole.WithProgress(item.update), d.getCustomCode())
+		code, result, err := d.Client.NewMultipleFileSend(uris, wormhole.WithProgress(item.update), d.waitForCustomCode(customCode))
 		if err != nil {
 			fyne.LogError("Error on sending directory", err)
 			item.failed()
-			dialog.ShowError(err, d.Window)
+			showError(err, d.Window)
 			return
 		}
 
-		item.Code = code
-		d.refresh(item.index)
+		d.setItemCode(item, code)
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending directory", res.Error)
 			item.failed()
-			dialog.ShowError(res.Error, d.Window)
+			showError(err, d.Window)
 			d.Client.ShowNotification("Directory send failed", "An error occurred when sending the directory.")
 		} else if res.OK {
 			d.Client.ShowNotification("Directory send completed", "The directory was sent successfully.")
@@ -263,19 +261,19 @@ func (d *SendData) NewSendFromFiles(uris []fyne.URI) {
 
 // SendText sends new text.
 func (d *SendData) SendText() {
+	text := d.showTextWindow()
+	if text == nil {
+		return
+	}
+
+	item := d.NewSend(storage.NewFileURI("Text Snippet"))
+	customCode := d.showCustomCodeDialog()
+
 	go func() {
-		text := d.showTextWindow()
-		if text == "" {
-			return
-		}
+		send := <-text
+		fyne.Do(d.Window.RequestFocus)
 
-		item := d.NewSend(storage.NewFileURI("Text Snippet"))
-		fyne.Do(func() {
-			d.list.Refresh()
-			d.Window.RequestFocus()
-		})
-
-		code, result, err := d.Client.NewTextSend(text, wormhole.WithProgress(item.update), d.getCustomCode())
+		code, result, err := d.Client.NewTextSend(send, wormhole.WithProgress(item.update), d.waitForCustomCode(customCode))
 		if err != nil {
 			fyne.LogError("Error on sending text", err)
 			item.failed()
@@ -283,13 +281,12 @@ func (d *SendData) SendText() {
 			return
 		}
 
-		item.Code = code
-		d.refresh(item.index)
+		d.setItemCode(item, code)
 
 		if res := <-result; res.Error != nil {
 			fyne.LogError("Error on sending text", res.Error)
 			item.failed()
-			dialog.ShowError(res.Error, d.Window)
+			showError(err, d.Window)
 			d.Client.ShowNotification("Text send failed", "An error occurred when sending the text.")
 		} else if res.OK && d.Client.Notifications {
 			d.Client.ShowNotification("Text send completed", "The text was sent successfully.")
@@ -297,11 +294,18 @@ func (d *SendData) SendText() {
 	}()
 }
 
-// getCustomCode returns "" if the user has custom codes disabled.
+func (d *SendData) setItemCode(item *SendItem, code string) {
+	fyne.Do(func() {
+		item.Code = code
+		d.list.RefreshItem(item.index)
+	})
+}
+
+// showCustomCodeDialog returns a nil channel if the user has custom codes disabled.
 // Otherwise, it will ask the user for a code.
-func (d *SendData) getCustomCode() string {
+func (d *SendData) showCustomCodeDialog() <-chan string {
 	if !d.Client.CustomCode {
-		return ""
+		return nil
 	}
 
 	code := make(chan string)
@@ -327,16 +331,18 @@ func (d *SendData) getCustomCode() string {
 	}, d.Window)
 	form.Resize(fyne.Size{Width: d.Window.Canvas().Size().Width * 0.8})
 	codeEntry.OnSubmitted = func(_ string) { form.Submit() }
+
 	form.Show()
 	d.Window.Canvas().Focus(codeEntry)
 
-	return <-code
+	return code
 }
 
-func (d *SendData) refresh(index int) {
-	fyne.Do(func() {
-		d.list.RefreshItem(index)
-	})
+func (d *SendData) waitForCustomCode(code <-chan string) string {
+	if code == nil {
+		return ""
+	}
+	return <-code
 }
 
 func (d *SendData) remove(index int) {
@@ -417,40 +423,28 @@ func (d *SendData) createTextWindow() {
 	actionContainer := container.NewGridWithColumns(2, d.textWindow.cancelButton, d.textWindow.sendButton)
 	contents := container.NewBorder(nil, actionContainer, nil, nil, d.textWindow.textEntry)
 
-	fyne.DoAndWait(func() {
-		window := d.Client.App.NewWindow("Send Text")
-		window.SetCloseIntercept(d.textWindow.dismiss)
-		window.SetContent(contents)
-		window.Resize(fyne.NewSize(400, 300))
+	window := d.Client.App.NewWindow("Send Text")
+	window.SetCloseIntercept(d.textWindow.dismiss)
+	window.SetContent(contents)
+	window.Resize(fyne.NewSize(400, 300))
 
-		d.textWindow.window = window
-	})
+	d.textWindow.window = window
 }
 
 // showTextWindow opens a new window for setting up text to send.
-func (d *SendData) showTextWindow() string {
+func (d *SendData) showTextWindow() <-chan string {
 	if d.textWindow.window == nil {
 		d.createTextWindow()
-	} else {
-		visible := false
-		fyne.DoAndWait(func() {
-			visible = d.textWindow.window.Canvas().Content().Visible()
-			if visible {
-				d.textWindow.window.RequestFocus()
-			}
-		})
-		if visible {
-			return ""
-		}
+	} else if d.textWindow.window.Canvas().Content().Visible() {
+		d.textWindow.window.RequestFocus()
+		return nil
 	}
 
-	fyne.Do(func() {
-		win := d.textWindow.window
+	win := d.textWindow.window
 
-		win.Show()
-		win.RequestFocus()
-		win.Canvas().Focus(d.textWindow.textEntry)
-	})
+	win.Show()
+	win.RequestFocus()
+	win.Canvas().Focus(d.textWindow.textEntry)
 
-	return <-d.textWindow.text
+	return d.textWindow.text
 }

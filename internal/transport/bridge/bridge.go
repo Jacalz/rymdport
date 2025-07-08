@@ -6,6 +6,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
@@ -49,4 +50,8 @@ func (c codeLayout) MinSize(objects []fyne.CanvasObject) fyne.Size {
 	rightMin := objects[1].MinSize()
 
 	return fyne.NewSize(leftMin.Width+leftMin.Width, fyne.Max(leftMin.Height, rightMin.Height))
+}
+
+func showError(err error, w fyne.Window) {
+	fyne.Do(func() { dialog.ShowError(err, w) })
 }

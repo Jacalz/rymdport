@@ -133,7 +133,7 @@ func (d *RecvData) OnSelected(i int) {
 
 func (d *RecvData) NewFailedRecv(code string) {
 	fyne.DoAndWait(func() {
-		item := &RecvItem{URI: storage.NewFileURI("Failed"), Code: code, Max: 1, refresh: d.refresh, index: len(d.items)}
+		item := &RecvItem{URI: storage.NewFileURI("Failed"), Code: code, Max: 1, refresh: d.list.RefreshItem, index: len(d.items)}
 		item.Status = func() string { return "failed" }
 		d.items = append(d.items, item)
 		d.list.Refresh()
@@ -144,7 +144,7 @@ func (d *RecvData) NewFailedRecv(code string) {
 // A text receive will have a path of an empty string.
 func (d *RecvData) NewRecv(code string, msg *wormhole.IncomingMessage) (item *RecvItem, path string) {
 	fyne.DoAndWait(func() {
-		item = &RecvItem{Code: code, Max: 1, refresh: d.refresh, index: len(d.items)}
+		item = &RecvItem{Code: code, Max: 1, refresh: d.list.RefreshItem, index: len(d.items)}
 
 		if msg.Type == wormhole.TransferText {
 			item.URI = storage.NewFileURI("Text Snippet")
@@ -179,7 +179,6 @@ func (d *RecvData) NewReceive(code string) {
 		if msg.Type == wormhole.TransferText {
 			d.showTextWindow(msg.ReadText())
 			item.done()
-
 			d.Client.ShowNotification("Receive completed", "The text was received successfully.")
 			return
 		}
@@ -189,7 +188,7 @@ func (d *RecvData) NewReceive(code string) {
 				if err != nil {
 					item.failed()
 					d.Client.ShowNotification("Receive failed", "An error occurred when saving the file.")
-					dialog.ShowError(err, d.Window)
+					showError(err, d.Window)
 					return
 				}
 
@@ -198,7 +197,7 @@ func (d *RecvData) NewReceive(code string) {
 				if err != nil {
 					item.failed()
 					d.Client.ShowNotification("Receive failed", "An error occurred when saving the file.")
-					dialog.ShowError(err, d.Window)
+					showError(err, d.Window)
 					return
 				}
 
@@ -220,19 +219,13 @@ func (d *RecvData) NewReceive(code string) {
 		if err != nil {
 			item.failed()
 			d.Client.ShowNotification("Receive failed", "An error occurred when receiving the data.")
-			dialog.ShowError(err, d.Window)
+			showError(err, d.Window)
 			return
 		}
 
 		d.Client.ShowNotification("Receive completed", "The contents were saved to "+filepath.Dir(item.URI.Path())+".")
 		item.done()
 	}(code)
-}
-
-func (d *RecvData) refresh(index int) {
-	fyne.Do(func() {
-		d.list.RefreshItem(index)
-	})
 }
 
 func (d *RecvData) remove(index int) {
