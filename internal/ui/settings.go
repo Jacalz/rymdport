@@ -182,21 +182,24 @@ func (s *settings) verify(hash string) bool {
 
 // getPreferences is used to set the preferences on startup without saving at the same time.
 func (s *settings) getPreferences(app fyne.App) {
+	if build.IsFlatpak {
+		s.askOnFileSave.Disable()
+		s.overwriteFiles.Disable()
+		s.downloadPathEntry.Disable()
+		s.downloadPathEntry.ActionItem.(*widget.Button).Disable()
+	}
+
 	s.client.DownloadPath = s.preferences.StringWithFallback("DownloadPath", util.UserDownloadsFolder())
 	s.downloadPathEntry.Text = s.client.DownloadPath
 
 	s.client.OverwriteExisting = s.preferences.Bool("OverwriteFiles")
 	s.overwriteFiles.Selected = onOrOff(s.client.OverwriteExisting)
 
-	s.client.AskOnFileSave = s.preferences.BoolWithFallback("AskOnFileSave", true) || build.IsFlatpak
+	s.client.AskOnFileSave = build.IsFlatpak || s.preferences.BoolWithFallback("AskOnFileSave", true)
 	s.askOnFileSave.Selected = onOrOff(s.client.AskOnFileSave)
-	if s.client.AskOnFileSave || build.IsFlatpak {
+	if s.client.AskOnFileSave {
 		s.extractRadio.SetSelected("Off")
 		s.extractRadio.Disable()
-	}
-
-	if build.IsFlatpak {
-		s.askOnFileSave.Disable()
 	}
 
 	s.client.NoExtractDirectory = s.preferences.BoolWithFallback("NoExtractDirectory", build.IsFlatpak)
@@ -275,11 +278,11 @@ func (s *settings) buildUI(app fyne.App) *container.Scroll {
 	interfaceContainer := appearance.NewSettings().LoadAppearanceScreen(s.window)
 
 	dataContainer := container.NewGridWithColumns(2,
+		newBoldLabel("Send notifications"), s.notificationRadio,
 		newBoldLabel("Save files to"), s.downloadPathEntry,
 		newBoldLabel("Overwrite files"), s.overwriteFiles,
 		newBoldLabel("Ask where to save received files"), s.askOnFileSave,
 		newBoldLabel("Extract received directory"), s.extractRadio,
-		newBoldLabel("Notifications"), s.notificationRadio,
 		newBoldLabel("Check for updates"), s.checkUpdatesRadio,
 	)
 
