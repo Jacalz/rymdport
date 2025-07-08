@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.9.0
+- Application crashes and their details are now automatically logged to a file.
+- Compiling is now automatically using Profile Guided Optimization (PGO).
+- Implemented improved Flatpak support when compiling with `-tags flatpak`.
+- The default is now to ask where to save files and save directories as a `zip` file.
+- Migrated to `fyne` [v2.6.0](https://github.com/fyne-io/fyne/releases/tag/v2.6.0) for improved performance and fixed race conditions.
+- Rewrote thread handling in the ui code to remove race conditions.
+- Upgraded dependencies for improved performance and bug fixes.
+- Go 1.23 is now the lowest supported compiler version.
+
 ## 3.8.0
 - Fixed a few minor bugs in the code validation of receives.
   - The edge cases were found by newly added fuzz tests.

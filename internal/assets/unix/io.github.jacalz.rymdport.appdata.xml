@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <component type="desktop-application">
   <id>io.github.jacalz.rymdport</id>
 
@@ -17,26 +17,32 @@
   </supports>
 
   <description>
-    <p>Rymdport (formerly wormhole-gui) is a cross-platform application that lets you easily and safely share files, folders, and text between devices. The data is sent securely with end-to-end encryption using the same protocol as magic-wormhole. This means that Rymdport can talk not only to itself, but also to other wormhole clients.</p>
-    <p>The transfers are implemented using wormhole-william, a native Go implementation of magic-wormhole. As a result, Rymdport compiles into a native binary with no runtime dependencies while also outperforming the reference implementation of magic-wormhole.</p>
+    <p
+        >Rymdport (formerly wormhole-gui) is a cross-platform application that lets you easily and safely share files, folders, and text between devices. The data is sent securely with end-to-end encryption using the same protocol as magic-wormhole. This means that Rymdport can talk not only to itself, but also to other wormhole clients.</p>
+    <p
+        >The transfers are implemented using wormhole-william, a native Go implementation of magic-wormhole. As a result, Rymdport compiles into a native binary with no runtime dependencies while also outperforming the reference implementation of magic-wormhole.</p>
   </description>
 
   <launchable type="desktop-id">io.github.jacalz.rymdport.desktop</launchable>
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/Jacalz/rymdport/main/internal/assets/screenshot1.png</image>
+      <image
+            >https://raw.githubusercontent.com/Jacalz/rymdport/main/internal/assets/screenshot1.png</image>
       <caption>Sending content (light mode)</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/Jacalz/rymdport/main/internal/assets/screenshot2.png</image>
+      <image
+            >https://raw.githubusercontent.com/Jacalz/rymdport/main/internal/assets/screenshot2.png</image>
       <caption>Sending content (dark mode)</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/Jacalz/rymdport/main/internal/assets/screenshot3.png</image>
+      <image
+            >https://raw.githubusercontent.com/Jacalz/rymdport/main/internal/assets/screenshot3.png</image>
       <caption>Receiving content (light mode)</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/Jacalz/rymdport/main/internal/assets/screenshot4.png</image>
+      <image
+            >https://raw.githubusercontent.com/Jacalz/rymdport/main/internal/assets/screenshot4.png</image>
       <caption>Receiving content (dark mode)</caption>
     </screenshot>
   </screenshots>
@@ -47,7 +53,9 @@
   <url type="vcs-browser">https://github.com/Jacalz/rymdport</url>
   <url type="help">https://github.com/Jacalz/rymdport/wiki</url>
   <url type="contact">https://github.com/Jacalz/rymdport/discussions</url>
-  <url type="contribute">https://github.com/Jacalz/rymdport/blob/main/CONTRIBUTING.md</url>
+  <url
+        type="contribute"
+    >https://github.com/Jacalz/rymdport/blob/main/CONTRIBUTING.md</url>
   <url type="faq">https://github.com/Jacalz/rymdport/wiki/FAQ</url>
 
   <content_rating type="oars-1.1" />
@@ -65,138 +73,232 @@
   </branding>
 
   <releases>
+    <release version="3.9.0" date="2025-07-08" type="stable">
+      <description>
+        <ul>
+        <li
+                    >Application crashes and their details are now automatically logged to a file.</li>
+        <li
+                    >Compiling is now automatically using Profile Guided Optimization (PGO).</li>
+        <li
+                    >Implemented improved Flatpak support when compiling with `-tags flatpak`.</li>
+        <li
+                    >The default is now to ask where to save files and save directories as a `zip` file.</li>
+        <li
+                    >Migrated to fyne v2.6 for improved performance and fixed race conditions.</li>
+        <li
+                    >Refactored thread handling in the ui code to remove race conditions.</li>
+        <li>Upgraded dependencies for improved performance and bug fixes.</li>
+        <li>Go 1.23 is now the lowest supported compiler version.</li>
+        </ul>
+      </description>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.9.0</url>
+    </release>
     <release version="3.8.0" date="2025-02-22" type="stable">
       <description>
         <ul>
-          <li>The code validation of receives is now even faster than before.</li>
-          <li>A few bugs caught by fuzzing have been fixed in the code validation.</li>
-          <li>Multiple dependencies have been updated for various fixes and improvements.</li>
+          <li
+                    >The code validation of receives is now even faster than before.</li>
+          <li
+                    >A few bugs caught by fuzzing have been fixed in the code validation.</li>
+          <li
+                    >Multiple dependencies have been updated for various fixes and improvements.</li>
         </ul>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.8.0</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.8.0</url>
     </release>
     <release version="3.7.0" date="2024-12-20" type="stable">
       <description>
         <ul>
           <li>The received text is now read-only.</li>
-          <li>Received items are now not shown until after the download starts.</li>
-          <li>Fixed a bug where the folder icon did not display until the receive completed.</li>
+          <li
+                    >Received items are now not shown until after the download starts.</li>
+          <li
+                    >Fixed a bug where the folder icon did not display until the receive completed.</li>
           <li>Cleaned up and optimized various code paths.</li>
           <li>Updated fyne to v2.5.3.</li>
-          <li>Updated many other dependencies for various fixes and improvements.</li>
+          <li
+                    >Updated many other dependencies for various fixes and improvements.</li>
         </ul>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.7.0</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.7.0</url>
     </release>
     <release version="3.6.0" date="2024-04-14" type="stable">
       <description>
         <ul>
-          <li>Added support to use custom codes when sending files and folders using drag and drop.</li>
-          <li>Added an option to save directory receives as a .zip file instead of automatically extracting.</li>
-          <li>Added options for more easily switching to Least Authority servers to communicate with Winden and Destiny clients.</li>
-          <li>Fixed an issue where deleting a sent or received item would not close the dialog.</li>
-          <li>Improved the rendering performance for long lists of sent and received items.</li>
-          <li>Use less CPU when dragging the options slider for selecting code components.</li>
-          <li>Improved performance and memory usage when clicking on sent and received items.</li>
-          <li>Using tab completion when writing the receive code is now much faster.</li>
-          <li>Receiving items now has less startup delay and has a bit less overall cpu usage.</li>
-          <li>The highest setting for generated receive code components is now bumped from 6 to 9.</li>
-          <li>Performance improvements to the code validation that runs when starting a receive.</li>
+          <li
+                    >Added support to use custom codes when sending files and folders using drag and drop.</li>
+          <li
+                    >Added an option to save directory receives as a .zip file instead of automatically extracting.</li>
+          <li
+                    >Added options for more easily switching to Least Authority servers to communicate with Winden and Destiny clients.</li>
+          <li
+                    >Fixed an issue where deleting a sent or received item would not close the dialog.</li>
+          <li
+                    >Improved the rendering performance for long lists of sent and received items.</li>
+          <li
+                    >Use less CPU when dragging the options slider for selecting code components.</li>
+          <li
+                    >Improved performance and memory usage when clicking on sent and received items.</li>
+          <li
+                    >Using tab completion when writing the receive code is now much faster.</li>
+          <li
+                    >Receiving items now has less startup delay and has a bit less overall cpu usage.</li>
+          <li
+                    >The highest setting for generated receive code components is now bumped from 6 to 9.</li>
+          <li
+                    >Performance improvements to the code validation that runs when starting a receive.</li>
           <li>Various dependencies were updated to newer versions.</li>
         </ul>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.6.0</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.6.0</url>
     </release>
     <release version="3.5.3" date="2024-03-18" type="stable">
       <description>
         <ul>
-          <li>Improvements to the icons, sceenshots and metadata to fix issues noted in Flathub review.</li>
-          <li>Updated the fyne dependency to v2.4.4 for bug fixes and big performance improvements.</li>
-          <li>Updated the compress dependency to v1.17.7 for slightly improved decompression performance for directory transfers.</li>
+          <li
+                    >Improvements to the icons, sceenshots and metadata to fix issues noted in Flathub review.</li>
+          <li
+                    >Updated the fyne dependency to v2.4.4 for bug fixes and big performance improvements.</li>
+          <li
+                    >Updated the compress dependency to v1.17.7 for slightly improved decompression performance for directory transfers.</li>
         </ul>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.5.3</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.5.3</url>
     </release>
     <release version="3.5.2" date="2024-01-03" type="stable">
       <description>
         <ul>
-          <li>Updated fyne to v2.4.3 for various bug fixes and performance improvements.</li>
+          <li
+                    >Updated fyne to v2.4.3 for various bug fixes and performance improvements.</li>
         </ul>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.5.2</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.5.2</url>
     </release>
     <release version="3.5.1" date="2023-10-09" type="stable">
       <description>
         <ul>
-          <li>Updated compress to v1.17.0 for more efficient decompression of directory transfers.</li>
-          <li>Updated fyne to v2.4.1 for improved file names in the file dialog along with many bug fixes.</li>
+          <li
+                    >Updated compress to v1.17.0 for more efficient decompression of directory transfers.</li>
+          <li
+                    >Updated fyne to v2.4.1 for improved file names in the file dialog along with many bug fixes.</li>
         </ul>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.5.1</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.5.1</url>
     </release>
     <release version="3.5.0" date="2023-09-02" type="stable">
       <description>
         <ul>
           <li>Major theme rework with rounded corners.</li>
-          <li>Added support for dragging and dropping files and folders onto the application.</li>
-          <li>It is now possible to open files or folders in Rymdport from the file manager to start a transfer.</li>
-          <li>A transfer can now be started by passing files or folders as command-line arguments.</li>
-          <li>Pressing enter after writing a custom code will now start the transfer (#55).</li>
-          <li>Instead of giving an error, a number is now added to the end of a file if a duplicate exists (#87).</li>
+          <li
+                    >Added support for dragging and dropping files and folders onto the application.</li>
+          <li
+                    >It is now possible to open files or folders in Rymdport from the file manager to start a transfer.</li>
+          <li
+                    >A transfer can now be started by passing files or folders as command-line arguments.</li>
+          <li
+                    >Pressing enter after writing a custom code will now start the transfer (#55).</li>
+          <li
+                    >Instead of giving an error, a number is now added to the end of a file if a duplicate exists (#87).</li>
           <li>Fixed long codes flowing into the progress bar (#96).</li>
-          <li>Fixed the QR code showing for failed and completed transfers (#90).</li>
+          <li
+                    >Fixed the QR code showing for failed and completed transfers (#90).</li>
           <li>Refocus the main window after sending text (#85).</li>
-          <li>Enabling the option to overwrite files now shows the submit button using a warning colour (#48).</li>
-          <li>Fixed a memory leak when starting a second text transfer with the window already open.</li>
-          <li>The text send window now opens faster for transfers after the initial start.</li>
-          <li>Directory transfers now check that the size and file number are as expected before extraction.</li>
-          <li>Long filenames and codes are now truncated using ellipsis instead of clipping.</li>
-          <li>Fix text in the progress bar flickering and having the wrong colour sometimes.</li>
-          <li>Added an option to disable animations (which can be found within our Settings tab).</li>
-          <li>Icons are now installed in more sizes to look better in more places.</li>
+          <li
+                    >Enabling the option to overwrite files now shows the submit button using a warning colour (#48).</li>
+          <li
+                    >Fixed a memory leak when starting a second text transfer with the window already open.</li>
+          <li
+                    >The text send window now opens faster for transfers after the initial start.</li>
+          <li
+                    >Directory transfers now check that the size and file number are as expected before extraction.</li>
+          <li
+                    >Long filenames and codes are now truncated using ellipsis instead of clipping.</li>
+          <li
+                    >Fix text in the progress bar flickering and having the wrong colour sometimes.</li>
+          <li
+                    >Added an option to disable animations (which can be found within our Settings tab).</li>
+          <li
+                    >Icons are now installed in more sizes to look better in more places.</li>
           <li>Updated the fyne package to v2.4.0 for many improvements.</li>
-          <li>Updated the wormhole-william package to v1.0.7 for minor bug fixes and performance improvements.</li>
-          <li>Updated the compress package to v1.16.7 for slightly more efficient compression and decompression of directory transfers.</li>
-          <li>Various cleanups and performance improvements throughout the codebase.</li>
+          <li
+                    >Updated the wormhole-william package to v1.0.7 for minor bug fixes and performance improvements.</li>
+          <li
+                    >Updated the compress package to v1.16.7 for slightly more efficient compression and decompression of directory transfers.</li>
+          <li
+                    >Various cleanups and performance improvements throughout the codebase.</li>
         </ul>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.5.0</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.5.0</url>
     </release>
 	  <release version="3.4.0" date="2023-06-07" type="stable">
       <description>
         <ul>
-          <li>QR codes can now be generated for easily sending items to supported apps.</li>
-          <li>Progress bars no longer display the wrong percentage sometimes.</li>
-          <li>Fixed a potential crash that could happen sometimes when sending.</li>
-          <li>Added support for removing items that have completed the transfer.</li>
+          <li
+                    >QR codes can now be generated for easily sending items to supported apps.</li>
+          <li
+                    >Progress bars no longer display the wrong percentage sometimes.</li>
+          <li
+                    >Fixed a potential crash that could happen sometimes when sending.</li>
+          <li
+                    >Added support for removing items that have completed the transfer.</li>
           <li>Added keyboard shortcuts for switching between tabs.</li>
-          <li>The receive page now shows which code a received item came from.</li>
+          <li
+                    >The receive page now shows which code a received item came from.</li>
           <li>Various improvements to performance and memory usage.</li>
           <li>Updated fyne to v2.3.5 for many bug fixes.</li>
         </ul>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.4.0</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.4.0</url>
     </release>
     <release version="3.3.6" date="2023-05-11" type="stable">
       <description>
         <ul>
-          <li>Fixed a crash when pressing the copy button in the text receive window.</li>
-          <li>Fixed the AppStream metadata not containing the v3.3.5 release information.</li>
+          <li
+                    >Fixed a crash when pressing the copy button in the text receive window.</li>
+          <li
+                    >Fixed the AppStream metadata not containing the v3.3.5 release information.</li>
         </ul>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.5</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.3.5</url>
     </release>
     <release version="3.3.5" date="2023-05-08" type="stable">
       <description>
-        <p>Updated fyne to v2.3.4 for improved performance, less memory usage and 20% smaller binaries.</p>
+        <p
+                >Updated fyne to v2.3.4 for improved performance, less memory usage and 20% smaller binaries.</p>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.5</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.3.5</url>
     </release>
     <release version="3.3.4" date="2023-04-02" type="stable">
       <description>
-        <p>Fixed the AppStream metadata not containing the v3.3.3 release information.</p>
+        <p
+                >Fixed the AppStream metadata not containing the v3.3.3 release information.</p>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.4</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.3.4</url>
     </release>
     <release version="3.3.3" date="2023-03-27" type="stable">
       <description>
@@ -207,78 +309,111 @@
           <li>Updated indirect dependencies for some minor security fixes.</li>
         </ul>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.3</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.3.3</url>
     </release>
     <release version="3.3.2" date="2023-02-23" type="stable">
       <description>
         <ul>
-          <li>Minor performance improvements to the list of sent/received items.</li>
-          <li>Updated fyne to v2.3.1 for various bug fixes and improvements.</li>
+          <li
+                    >Minor performance improvements to the list of sent/received items.</li>
+          <li
+                    >Updated fyne to v2.3.1 for various bug fixes and improvements.</li>
         </ul>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.2</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.3.2</url>
     </release>
     <release version="3.3.1" date="2023-01-28" type="stable">
       <description>
-        <p>Minor release to fix Windows binaries not starting. No relevant code changes for Flatpak package.</p>
+        <p
+                >Minor release to fix Windows binaries not starting. No relevant code changes for Flatpak package.</p>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.1</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.3.1</url>
     </release>
     <release version="3.3.0" date="2023-01-14" type="stable">
       <description>
         <ul>
-          <li>Notifications for received files now mentions where the file was saved to.</li>
-          <li>Present more useful information about how to write custom codes.</li>
-          <li>The dialog for custom codes now focuses the text entry automatically.</li>
-          <li>The selection of the download path has been reworked to be more useful.</li>
+          <li
+                    >Notifications for received files now mentions where the file was saved to.</li>
+          <li
+                    >Present more useful information about how to write custom codes.</li>
+          <li
+                    >The dialog for custom codes now focuses the text entry automatically.</li>
+          <li
+                    >The selection of the download path has been reworked to be more useful.</li>
           <li>Minor redesign of the send and receive tabs.</li>
           <li>Minor wording improvements inside the settings tab.</li>
-          <li>The application now uses an entirely new theme with improved visuals.</li>
+          <li
+                    >The application now uses an entirely new theme with improved visuals.</li>
           <li>The FreeDesktop Dark Style Preference is now respected.</li>
-          <li>There is now an option to create a new folder within the folder selection dialog.</li>
-          <li>Minor performance improvements for sending and receiving of directories.</li>
+          <li
+                    >There is now an option to create a new folder within the folder selection dialog.</li>
+          <li
+                    >Minor performance improvements for sending and receiving of directories.</li>
         </ul>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.3.0</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.3.0</url>
     </release>
   	<release version="3.2.0" date="2022-07-26" type="stable">
       <description>
         <ul>
-          <li>Work around send and receive windows not being focused correctly.</li>
+          <li
+                    >Work around send and receive windows not being focused correctly.</li>
           <li>Go backwards in tab completion using Shift + Tab.</li>
           <li>Update klauspost/compress to v1.15.8 for CVE-2022-30631 fix.</li>
-          <li>The zip and completion packages are now exported and considered stable.</li>
+          <li
+                    >The zip and completion packages are now exported and considered stable.</li>
           <li>Updated fyne to v2.2.3 for minor bug fixes.</li>
           <li>Minor performance improvements.</li>
         </ul>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.2.0</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.2.0</url>
     </release>
     <release version="3.1.0" date="2022-06-27" type="stable">
       <description>
         <ul>
           <li>Added support for tab completion of receive-codes.</li>
           <li>Notifications now show the application icon.</li>
-          <li>The list view in the file chooser now display extensions correctly.</li>
-          <li>The entry for receive-codes now unfocuses when pressing escape.</li>
+          <li
+                    >The list view in the file chooser now display extensions correctly.</li>
+          <li
+                    >The entry for receive-codes now unfocuses when pressing escape.</li>
           <li>Various improvements and fixes for the AppStream metadata.</li>
           <li>Notifications are now enabled by default.</li>
         </ul>
       </description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.1.0</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.1.0</url>
     </release>
     <release version="3.0.2" date="2022-04-15" type="stable">
       <description><p>Improvements to the AppStream metadata.</p></description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.0.2</url>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.0.2</url>
     </release>
     <release version="3.0.1" date="2022-04-02" type="stable">
-      <description><p>Flatpak support and a performance improvement.</p></description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.0.1</url>
+      <description><p
+                >Flatpak support and a performance improvement.</p></description>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.0.1</url>
     </release>
     <release version="3.0.0" date="2022-03-07" type="stable">
-      <description><p>Major update with lots of improvements and fixes.</p></description>
-      <url type="details">https://github.com/Jacalz/rymdport/releases/tag/v3.0.0</url>
+      <description><p
+                >Major update with lots of improvements and fixes.</p></description>
+      <url
+                type="details"
+            >https://github.com/Jacalz/rymdport/releases/tag/v3.0.0</url>
     </release>
   </releases>
-
 </component>
