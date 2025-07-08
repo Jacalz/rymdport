@@ -185,24 +185,26 @@ func (d *RecvData) NewReceive(code string) {
 
 		if d.Client.AskOnFileSave {
 			save := dialog.NewFileSave(func(writer fyne.URIWriteCloser, err error) {
-				if err != nil {
-					item.failed()
-					d.Client.ShowNotification("Receive failed", "An error occurred when saving the file.")
-					showError(err, d.Window)
-					return
-				}
+				go func() {
+					if err != nil {
+						item.failed()
+						d.Client.ShowNotification("Receive failed", "An error occurred when saving the file.")
+						showError(err, d.Window)
+						return
+					}
 
-				contents := util.NewProgressReader(msg, item.update, msg.TransferBytes)
-				_, err = io.Copy(writer, contents)
-				if err != nil {
-					item.failed()
-					d.Client.ShowNotification("Receive failed", "An error occurred when saving the file.")
-					showError(err, d.Window)
-					return
-				}
+					contents := util.NewProgressReader(msg, item.update, msg.TransferBytes)
+					_, err = io.Copy(writer, contents)
+					if err != nil {
+						item.failed()
+						d.Client.ShowNotification("Receive failed", "An error occurred when saving the file.")
+						showError(err, d.Window)
+						return
+					}
 
-				d.Client.ShowNotification("Receive completed", "The contents were saved to "+filepath.Dir(item.URI.Path())+".")
-				item.done()
+					d.Client.ShowNotification("Receive completed", "The contents were saved to "+filepath.Dir(item.URI.Path())+".")
+					item.done()
+				}()
 			}, d.Window)
 
 			if msg.Type == wormhole.TransferDirectory {
