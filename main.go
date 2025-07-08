@@ -6,9 +6,12 @@ import (
 
 	"github.com/Jacalz/rymdport/v3/internal/assets"
 	"github.com/Jacalz/rymdport/v3/internal/ui"
+	"github.com/Jacalz/rymdport/v3/internal/util"
 )
 
 func main() {
+	util.SetUpCrashLogging()
+
 	a := app.NewWithID("io.github.jacalz.rymdport")
 	assets.SetIcon(a)
 	w := a.NewWindow("Rymdport")
