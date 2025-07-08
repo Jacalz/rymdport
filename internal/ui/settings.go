@@ -11,6 +11,7 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	"github.com/Jacalz/rymdport/v3/internal/build"
 	"github.com/Jacalz/rymdport/v3/internal/transport"
 	"github.com/Jacalz/rymdport/v3/internal/updater"
 	"github.com/Jacalz/rymdport/v3/internal/util"
@@ -187,18 +188,22 @@ func (s *settings) getPreferences(app fyne.App) {
 	s.client.OverwriteExisting = s.preferences.Bool("OverwriteFiles")
 	s.overwriteFiles.Selected = onOrOff(s.client.OverwriteExisting)
 
-	s.client.AskOnFileSave = s.preferences.BoolWithFallback("AskOnFileSave", true)
+	s.client.AskOnFileSave = s.preferences.BoolWithFallback("AskOnFileSave", true) || build.IsFlatpak
 	s.askOnFileSave.Selected = onOrOff(s.client.AskOnFileSave)
-	if s.client.AskOnFileSave {
-		s.extractRadio.SetSelected("On")
+	if s.client.AskOnFileSave || build.IsFlatpak {
+		s.extractRadio.SetSelected("Off")
 		s.extractRadio.Disable()
 	}
 
+	if build.IsFlatpak {
+		s.askOnFileSave.Disable()
+	}
+
+	s.client.NoExtractDirectory = s.preferences.BoolWithFallback("NoExtractDirectory", build.IsFlatpak)
+	s.extractRadio.Selected = onOrOff(!s.client.NoExtractDirectory)
+
 	s.client.Notifications = s.preferences.BoolWithFallback("Notifications", true)
 	s.notificationRadio.Selected = onOrOff(s.client.Notifications)
-
-	s.client.NoExtractDirectory = s.preferences.Bool("NoExtractDirectory")
-	s.extractRadio.Selected = onOrOff(!s.client.NoExtractDirectory)
 
 	checkUpdates := s.preferences.BoolWithFallback("CheckUpdates", true)
 	if !updater.Enabled {
