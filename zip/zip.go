@@ -30,12 +30,10 @@ func ExtractSafe(source io.ReaderAt, length int64, target string, uncompressedBy
 		return err
 	}
 
-	// Check that the file count is as expected.
 	if files < len(reader.File) {
 		return ErrorFileCountMismatch
 	}
 
-	// Check that the extracted size is as expected.
 	actualUncompressedSize := uint64(0)
 	for _, f := range reader.File {
 		actualUncompressedSize += f.FileHeader.UncompressedSize64
@@ -44,13 +42,7 @@ func ExtractSafe(source io.ReaderAt, length int64, target string, uncompressedBy
 		return ErrorSizeMismatch
 	}
 
-	for _, file := range reader.File {
-		if err := extractFile(file, target); err != nil {
-			return err
-		}
-	}
-
-	return nil
+	return extractFiles(reader, target)
 }
 
 // Extract takes a reader and the length and then extracts it to the target.
@@ -61,6 +53,10 @@ func Extract(source io.ReaderAt, length int64, target string) error {
 		return err
 	}
 
+	return extractFiles(reader, target)
+}
+
+func extractFiles(reader *zip.Reader, target string) error {
 	for _, file := range reader.File {
 		if err := extractFile(file, target); err != nil {
 			return err
@@ -70,7 +66,7 @@ func Extract(source io.ReaderAt, length int64, target string) error {
 	return nil
 }
 
-func extractFile(file *zip.File, target string) (err error) {
+func extractFile(file *zip.File, target string) error {
 	path, err := filepath.Abs(filepath.Join(target, file.Name))
 	if err != nil {
 		return err
@@ -85,18 +81,10 @@ func extractFile(file *zip.File, target string) (err error) {
 		return err
 	}
 
-	defer func() {
-		if cerr := fileReader.Close(); cerr != nil {
-			err = cerr
-		}
-	}()
+	defer fileReader.Close()
 
 	if file.FileInfo().IsDir() {
-		if err := os.MkdirAll(path, 0o750); err != nil {
-			return err
-		}
-
-		return
+		return os.MkdirAll(path, 0o750)
 	}
 
 	if err := os.MkdirAll(filepath.Dir(path), 0o750); err != nil {
@@ -108,16 +96,8 @@ func extractFile(file *zip.File, target string) (err error) {
 		return err
 	}
 
-	defer func() {
-		if cerr := targetFile.Close(); cerr != nil {
-			err = cerr
-		}
-	}()
+	defer targetFile.Close()
 
 	_, err = io.Copy(targetFile, fileReader)
-	if err != nil {
-		return err
-	}
-
-	return
+	return err
 }
