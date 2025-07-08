@@ -13,6 +13,9 @@ type Client struct {
 	// App is a reference to the currently running Fyne application.
 	App fyne.App
 
+	// AskOnFileSave defines if we should ask where to save files or not.
+	AskOnFileSave bool
+
 	// CustomCode defines if we should pass a custom code or let wormhole-william generate on for us.
 	CustomCode bool
 

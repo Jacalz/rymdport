@@ -20,6 +20,7 @@ import (
 type settings struct {
 	downloadPathEntry *widget.Entry
 	overwriteFiles    *widget.RadioGroup
+	askOnFileSave     *widget.RadioGroup
 	notificationRadio *widget.RadioGroup
 	extractRadio      *widget.RadioGroup
 	checkUpdatesRadio *widget.RadioGroup
@@ -105,6 +106,18 @@ func (s *settings) onOverwriteFilesChanged(selected string) {
 	confirm.Show()
 }
 
+func (s *settings) onAskFileSaveChanged(selected string) {
+	s.client.AskOnFileSave = selected == "On"
+	s.preferences.SetBool("AskOnFileSave", s.client.AskOnFileSave)
+	if s.client.AskOnFileSave {
+		s.extractRadio.SetSelected("On")
+		s.extractRadio.Disable()
+	} else {
+		s.extractRadio.SetSelected(onOrOff(s.client.NoExtractDirectory))
+		s.extractRadio.Enable()
+	}
+}
+
 func (s *settings) onNotificationsChanged(selected string) {
 	s.client.Notifications = selected == "On"
 	s.preferences.SetBool("Notifications", s.client.Notifications)
@@ -174,6 +187,13 @@ func (s *settings) getPreferences(app fyne.App) {
 	s.client.OverwriteExisting = s.preferences.Bool("OverwriteFiles")
 	s.overwriteFiles.Selected = onOrOff(s.client.OverwriteExisting)
 
+	s.client.AskOnFileSave = s.preferences.BoolWithFallback("AskOnFileSave", true)
+	s.askOnFileSave.Selected = onOrOff(s.client.AskOnFileSave)
+	if s.client.AskOnFileSave {
+		s.extractRadio.SetSelected("On")
+		s.extractRadio.Disable()
+	}
+
 	s.client.Notifications = s.preferences.BoolWithFallback("Notifications", true)
 	s.notificationRadio.Selected = onOrOff(s.client.Notifications)
 
@@ -218,6 +238,8 @@ func (s *settings) buildUI(app fyne.App) *container.Scroll {
 
 	s.overwriteFiles = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onOverwriteFilesChanged}
 
+	s.askOnFileSave = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onAskFileSaveChanged}
+
 	s.notificationRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onNotificationsChanged}
 
 	s.extractRadio = &widget.RadioGroup{Options: onOffOptions, Horizontal: true, Required: true, OnChanged: s.onExtractChanged}
@@ -250,8 +272,9 @@ func (s *settings) buildUI(app fyne.App) *container.Scroll {
 	dataContainer := container.NewGridWithColumns(2,
 		newBoldLabel("Save files to"), s.downloadPathEntry,
 		newBoldLabel("Overwrite files"), s.overwriteFiles,
-		newBoldLabel("Notifications"), s.notificationRadio,
+		newBoldLabel("Ask where to save received files"), s.askOnFileSave,
 		newBoldLabel("Extract received directory"), s.extractRadio,
+		newBoldLabel("Notifications"), s.notificationRadio,
 		newBoldLabel("Check for updates"), s.checkUpdatesRadio,
 	)
 
