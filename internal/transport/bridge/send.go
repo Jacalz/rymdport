@@ -167,15 +167,9 @@ func (d *SendData) OnFileSelect(file fyne.URIReadCloser, err error) {
 	customCode := d.showCustomCodeDialog()
 
 	go func() {
-		// We want to catch close errors for security reasons.
-		defer func() {
-			if err = file.Close(); err != nil {
-				item.failed()
-				fyne.LogError("Error on closing file", err)
-			}
-		}()
+		defer file.Close()
 
-		code, result, err := d.Client.NewFileSend(file, wormhole.WithProgress(item.update), <-customCode)
+		code, result, err := d.Client.NewFileSend(file, wormhole.WithProgress(item.update), d.waitForCustomCode(customCode))
 		if err != nil {
 			fyne.LogError("Error on sending file", err)
 			item.failed()
