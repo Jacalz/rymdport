@@ -1,6 +1,7 @@
 package util
 
 import (
+	"log"
 	"os"
 	"runtime/debug"
 	"time"
@@ -10,12 +11,12 @@ import (
 func SetUpCrashLogging() {
 	f, err := os.CreateTemp("", "Rymdport "+time.Now().Format(time.DateTime)+".log")
 	if err != nil {
-		panic(err)
+		log.Println("On creating temporary crash dump file:", err)
+		return
 	}
 	defer f.Close()
 
-	err = debug.SetCrashOutput(f, debug.CrashOptions{})
-	if err != nil {
-		panic(err)
+	if err := debug.SetCrashOutput(f, debug.CrashOptions{}); err != nil {
+		log.Println("On setting crash output handler:", err)
 	}
 }
