@@ -4,8 +4,8 @@ Website = "https://rymdport.github.io/"
 Icon = "internal/assets/icons/icon-512.png"
 Name = "Rymdport"
 ID = "io.github.jacalz.rymdport"
-Version = "3.9.1"
-Build = 32
+Version = "3.9.2"
+Build = 33
 
 [Migrations]
 fyneDo = true
