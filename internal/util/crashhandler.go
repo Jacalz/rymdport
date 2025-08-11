@@ -9,7 +9,7 @@ import (
 
 // SetUpCrashLogging creates a temporary log where potential panics are logged.
 func SetUpCrashLogging() {
-	f, err := os.CreateTemp("", "Rymdport "+time.Now().Format(time.DateTime)+".log")
+	f, err := os.CreateTemp("", "rymdport-"+time.Now().Format(time.DateOnly)+"-*.log")
 	if err != nil {
 		log.Println("On creating temporary crash dump file:", err)
 		return
