@@ -19,7 +19,7 @@ The transfers are implemented in a compiled native [Go](https://go.dev/) impleme
 ## Downloads
 
 Please visit the [release page](https://github.com/Jacalz/rymdport/releases) to download the latest release.
-Pre-built binaries are available for FreeBSD, Linux, macOS (`x86-64` and `arm64`) and Windows (`x86-64`).
+Pre-built binaries are available for FreeBSD, Linux, macOS and Windows on `x86-64` and `arm64`.
 
 ### Packages in repositories
 
@@ -66,7 +66,7 @@ For more information, see the [Compiling](https://github.com/Jacalz/rymdport/wik
 
 ## Our Sponsors
 
-We are grateful for the support received by the following organizations:  
+We are grateful for the support received by the following organizations:
 
 <a href='https://fynelabs.com/'>
   <picture>
