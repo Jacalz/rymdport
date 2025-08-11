@@ -3,5 +3,5 @@
 package profile
 
 func Start() func() {
-	return nil
+	return func() {}
 }
