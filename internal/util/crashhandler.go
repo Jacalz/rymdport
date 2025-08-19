@@ -20,8 +20,7 @@ func SetUpCrashLogging() func() {
 		log.Println("On setting crash output handler:", err)
 	}
 
-	name := f.Name()
 	return func() {
-		os.Remove(name)
+		_ = os.Remove(f.Name())
 	}
 }
