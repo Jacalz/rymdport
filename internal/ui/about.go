@@ -2,6 +2,7 @@ package ui
 
 import (
 	"net/url"
+	"runtime/debug"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -13,16 +14,20 @@ import (
 )
 
 func newAboutTab(app fyne.App) *container.TabItem {
-	const version = "v3.9.2"
-
 	repoURL := util.URLToGitHubProject("")
 	icon := newClickableIcon(app.Icon(), repoURL, app)
 
 	nameLabel := newBoldLabel("Rymdport")
 	spacerLabel := newBoldLabel("-")
 
-	releaseURL := util.URLToGitHubProject("/releases/tag/" + version)
-	hyperlink := &widget.Hyperlink{Text: version, URL: releaseURL, TextStyle: fyne.TextStyle{Bold: true}}
+	var hyperlink fyne.CanvasObject
+	version := getVersion(app)
+	if version[0] == 'v' {
+		releaseURL := util.URLToGitHubProject("/releases/tag/" + version)
+		hyperlink = &widget.Hyperlink{Text: version, URL: releaseURL, TextStyle: fyne.TextStyle{Bold: true}}
+	} else {
+		hyperlink = &widget.Label{Text: version, TextStyle: fyne.TextStyle{Bold: true}}
+	}
 
 	spacer := &layout.Spacer{}
 	content := container.NewVBox(
@@ -68,4 +73,12 @@ func (c *clickableIcon) MinSize() fyne.Size {
 
 func newClickableIcon(res fyne.Resource, url *url.URL, app fyne.App) *clickableIcon {
 	return &clickableIcon{Icon: widget.Icon{Resource: res}, app: app, url: url}
+}
+
+func getVersion(app fyne.App) string {
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return app.Metadata().Version
+	}
+	return info.Main.Version
 }
