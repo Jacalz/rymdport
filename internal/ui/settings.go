@@ -51,14 +51,15 @@ func newSettingsTab(w fyne.Window, c *transport.Client) *container.TabItem {
 func (s *settings) onDownloadsPathSubmitted(path string) {
 	path = filepath.Clean(path)
 	info, err := os.Stat(path)
-	if errors.Is(err, os.ErrNotExist) {
+	switch {
+	case errors.Is(err, os.ErrNotExist):
 		dialog.ShowInformation("Does not exist", "Please select a valid directory.", s.window)
 		return
-	} else if err != nil {
+	case err != nil:
 		fyne.LogError("Error when trying to verify directory", err)
 		dialog.ShowError(err, s.window)
 		return
-	} else if !info.IsDir() {
+	case !info.IsDir():
 		dialog.ShowInformation("Not a directory", "Please select a valid directory.", s.window)
 		return
 	}
