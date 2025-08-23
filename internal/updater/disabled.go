@@ -1,5 +1,6 @@
 //go:build !release
 
+// Package updater handles automatic updates.
 package updater
 
 import "fyne.io/fyne/v2"
