@@ -6,18 +6,11 @@ import (
 	"github.com/alecthomas/assert/v2"
 )
 
-var completions []string
-
 func BenchmarkNameplateCompletion(b *testing.B) {
 	c := Client{}
-
-	local := []string{}
-
-	for range b.N {
-		local = c.GenerateCodeCompletion("1-letterhead-be")
+	for b.Loop() {
+		c.GenerateCodeCompletion("1-letterhead-be")
 	}
-
-	completions = local
 }
 
 func TestCompletionGeneration_Progressive(t *testing.T) {

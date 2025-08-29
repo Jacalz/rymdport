@@ -9,16 +9,11 @@ import (
 	"github.com/alecthomas/assert/v2"
 )
 
-var globalValidationError error
-
 func BenchmarkCodeValidator(b *testing.B) {
-	local := error(nil)
-
-	for range b.N {
-		local = CodeValidator("125-upset-universe-mistake")
+	for b.Loop() {
+		CodeValidator("125-upset-universe-mistake")
 	}
 
-	globalValidationError = local
 }
 
 var codeValidatorTestcases = []struct {
