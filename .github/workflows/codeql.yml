@@ -9,6 +9,7 @@ on:
     - cron: "24 10 * * 6"
 env:
   CC: "clang"
+  CG_LDFLAGS: "-fuse-ld=mold"
 
 jobs:
   analyze:
@@ -31,7 +32,7 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install --no-install-recommends clang libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev libx11-dev xorg-dev
+          sudo apt-get install --no-install-recommends clang mold libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev libx11-dev xorg-dev
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
