@@ -13,7 +13,6 @@ func BenchmarkCodeValidator(b *testing.B) {
 	for b.Loop() {
 		CodeValidator("125-upset-universe-mistake")
 	}
-
 }
 
 var codeValidatorTestcases = []struct {
